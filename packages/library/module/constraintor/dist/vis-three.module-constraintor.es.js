@@ -1,30 +1,19 @@
-import { Compiler, Rule, getSymbolConfig, defineProcessor, Bus, COMPILER_EVENT, JSONHandler, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { validate } from "uuid";
-import { NumberConstraintor, BoundingBoxConstraintor } from "@vis-three/library-constraintor";
-class ConstraintorCompiler extends Compiler {
-  constructor() {
-    super();
-  }
-}
-const ConstraintorRule = function(input, compiler, validateFun = validate) {
-  Rule(input, compiler, validateFun);
-};
-const getConstraintorConfig = function() {
-  return Object.assign(getSymbolConfig(), {
+import { getBasicConfig as c, defineModel as u, MODEL_EVENT as a, JSONHandler as A, defineModule as E, SUPPORT_LIFE_CYCLE as M } from "@vis-three/tdcm";
+import { NumberConstraintor as y, BoundingBoxConstraintor as P } from "@vis-three/library-constraintor";
+const C = function() {
+  return Object.assign(c(), {
     target: ""
   });
-};
-const getNumberConstraintorConfig = function() {
-  return Object.assign(getConstraintorConfig(), {
+}, b = function() {
+  return Object.assign(C(), {
     target: "",
     targetAttr: "",
     ref: "",
     refAttr: "",
     offset: null
   });
-};
-const getBoundingBoxConstraintorConfig = function() {
-  return Object.assign(getConstraintorConfig(), {
+}, l = function() {
+  return Object.assign(C(), {
     targetAttr: "",
     ref: "",
     space: "world",
@@ -37,214 +26,127 @@ const getBoundingBoxConstraintorConfig = function() {
       value: 0
     }
   });
-};
-const commonRegCommand = {
+}, g = {
   reg: new RegExp(".*"),
-  handler(params) {
-    params.processor.set(params);
-    params.target.constrain();
+  handler(r) {
+    r.processor.set(r), r.target.constrain();
   }
-};
-const cacheEventMap$1 = /* @__PURE__ */ new WeakMap();
-const bindEvent$1 = function(constraintor, config, engine) {
-  constraintor.constrain();
-  const refObject = engine.getObjectBySymbol(config.ref);
-  if (refObject) {
-    const event = () => {
-      constraintor.constrain();
-    };
-    cacheEventMap$1.set(constraintor, {
-      object: config.ref,
-      attr: config.refAttr,
-      event
-    });
-    Bus.compilerEvent.on(
-      refObject,
-      `${COMPILER_EVENT.COMPILE}:${config.refAttr}`,
-      event
-    );
-  }
-};
-const unbindEvent = function(constraintor, engine) {
-  const last = cacheEventMap$1.get(constraintor);
-  if (!last) {
-    return;
-  }
-  Bus.compilerEvent.off(
-    engine.getObjectBySymbol(last.object),
-    `${COMPILER_EVENT.COMPILE}:${last.attr}`,
-    last.event
-  );
-  cacheEventMap$1.delete(constraintor);
-};
-var NumberConstraintorProcessor = defineProcessor({
+}, D = u({
   type: "NumberConstraintor",
-  config: getNumberConstraintorConfig,
+  config: b,
+  context({ model: r }) {
+    return {
+      constrainFun: () => {
+        r.puppet.constrain();
+      }
+    };
+  },
   commands: {
     set: {
-      target({ target, config, engine }) {
-        if (config.target && config.targetAttr) {
-          target.setTarget(
-            engine.getConfigBySymbol(config.target),
-            config.targetAttr
-          );
-          target.constrain();
-        }
+      target({ target: r, config: t, engine: e }) {
+        t.target && t.targetAttr && (r.setTarget(
+          e.getConfigBySymbol(t.target),
+          t.targetAttr
+        ), r.constrain());
       },
-      targetAttr({ target, config, engine }) {
-        if (config.target && config.targetAttr) {
-          target.setTarget(
-            engine.getConfigBySymbol(config.target),
-            config.targetAttr
-          );
-          target.constrain();
-        }
+      targetAttr({ target: r, config: t, engine: e }) {
+        t.target && t.targetAttr && (r.setTarget(
+          e.getConfigBySymbol(t.target),
+          t.targetAttr
+        ), r.constrain());
       },
-      ref({ target, config, engine }) {
-        if (config.ref && config.refAttr) {
-          unbindEvent(target, engine);
-          target.setReference(
-            engine.getConfigBySymbol(config.ref),
-            config.refAttr
-          );
-          bindEvent$1(target, config, engine);
-        }
+      ref({ target: r, config: t, engine: e, model: n }) {
+        var o, s;
+        t.ref && t.refAttr && ((o = n.toModel(t.ref)) == null || o.off(a.COMPILED_UPDATE, n.constrainFun), r.setReference(
+          e.getConfigBySymbol(t.ref),
+          t.refAttr
+        ), (s = n.toModel(t.ref)) == null || s.on(a.COMPILED_UPDATE, n.constrainFun));
       },
-      refAttr({ target, config, engine }) {
-        if (config.ref && config.refAttr) {
-          unbindEvent(target, engine);
-          target.setReference(
-            engine.getConfigBySymbol(config.ref),
-            config.refAttr
-          );
-          bindEvent$1(target, config, engine);
-        }
+      refAttr({ target: r, config: t, engine: e, model: n }) {
+        var o, s;
+        t.ref && t.refAttr && ((o = n.toModel(t.ref)) == null || o.off(a.COMPILED_UPDATE, n.constrainFun), r.setReference(
+          e.getConfigBySymbol(t.ref),
+          t.refAttr
+        ), (s = n.toModel(t.ref)) == null || s.on(a.COMPILED_UPDATE, n.constrainFun));
       },
-      $reg: [commonRegCommand]
+      $reg: [g]
     }
   },
-  create(config, engine) {
-    const constraintor = new NumberConstraintor(
-      engine.getConfigBySymbol(config.target),
-      config.targetAttr,
-      engine.getConfigBySymbol(config.ref),
-      config.refAttr,
-      config.offset ? { ...config.offset } : null
+  create({ model: r, config: t, engine: e }) {
+    var o;
+    const n = new y(
+      e.getConfigBySymbol(t.target),
+      t.targetAttr,
+      e.getConfigBySymbol(t.ref),
+      t.refAttr,
+      t.offset ? { ...t.offset } : null
     );
-    bindEvent$1(constraintor, config, engine);
-    return constraintor;
+    return (o = r.toModel(t.ref)) == null || o.on(a.COMPILED_UPDATE, r.constrainFun), n;
   },
-  dispose(target, engine) {
-    unbindEvent(target, engine);
+  dispose({ model: r, config: t }) {
+    var e;
+    (e = r.toModel(t.ref)) == null || e.off(a.COMPILED_UPDATE, r.constrainFun);
   }
-});
-const cacheEventMap = /* @__PURE__ */ new WeakMap();
-const eventList = [
-  "geometry",
-  "position.x",
-  "position.y",
-  "position.z",
-  "rotation.x",
-  "rotation.y",
-  "rotation.z",
-  "scale.x",
-  "scale.y",
-  "scale.z"
-];
-const bindEvent = function(constraintor, object) {
-  const event = () => {
-    constraintor.constrain();
-  };
-  cacheEventMap.set(constraintor, event);
-  eventList.forEach((path) => {
-    Bus.compilerEvent.on(object, `${COMPILER_EVENT.COMPILE}${path}`, event);
-  });
-  if (object.geometry) {
-    Bus.compilerEvent.on(object.geometry, COMPILER_EVENT.UPDATE, event);
-  }
-};
-const removeEvent = function(constraintor) {
-  const object = constraintor.reference;
-  const event = cacheEventMap.get(constraintor);
-  if (event) {
-    eventList.forEach((path) => {
-      Bus.compilerEvent.off(object, `${COMPILER_EVENT.COMPILE}${path}`, event);
-    });
-    if (object.geometry) {
-      Bus.compilerEvent.off(
-        object.geometry,
-        COMPILER_EVENT.UPDATE,
-        event
-      );
-    }
-  }
-};
-var BoundingBoxConstraintorProcessor = defineProcessor({
+}), O = u({
   type: "BoundingBoxConstraintor",
-  config: getBoundingBoxConstraintorConfig,
+  config: l,
+  context({ model: r }) {
+    return {
+      constrainFun: () => {
+        r.puppet.constrain();
+      }
+    };
+  },
   commands: {
     set: {
-      target({ target, config, engine }) {
-        if (config.target && config.targetAttr) {
-          target.setTarget(
-            engine.getConfigBySymbol(config.target),
-            config.targetAttr
-          );
-          target.constrain();
-        }
+      target({ target: r, config: t, engine: e }) {
+        t.target && t.targetAttr && (r.setTarget(
+          e.getConfigBySymbol(t.target),
+          t.targetAttr
+        ), r.constrain());
       },
-      targetAttr({ target, config, engine }) {
-        if (config.target && config.targetAttr) {
-          target.setTarget(
-            engine.getConfigBySymbol(config.target),
-            config.targetAttr
-          );
-          target.constrain();
-        }
+      targetAttr({ target: r, config: t, engine: e }) {
+        t.target && t.targetAttr && (r.setTarget(
+          e.getConfigBySymbol(t.target),
+          t.targetAttr
+        ), r.constrain());
       },
-      ref({ target, config, engine, value }) {
-        removeEvent(target);
-        if (!value) {
+      ref({ model: r, target: t, config: e, engine: n, value: o }) {
+        var f, i;
+        if ((f = r.toModel(e.ref)) == null || f.off(a.COMPILED_UPDATE, r.constrainFun), !o)
           return;
-        }
-        const refObject = engine.getObjectBySymbol(config.ref);
-        if (!refObject) {
+        const s = n.getObjectBySymbol(e.ref);
+        if (!s) {
           console.warn(
-            `BoundingBox constraintor processor: can not found object: ${config.ref}`
+            `BoundingBox constraintor processor: can not found object: ${e.ref}`
           );
           return;
         }
-        target.setReference(refObject);
-        target.constrain();
-        bindEvent(target, refObject);
+        t.setReference(s), t.constrain(), (i = r.toModel(e.ref)) == null || i.on(a.COMPILED_UPDATE, r.constrainFun);
       },
-      $reg: [commonRegCommand]
+      $reg: [g]
     }
   },
-  create(config, engine) {
-    const refObject = engine.getObjectBySymbol(config.ref);
-    const constraintor = new BoundingBoxConstraintor(
-      engine.getConfigBySymbol(config.target),
-      config.targetAttr,
-      config.space,
-      refObject,
-      JSONHandler.clone(config.offset)
+  create({ model: r, config: t, engine: e }) {
+    var s;
+    const n = r.toObject(t.ref), o = new P(
+      r.toConfig(t.target),
+      t.targetAttr,
+      t.space,
+      n,
+      A.clone(t.offset)
     );
-    if (refObject) {
-      constraintor.constrain();
-      bindEvent(constraintor, refObject);
-    }
-    return constraintor;
+    return n && (o.constrain(), (s = r.toModel(t.ref)) == null || s.on(a.COMPILED_UPDATE, r.constrainFun)), o;
   },
-  dispose(target) {
-    removeEvent(target);
+  dispose({ model: r, config: t }) {
+    var e;
+    (e = r.toModel(t.ref)) == null || e.off(a.COMPILED_UPDATE, r.constrainFun);
   }
-});
-var index = {
+}), p = E({
   type: "constraintor",
-  compiler: ConstraintorCompiler,
-  rule: ConstraintorRule,
-  processors: [NumberConstraintorProcessor, BoundingBoxConstraintorProcessor],
-  lifeOrder: SUPPORT_LIFE_CYCLE.NINE
+  models: [D, O],
+  lifeOrder: M.NINE
+});
+export {
+  p as default
 };
-export { index as default };

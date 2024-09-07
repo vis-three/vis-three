@@ -10,7 +10,7 @@ import {
   getColorSetHandler,
   MaterialModel,
 } from "./MaterialModel";
-import { ShaderManager } from "../ShaderManager";
+import { ShaderGeneratorManager } from "../ShaderGeneratorManager";
 import { syncObject } from "@vis-three/utils";
 
 export default defineMaterialModel<
@@ -41,7 +41,7 @@ export default defineMaterialModel<
         target.fragmentShader = model.defaultFragmentShader;
 
         if (value) {
-          const shader = ShaderManager.getShader(value);
+          const shader = ShaderGeneratorManager.getShader(value);
           shader?.vertexShader && (target.vertexShader = shader.vertexShader);
           shader?.fragmentShader &&
             (target.fragmentShader = shader.fragmentShader);
@@ -59,7 +59,7 @@ export default defineMaterialModel<
     material.fragmentShader = model.defaultFragmentShader;
 
     if (config.shader) {
-      const shader = ShaderManager.getShader(config.shader);
+      const shader = ShaderGeneratorManager.getShader(config.shader);
       shader?.vertexShader && (material.vertexShader = shader.vertexShader);
       shader?.fragmentShader &&
         (material.fragmentShader = shader.fragmentShader);

@@ -126,19 +126,19 @@ defineModel.extend = function <
 
     option.shared = Object.assign({}, abstract.shared, option.shared);
 
-    option.commands = objectDeepMerge(
-      option.commands,
-      abstract.commands
-    );
+    option.commands = objectDeepMerge(option.commands, abstract.commands);
+
+    const optionContext = option.context;
+    const abstractContext = abstract.context;
 
     option.context = function (params) {
       return Object.assign(
-        abstract.context
-          ? abstract.context(
+        abstractContext
+          ? abstractContext(
               params as { model: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx }
             )
           : {},
-        option.context ? option.context.call(this, params) : {}
+        optionContext ? optionContext.call(this, params) : {}
       ) as Ctx & ACtx;
     };
 
@@ -181,14 +181,17 @@ defineModel.extend = function <
       abstract.commands
     );
 
+    const abstractContext = abstract.context;
+    const abstractOptionContext = abstractOption.context;
+
     abstractOption.context = function (params) {
       return Object.assign(
-        abstract.context
-          ? abstract.context(
+        abstractContext
+          ? abstractContext(
               params as { model: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx }
             )
           : {},
-        abstractOption.context ? abstractOption.context.call(this, params) : {}
+        abstractOptionContext ? abstractOptionContext.call(this, params) : {}
       ) as Ctx & ECtx;
     };
 

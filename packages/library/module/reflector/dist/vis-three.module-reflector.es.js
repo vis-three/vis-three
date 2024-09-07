@@ -1,17 +1,8 @@
-import { defineProcessor, SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
-import { ObjectCompiler, ObjectRule, getObjectConfig, objectCommands, objectCreate, objectDispose } from "@vis-three/module-object";
-import { validate } from "uuid";
-import { Reflector } from "three/examples/jsm/objects/Reflector";
-class ReflectorCompiler extends ObjectCompiler {
-  constructor() {
-    super();
-  }
-}
-const ReflectorRule = function(input, compiler, validateFun = validate) {
-  ObjectRule(input, compiler, validateFun);
-};
-const getReflectorConfig = function() {
-  return Object.assign(getObjectConfig(), {
+import { MODULE_TYPE as d, defineModule as l, SUPPORT_LIFE_CYCLE as s } from "@vis-three/tdcm";
+import { getObjectConfig as u, defineObjectModel as c, ObjectRule as m } from "@vis-three/module-object";
+import { Reflector as f } from "three/examples/jsm/objects/Reflector.js";
+const a = function() {
+  return Object.assign(u(), {
     geometry: "",
     color: "rgb(127, 127, 127)",
     textureWidth: 0,
@@ -19,63 +10,62 @@ const getReflectorConfig = function() {
     clipBias: 0,
     multisample: 4
   });
-};
-const setSize = function(reflector, config, engine) {
-  reflector.getRenderTarget().setSize(
-    config.textureHeight || engine.dom.offsetWidth * window.devicePixelRatio,
-    config.textureWidth || engine.dom.offsetHeight * window.devicePixelRatio
-  );
-};
-var ReflectorProcessor = defineProcessor({
+}, x = c((i) => ({
   type: "Reflector",
-  config: getReflectorConfig,
+  config: a,
+  shared: {
+    setSize(e, t, o) {
+      e.getRenderTarget().setSize(
+        t.textureHeight || o.dom.offsetWidth * window.devicePixelRatio,
+        t.textureWidth || o.dom.offsetHeight * window.devicePixelRatio
+      );
+    }
+  },
   commands: {
-    add: objectCommands.add,
     set: {
-      ...objectCommands.set,
-      textureHeight({ target, config, engine }) {
-        setSize(target, config, engine);
+      textureHeight({ model: e, target: t, config: o, engine: r }) {
+        e.setSize(t, o, r);
       },
-      textureWidth({ target, config, engine }) {
-        setSize(target, config, engine);
+      textureWidth({ model: e, target: t, config: o, engine: r }) {
+        e.setSize(t, o, r);
       },
-      geometry(params) {
-        params.target.geometry = params.engine.getObjectBySymbol(params.value);
+      geometry(e) {
+        e.target.geometry = e.engine.getObjectFromModule(
+          d.GEOMETRY,
+          e.value
+        );
       }
-    },
-    delete: objectCommands.delete
+    }
   },
-  create(config, engine) {
-    const reflector = new Reflector(engine.getObjectBySymbol(config.geometry), {
-      color: config.color,
-      clipBias: config.clipBias,
-      textureHeight: config.textureHeight || engine.dom.offsetWidth * window.devicePixelRatio,
-      textureWidth: config.textureWidth || engine.dom.offsetHeight * window.devicePixelRatio,
-      multisample: config.multisample
-    });
-    return objectCreate(
-      reflector,
-      config,
+  create({ model: e, config: t, engine: o }) {
+    const r = new f(
+      o.getObjectFromModule(d.GEOMETRY, t.geometry),
       {
-        geometry: true,
-        clipBias: true,
-        color: true
-      },
-      engine
+        color: t.color,
+        clipBias: t.clipBias,
+        textureHeight: t.textureHeight || o.dom.offsetWidth * window.devicePixelRatio,
+        textureWidth: t.textureWidth || o.dom.offsetHeight * window.devicePixelRatio,
+        multisample: t.multisample
+      }
     );
+    return i.create({
+      model: e,
+      target: r,
+      config: t,
+      engine: o,
+      filter: { geometry: !0, clipBias: !0, color: !0 }
+    }), r;
   },
-  dispose(target) {
-    target.geometry = void 0;
-    target.dispose();
-    objectDispose(target);
+  dispose({ target: e }) {
+    e.geometry = void 0, e.dispose(), i.dispose({ target: e });
   }
-});
-var index = {
+})), R = l({
   type: "reflector",
-  object: true,
-  compiler: ReflectorCompiler,
-  rule: ReflectorRule,
-  processors: [ReflectorProcessor],
-  lifeOrder: SUPPORT_LIFE_CYCLE.THREE
+  object: !0,
+  rule: m,
+  models: [x],
+  lifeOrder: s.THREE
+});
+export {
+  R as default
 };
-export { index as default };

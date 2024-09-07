@@ -7,7 +7,7 @@ import { EngineSupport } from "../engine";
 export interface GenerateOptions<C extends BasicConfig> {
     /**是否生成响应式配置，默认为true */
     observer?: boolean;
-    /**严格模式，只允许合并CONFIGTYPE规定的属性，自定义扩展配置下关闭 */
+    /**严格模式，只允许合并CONFIG_TYPE规定的属性，自定义扩展配置下关闭 */
     strict?: boolean;
     /**控制台是否输出warn */
     warn?: boolean;
@@ -24,7 +24,7 @@ export interface GenerateConfig {
 }
 /**
  * 生成相关对象配置单
- * @param type 对象类型 CONFIGTYPE
+ * @param type 对象类型 CONFIG_TYPE
  * @param merge 合并的对象
  * @param options 函数的拓展选项
  * @returns config object

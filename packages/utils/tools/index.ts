@@ -156,7 +156,6 @@ export const objectDeepMerge = function (
   option: { cover?: boolean; fresh?: boolean } = { cover: false, fresh: true }
 ) {
   if (!isObject(target)) {
-    console.warn(`target is not a object: ${target}`);
     target = {};
   }
 

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/css/common.css" />
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <title>fbx</title>
+    <title>gltf</title>
   </head>
 
   <style></style>
@@ -19,15 +19,13 @@
 
       import * as THREE from "three";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
-      import { generateConfig, Template } from "@vis-three/middleware";
+      import { generateConfig, Template } from "@vis-three/tdcm";
 
       const engine = new ModelingEngineSupport()
         .setDom(document.getElementById("app"))
         .setStats(true)
         .setSize()
         .play();
-
-      loadingTips(engine);
 
       generateConfig.injectEngine = engine;
 
@@ -43,18 +41,31 @@
         intensity: 10,
       });
 
-      engine.loadResourcesAsync(["model/fbx/nurbs.fbx"]).then((res) => {
-        console.log(res);
-        const config = Template.observable(
-          res.resourceConfig["model/fbx/nurbs.fbx"]
-        );
-        console.log(config);
-        engine.loadConfig(config);
+      engine
+        .loadResourcesAsync([
+          "model/glb/MaterialsVariantsShoe/MaterialsVariantsShoe.gltf",
+        ])
+        .then((res) => {
+          engine.loadConfig(
+            Template.observable(
+              res.resourceConfig[
+                "model/glb/MaterialsVariantsShoe/MaterialsVariantsShoe.gltf"
+              ]
+            )
+          );
 
-        const root = res.configMap.get("model/fbx/nurbs.fbx");
+          const rootTemplate = res.configMap.get(
+            "model/glb/MaterialsVariantsShoe/MaterialsVariantsShoe.gltf.scene"
+          );
 
-        scene.children.push(root.vid);
-      });
+          const root = engine.getConfigBySymbol(rootTemplate.vid);
+
+          root.scale.x = 50;
+          root.scale.y = 50;
+          root.scale.z = 50;
+
+          scene.children.push(root.vid);
+        });
 
       window.engine = engine;
     </script>

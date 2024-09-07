@@ -4,7 +4,7 @@ import ScriptAnimationModel from "./models/ScriptAnimationModel";
 import MixerAnimationModel from "./models/MixerAnimationModel";
 
 export * from "./AnimationConfig";
-export * from "./AniScriptManager";
+export * from "./AniScriptGeneratorManager";
 
 export default defineModule({
   type: "animation",

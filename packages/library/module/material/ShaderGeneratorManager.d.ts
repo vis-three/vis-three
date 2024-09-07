@@ -12,7 +12,7 @@ export interface ShaderConfig {
     shader: string;
     uniforms: Record<string, IUniform>;
 }
-export declare class ShaderManager {
+export declare class ShaderGeneratorManager {
     private static library;
     /**
      * 注册着色器文件

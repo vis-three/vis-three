@@ -1,7 +1,7 @@
 import { defineRule as y, DEFAULT_RULE as l, getBasicConfig as E, defineModel as b, defineModule as p, SUPPORT_LIFE_CYCLE as f } from "@vis-three/tdcm";
 import { ENGINE_EVENT as u } from "@vis-three/core";
-import { AnimationObjectGroup as g, Object3D as A, AnimationMixer as L } from "three";
-const R = y([
+import { AnimationObjectGroup as L, Object3D as R, AnimationMixer as g } from "three";
+const A = y([
   function(r) {
     return !(r.key === "name" && r.path.length === 1);
   },
@@ -32,22 +32,22 @@ const R = y([
       return console.warn(`event library can not found config by name: ${e}`), {
         name: ""
       };
-    const n = (i, o) => {
+    const n = (a, o) => {
       for (const c in o)
-        i[c] !== void 0 && (typeof o[c] == "object" && o[c] !== null && !Array.isArray(o[c]) ? n(i[c], o[c]) : i[c] = o[c]);
-    }, a = JSON.parse(
+        a[c] !== void 0 && (typeof o[c] == "object" && o[c] !== null && !Array.isArray(o[c]) ? n(a[c], o[c]) : a[c] = o[c]);
+    }, i = JSON.parse(
       JSON.stringify(s.configLibrary.get(e))
     );
-    return n(a, t), a;
+    return n(i, t), i;
   }
-  static generateScript(e, t, n, a) {
-    return s.generatorLibrary.has(a.name) ? s.generatorLibrary.get(a.name)(
+  static generateScript(e, t, n, i) {
+    return s.generatorLibrary.has(i.name) ? s.generatorLibrary.get(i.name)(
       e,
       t,
       n,
-      a
+      i
     ) : (console.error(
-      `event library can not found generator by name: ${a.name}`
+      `event library can not found generator by name: ${i.name}`
     ), () => {
     });
   }
@@ -67,8 +67,6 @@ s.configLibrary = /* @__PURE__ */ new Map(), s.generatorLibrary = /* @__PURE__ *
   ), s.generatorLibrary.set(e.name, t), s);
 };
 let m = s;
-class j extends m {
-}
 const O = b({
   type: "ScriptAnimation",
   config: h,
@@ -83,20 +81,20 @@ const O = b({
         };
       const n = r.attribute.split(".");
       n.shift();
-      const a = n.pop();
-      for (const i of n) {
-        if (t[i] === void 0)
+      const i = n.pop();
+      for (const a of n) {
+        if (t[a] === void 0)
           return console.warn(
-            `animaton processor: target object can not found key: ${i}`,
+            `animaton processor: target object can not found key: ${a}`,
             t
           ), () => {
           };
-        t = t[i];
+        t = t[a];
       }
       return m.generateScript(
         e,
         t,
-        a,
+        i,
         r.script
       );
     },
@@ -108,17 +106,17 @@ const O = b({
         "AnimationCompiler: can not found object target or config in engine",
         r.vid
       );
-      const a = r.attribute.split(".");
-      a.shift();
-      const i = a.pop();
-      for (const o of a)
+      const i = r.attribute.split(".");
+      i.shift();
+      const a = i.pop();
+      for (const o of i)
         if (t[o] && n[o])
           t = t[o], n = n[o];
         else
           return console.warn(
             "AnimationCompiler: object and config attribute are not sync"
           ), this;
-      return t[i] = n[i], this;
+      return t[a] = n[a], this;
     }
   },
   commands: {
@@ -135,16 +133,16 @@ const O = b({
       $reg: [
         {
           reg: new RegExp(".*"),
-          handler({ model: r, target: e, config: t, engine: n, compiler: a }) {
+          handler({ model: r, target: e, config: t, engine: n, compiler: i }) {
             n.renderManager.removeEventListener(
               u.RENDER,
               e
-            ), a.symbolMap.delete(e);
-            const i = r.createFunction(t, n);
+            ), i.symbolMap.delete(e);
+            const a = r.createFunction(t, n);
             t.play && n.renderManager.addEventListener(
               u.RENDER,
-              i
-            ), r.puppet = i, a.symbolMap.set(i, t.vid);
+              a
+            ), r.puppet = a, i.symbolMap.set(a, t.vid);
           }
         }
       ]
@@ -172,45 +170,44 @@ const O = b({
     };
   },
   create({ model: r, config: e, engine: t, compiler: n }) {
-    let a;
-    Array.isArray(e.target) ? (a = new g(), e.target.forEach((o) => {
+    let i;
+    Array.isArray(e.target) ? (i = new L(), e.target.forEach((o) => {
       const c = t.getObjectBySymbol(o);
-      c ? a.add(c) : console.warn(
+      c ? i.add(c) : console.warn(
         `mixer animation processor can not found vid in engine: ${o}`
       );
-    })) : (a = t.getObjectBySymbol(e.target), a || (console.warn(
+    })) : (i = t.getObjectBySymbol(e.target), i || (console.warn(
       `mixer animation processor can not found vid in engine: ${e.target}`
-    ), a = new A()));
-    const i = new L(a);
-    if (i.time = e.time, i.timeScale = e.timeScale, e.play) {
+    ), i = new R()));
+    const a = new g(i);
+    if (a.time = e.time, a.timeScale = e.timeScale, e.play) {
       const o = (c) => {
-        i.update(c.delta);
+        a.update(c.delta);
       };
       t.renderManager.addEventListener(
         u.RENDER,
         o
       ), r.mixerAni = o;
     }
-    return i;
+    return a;
   },
   dispose({ model: r, target: e, engine: t }) {
     r.mixerAni && (t.renderManager.removeEventListener(
       u.RENDER,
       r.mixerAni
     ), r.mixerAni = void 0), e.uncacheRoot(e.getRoot()), e._actions.forEach((n) => {
-      const a = n.getClip();
-      e.uncacheClip(a), e.uncacheAction(a);
+      const i = n.getClip();
+      e.uncacheClip(i), e.uncacheAction(i);
     });
   }
 }), w = p({
   type: "animation",
-  rule: R,
+  rule: A,
   models: [O, M],
   lifeOrder: f.NINE
 });
 export {
-  j as AniScriptGeneratorManager,
-  m as AniScriptManager,
+  m as AniScriptGeneratorManager,
   w as default,
   v as getMixerAnimationConfig,
   h as getScriptAnimationConfig

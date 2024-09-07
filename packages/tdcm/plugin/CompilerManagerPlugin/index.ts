@@ -1,7 +1,7 @@
 import { Engine, Plugin } from "@vis-three/core";
 import { Optional } from "@vis-three/utils";
 import { Object3D } from "three";
-import { OBJECTMODULE } from "../../module";
+import { OBJECT_MODULE } from "../../module";
 import { CompilerManager } from "./CompilerManager";
 
 export * from "./CompilerManager";
@@ -10,8 +10,25 @@ export interface CompilerManagerEngine extends Engine {
   compilerManager: CompilerManager;
   getObjectSymbol: (object: any) => string | null;
   getObjectBySymbol: <O = any>(vid: string) => O | null;
+  /**
+   * @deprecated use getObjectFromModule
+   * @param module
+   * @param vid
+   * @returns
+   */
   getObjectfromModule: <O = any>(module: string, vid: string) => O | null;
+  /**
+   * @deprecated use getObjectFromModules
+   * @param module
+   * @param vid
+   * @returns
+   */
   getObjectfromModules: <O = any>(
+    modules: string[] | Record<string, any>,
+    vid: string
+  ) => O | null;
+  getObjectFromModule: <O = any>(module: string, vid: string) => O | null;
+  getObjectFromModules: <O = any>(
     modules: string[] | Record<string, any>,
     vid: string
   ) => O | null;
@@ -53,8 +70,22 @@ export const CompilerManagerPlugin: Plugin<CompilerManagerEngine, object> =
           return compilerManager.getObjectfromModules(modules, vid) as O;
         };
 
+        engine.getObjectFromModule = function <O = any>(
+          module: string,
+          vid: string
+        ) {
+          return compilerManager.getObjectFromModule(module, vid) as O;
+        };
+
+        engine.getObjectFromModules = function <O = any>(
+          modules: string[] | Record<string, any>,
+          vid: string
+        ) {
+          return compilerManager.getObjectFromModules(modules, vid) as O;
+        };
+
         engine.getObject3D = function <O = Object3D>(vid: string) {
-          return compilerManager.getObjectfromModules(OBJECTMODULE, vid) as O;
+          return compilerManager.getObjectFromModules(OBJECT_MODULE, vid) as O;
         };
       },
       dispose(
@@ -65,6 +96,8 @@ export const CompilerManagerPlugin: Plugin<CompilerManagerEngine, object> =
           | "getObjectBySymbol"
           | "getObjectfromModule"
           | "getObjectfromModules"
+          | "getObjectFromModule"
+          | "getObjectFromModules"
           | "getObject3D"
         >
       ) {
@@ -75,6 +108,8 @@ export const CompilerManagerPlugin: Plugin<CompilerManagerEngine, object> =
         delete engine.getObjectBySymbol;
         delete engine.getObjectfromModule;
         delete engine.getObjectfromModules;
+        delete engine.getObjectFromModule;
+        delete engine.getObjectFromModules;
         delete engine.getObject3D;
       },
     };

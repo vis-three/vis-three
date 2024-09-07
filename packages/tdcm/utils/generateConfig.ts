@@ -1,7 +1,12 @@
 import { DeepPartial } from "@vis-three/utils";
 import { BasicConfig } from "../module/common";
 import { EngineSupport } from "../engine";
-import { CONFIGFACTORY, CONFIGTYPE, isObjectType, observable } from "../module";
+import {
+  CONFIG_FACTORY,
+  CONFIG_TYPE,
+  isObjectType,
+  observable,
+} from "../module";
 import { globalOption } from "../option";
 
 /**
@@ -10,7 +15,7 @@ import { globalOption } from "../option";
 export interface GenerateOptions<C extends BasicConfig> {
   /**是否生成响应式配置，默认为true */
   observer?: boolean;
-  /**严格模式，只允许合并CONFIGTYPE规定的属性，自定义扩展配置下关闭 */
+  /**严格模式，只允许合并CONFIG_TYPE规定的属性，自定义扩展配置下关闭 */
   strict?: boolean;
   /**控制台是否输出warn */
   warn?: boolean;
@@ -33,7 +38,7 @@ export interface GenerateConfig {
 
 /**
  * 生成相关对象配置单
- * @param type 对象类型 CONFIGTYPE
+ * @param type 对象类型 CONFIG_TYPE
  * @param merge 合并的对象
  * @param options 函数的拓展选项
  * @returns config object
@@ -63,7 +68,7 @@ export const generateConfig = <GenerateConfig>function <C extends BasicConfig>(
     options.handler = globalOption.proxy.expand;
   }
 
-  if (!CONFIGFACTORY[type]) {
+  if (!CONFIG_FACTORY[type]) {
     console.error(`type: ${type} can not be found in configList.`);
     return {
       vid: "",
@@ -95,14 +100,17 @@ export const generateConfig = <GenerateConfig>function <C extends BasicConfig>(
     }
   };
 
-  let initConfig = CONFIGFACTORY[type]() as C;
+  let initConfig = CONFIG_FACTORY[type]() as C;
 
   // 自动生成uuid
   if (initConfig.vid === "") {
     initConfig.vid = globalOption.symbol.generator();
   }
 
-  merge && recursion(initConfig, merge);
+  if (merge) {
+    delete merge.type;
+    recursion(initConfig, merge);
+  }
 
   if (options.observer === false) {
     return initConfig;
@@ -128,7 +136,7 @@ export const generateConfig = <GenerateConfig>function <C extends BasicConfig>(
     if (generateConfig.injectScene) {
       if (
         isObjectType(initConfig.type) &&
-        initConfig.type !== CONFIGTYPE.SCENE
+        initConfig.type !== CONFIG_TYPE.SCENE
       ) {
         let sceneConfig: BasicConfig | null = null;
 

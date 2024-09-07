@@ -1,18 +1,18 @@
-import { MODULE_TYPE as p, defineModule as c, SUPPORT_LIFE_CYCLE as u } from "@vis-three/tdcm";
-import { getObjectConfig as n, defineObjectModel as s, ObjectRule as f } from "@vis-three/module-object";
-import { OrthographicCamera as h, PerspectiveCamera as m } from "three";
-import { ENGINE_EVENT as r } from "@vis-three/core";
-function E(i) {
-  i.setCameraBySymbol = function(e) {
+import { MODULE_TYPE as c, defineModule as u, SUPPORT_LIFE_CYCLE as f } from "@vis-three/tdcm";
+import { getObjectConfig as s, defineObjectModel as p, ObjectRule as h } from "@vis-three/module-object";
+import { OrthographicCamera as m, PerspectiveCamera as E } from "three";
+import { ENGINE_EVENT as d } from "@vis-three/core";
+function l(i) {
+  i.setCameraBySymbol = function(t) {
     const a = this.getObjectFromModule(
-      p.CAMERA,
-      e
+      c.CAMERA,
+      t
     );
-    return a ? this.setCamera(a) : console.warn("can not found camera", e), this;
+    return a ? this.setCamera(a) : console.warn("can not found camera", t), this;
   };
 }
 const w = function() {
-  return Object.assign(n(), {
+  return Object.assign(s(), {
     adaptiveWindow: !1,
     fov: 45,
     aspect: 1920 / 1080,
@@ -20,7 +20,7 @@ const w = function() {
     far: 50
   });
 }, g = function() {
-  return Object.assign(n(), {
+  return Object.assign(s(), {
     adaptiveWindow: !1,
     left: -window.innerWidth,
     right: window.innerWidth,
@@ -30,14 +30,14 @@ const w = function() {
     far: 50,
     zoom: 1
   });
-}, l = s((i) => ({
+}, v = p((i) => ({
   type: "OrthographicCamera",
   config: g,
-  context({ model: e }) {
+  context({ model: t }) {
     return {
       updateFun: (a) => {
-        const t = e.puppet, o = a.width, d = a.height;
-        t.left = -o, t.right = o, t.top = d, t.bottom = -d, t.updateProjectionMatrix();
+        const e = t.puppet, r = a.width, o = a.height;
+        e.left = -r, e.right = r, e.top = o, e.bottom = -o, e.updateProjectionMatrix();
       }
     };
   },
@@ -49,18 +49,18 @@ const w = function() {
     set: {
       scale() {
       },
-      adaptiveWindow({ model: e, value: a, engine: t }) {
-        a ? (t.addEventListener(r.SETSIZE, e.updateFun), e.updateFun({
+      adaptiveWindow({ model: t, value: a, engine: e }) {
+        a ? (e.addEventListener(d.SETSIZE, t.updateFun), t.updateFun({
           type: "setSize",
-          width: t.dom.offsetWidth,
-          height: t.dom.offsetHeight
-        })) : t.removeEventListener(r.SETSIZE, e.updateFun);
+          width: e.dom.offsetWidth,
+          height: e.dom.offsetHeight
+        })) : e.removeEventListener(d.SETSIZE, t.updateFun);
       },
       $reg: [
         {
           reg: new RegExp("left|right|top|bottom|near|far|zoom"),
-          handler({ target: e, key: a, value: t }) {
-            e[a] = t, e.updateProjectionMatrix();
+          handler({ target: t, key: a, value: e }) {
+            t[a] = e, t.updateProjectionMatrix();
           }
         }
       ]
@@ -70,95 +70,91 @@ const w = function() {
       }
     }
   },
-  create({ model: e, config: a, engine: t }) {
-    const o = new h(-50, 50, 50, -50);
+  create({ model: t, config: a, engine: e }) {
+    const r = new m(-50, 50, 50, -50);
+    if (i.create({
+      model: t,
+      target: r,
+      config: a,
+      filter: {
+        scale: !0,
+        adaptiveWindow: !0
+      },
+      engine: e
+    }), r.updateProjectionMatrix(), a.adaptiveWindow) {
+      const o = e.dom.offsetWidth, n = e.dom.offsetHeight;
+      r.left = -o, r.right = o, r.top = n, r.bottom = -n, r.updateProjectionMatrix(), e.addEventListener(d.SETSIZE, t.updateFun);
+    }
+    return r;
+  },
+  dispose({ target: t }) {
+    i.dispose({ target: t });
+  }
+})), C = p((i) => ({
+  type: "PerspectiveCamera",
+  config: w,
+  context({ model: t }) {
+    return {
+      updateFun: (a) => {
+        t.puppet.aspect = a.width / a.height, t.puppet.updateProjectionMatrix();
+      }
+    };
+  },
+  commands: {
+    add: {
+      scale() {
+      }
+    },
+    set: {
+      scale() {
+      },
+      adaptiveWindow({ model: t, value: a, engine: e }) {
+        a ? (e.addEventListener(d.SETSIZE, t.updateFun), t.updateFun({
+          type: "setSize",
+          width: e.dom.offsetWidth,
+          height: e.dom.offsetHeight
+        })) : e.removeEventListener(d.SETSIZE, t.updateFun);
+      },
+      $reg: [
+        {
+          reg: new RegExp("fov|aspect|near|far"),
+          handler({ target: t, key: a, value: e }) {
+            t[a] = e, t.updateProjectionMatrix();
+          }
+        }
+      ]
+    },
+    delete: {
+      scale() {
+      }
+    }
+  },
+  create({ model: t, config: a, engine: e, compiler: r }) {
+    const o = new E();
     return i.create({
-      model: e,
+      model: t,
       target: o,
       config: a,
       filter: {
         scale: !0,
         adaptiveWindow: !0
       },
-      engine: t
-    }), o.updateProjectionMatrix(), a.adaptiveWindow && (t.addEventListener(r.SETSIZE, e.updateFun), e.updateFun({
-      type: r.SETSIZE,
-      width: t.dom.offsetWidth,
-      height: t.dom.offsetHeight
-    })), o;
+      engine: e
+    }), o.updateProjectionMatrix(), a.adaptiveWindow && (o.aspect = e.dom.offsetWidth / e.dom.offsetHeight, o.updateProjectionMatrix(), e.addEventListener(d.SETSIZE, t.updateFun)), o;
   },
-  dispose({ target: e }) {
-    i.dispose({ target: e });
+  dispose({ target: t }) {
+    i.dispose({ target: t });
   }
-})), S = s((i) => ({
-  type: "PerspectiveCamera",
-  config: w,
-  context({ model: e }) {
-    return {
-      updateFun: (a) => {
-        e.puppet.aspect = a.width / a.height, e.puppet.updateProjectionMatrix();
-      }
-    };
-  },
-  commands: {
-    add: {
-      scale() {
-      }
-    },
-    set: {
-      scale() {
-      },
-      adaptiveWindow({ model: e, value: a, engine: t }) {
-        a ? (t.addEventListener(r.SETSIZE, e.updateFun), e.updateFun({
-          type: "setSize",
-          width: t.dom.offsetWidth,
-          height: t.dom.offsetHeight
-        })) : t.removeEventListener(r.SETSIZE, e.updateFun);
-      },
-      $reg: [
-        {
-          reg: new RegExp("fov|aspect|near|far"),
-          handler({ target: e, key: a, value: t }) {
-            e[a] = t, e.updateProjectionMatrix();
-          }
-        }
-      ]
-    },
-    delete: {
-      scale() {
-      }
-    }
-  },
-  create({ model: e, config: a, engine: t, compiler: o }) {
-    const d = new m();
-    return i.create({
-      model: e,
-      target: d,
-      config: a,
-      filter: {
-        scale: !0,
-        adaptiveWindow: !0
-      },
-      engine: t
-    }), d.updateProjectionMatrix(), a.adaptiveWindow && (t.addEventListener(r.SETSIZE, e.updateFun), e.updateFun({
-      type: r.SETSIZE,
-      width: t.dom.offsetWidth,
-      height: t.dom.offsetHeight
-    })), d;
-  },
-  dispose({ target: e }) {
-    i.dispose({ target: e });
-  }
-})), W = c({
+})), j = u({
   type: "camera",
   object: !0,
-  rule: f,
-  extend: E,
-  models: [l, S],
-  lifeOrder: u.THREE
+  rule: h,
+  extend: l,
+  models: [v, C],
+  lifeOrder: f.THREE
 });
 export {
-  W as default,
+  j as default,
   g as getOrthographicCameraConfig,
   w as getPerspectiveCameraConfig
 };

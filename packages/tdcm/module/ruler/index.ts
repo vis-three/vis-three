@@ -6,7 +6,7 @@ export type Rule = (input: CtnNotice, compiler: Compiler) => boolean;
 
 export const DEFAULT_RULE: Record<string, Rule> = {
   SYMBOL_VALIDATOR(input) {
-    return !globalOption.symbol.validator(input.symbol);
+    return globalOption.symbol.validator(input.symbol);
   },
   OPERATE_ADD({ operate, path, symbol, key, value }, compiler) {
     if (operate === "add" && !path.length && symbol === key) {

@@ -173,7 +173,7 @@ const d = function() {
     shader: "",
     uniforms: {}
   });
-}, G = function() {
+}, K = function() {
   return Object.assign(d(), {
     color: "rgb(255, 255, 255)",
     bumpScale: 1,
@@ -190,7 +190,7 @@ const d = function() {
     matcap: "",
     normalMap: ""
   });
-}, K = {
+}, Q = {
   reg: new RegExp("transparent|sizeAttenuation"),
   handler({ target: t, key: e, value: a }) {
     t[e] = a, t.needsUpdate = !0;
@@ -215,9 +215,9 @@ const d = function() {
       p
     ), e[a] = null, !1);
   });
-}, Q = function() {
+}, Z = function() {
   return m;
-}, Z = {
+}, G = {
   reg: new RegExp("map$", "i"),
   handler: m
 }, _ = function({
@@ -232,7 +232,7 @@ const d = function() {
 }, l = v.extend({
   commands: {
     set: {
-      $reg: [Z, K]
+      $reg: [G, Q]
     }
   },
   create({
@@ -317,11 +317,11 @@ const d = function() {
   })
 ), ne = l((t) => ({
   type: "MeshMatcapMaterial",
-  config: G,
+  config: K,
   commands: {
     set: {
       color: s(),
-      matcap: Q()
+      matcap: Z()
     }
   },
   create({ model: e, config: a, engine: r }) {
@@ -429,7 +429,9 @@ const d = function() {
    * @returns shader | null
    */
   static getShader(e) {
-    return c.library.has(e) ? c.cloneShader(c.library.get(e)) : (console.warn(`con not found shader in shader library: ${e}`), null);
+    return c.library.has(e) ? c.cloneShader(
+      c.library.get(e)
+    ) : (console.warn(`con not found shader in shader library: ${e}`), null);
   }
   /**
    * 获取该着色器文件对应的配置
@@ -546,13 +548,13 @@ const ce = l((t) => ({
   lifeOrder: O.TWO
 });
 export {
-  f as ShaderManager,
+  f as ShaderGeneratorManager,
   fe as default,
   b as getLineBasicMaterialConfig,
   k as getLineDashedMaterialConfig,
   d as getMaterialConfig,
   J as getMeshBasicMaterialConfig,
-  G as getMeshMatcapMaterialConfig,
+  K as getMeshMatcapMaterialConfig,
   W as getMeshPhongMaterialConfig,
   V as getMeshPhysicalMaterialConfig,
   y as getMeshStandardMaterialConfig,

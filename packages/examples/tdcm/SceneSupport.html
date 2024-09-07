@@ -45,11 +45,9 @@
     <script type="module">
       import * as THREE from "three";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
-      import {
-        generateConfig,
-        createSymbol,
-        EventGeneratorManager,
-      } from "@vis-three/middleware";
+      import { generateConfig, createSymbol } from "@vis-three/tdcm";
+
+      import { EventGeneratorManager } from "@vis-three/library-module";
       import eventLibrary from "@vis-three/library-event";
 
       EventGeneratorManager.register(eventLibrary.changeScene);

@@ -5,7 +5,7 @@ import {
   RendererCompiler,
 } from "@vis-three/module-renderer";
 
-import { syncObject } from "@vis-three/utils";
+import { parseColor, syncObject } from "@vis-three/utils";
 import { WebGLRendererEngine } from "@vis-three/plugin-webgl-renderer";
 import {
   NoToneMapping,
@@ -95,8 +95,11 @@ export default defineModel<
       },
       clearColor({ target, value }) {
         // 取出alpha的值
-        const alpha = Number(value.slice(0, -1).split(",").pop().trim());
-        target.setClearColor(value, alpha);
+        const color = parseColor(value);
+        target.setClearColor(
+          `rgb(${color.r}, ${color.g}, ${color.b})`,
+          color.a!
+        );
         target.clear();
       },
       viewport({ target, config }) {
@@ -152,10 +155,11 @@ export default defineModel<
       renderer.setSize(config.size.x, config.size.y);
     }
     if (config.clearColor) {
-      const alpha = Number(
-        config.clearColor.slice(0, -1).split(",").pop()!.trim()
+      const color = parseColor(config.clearColor);
+      renderer.setClearColor(
+        `rgb(${color.r}, ${color.g}, ${color.b})`,
+        color.a!
       );
-      renderer.setClearColor(config.clearColor, alpha);
     }
     if (config.viewport) {
       const viewport = config.viewport;

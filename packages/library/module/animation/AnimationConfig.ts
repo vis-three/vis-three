@@ -1,5 +1,5 @@
 import { BasicConfig, getBasicConfig } from "@vis-three/tdcm";
-import { BasicAniScriptConfig } from "./AniScriptManager";
+import { BasicAniScriptConfig } from "./AniScriptGeneratorManager";
 
 export interface AnimationConfig extends BasicConfig {
   play: boolean;

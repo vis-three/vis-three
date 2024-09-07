@@ -156,6 +156,7 @@ export const defineSolidObjectModel = defineObjectModel.extend<
 
     if (!filter.material) {
       materialHandler.call(model, {
+        model,
         target,
         config,
         engine,
@@ -166,7 +167,11 @@ export const defineSolidObjectModel = defineObjectModel.extend<
       model: model as unknown as ObjectModel,
       target,
       config,
-      filter,
+      filter: {
+        material: true,
+        geometry: true,
+        ...filter,
+      },
       engine,
     });
   },

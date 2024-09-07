@@ -1,5 +1,5 @@
-import { SymbolConfig } from "@vis-three/middleware";
-export interface ConstraintorConfig extends SymbolConfig {
+import { BasicConfig } from "@vis-three/tdcm";
+export interface ConstraintorConfig extends BasicConfig {
     target: string;
 }
 export interface NumberConstraintorConfig extends ConstraintorConfig {

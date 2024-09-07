@@ -63,7 +63,10 @@ const C = function() {
     return n(c, r), c;
   }
   static generateEvent(e, r) {
-    return s.generatorLibrary.has(e.name) ? s.generatorLibrary.get(e.name)(r, e) : (console.error(
+    return s.generatorLibrary.has(e.name) ? s.generatorLibrary.get(e.name)(
+      r,
+      e
+    ) : (console.error(
       `event library can not found generator by name: ${e.name}`
     ), () => {
     });
@@ -80,7 +83,10 @@ const C = function() {
         "EventGenerator Manager createEvent must provide an engine, you can use 'useEngine' to set it."
       ), null;
     const c = s.generateConfig(e, r);
-    return c ? s.generateEvent(c, n || s.engine) : null;
+    return c ? s.generateEvent(
+      c,
+      n || s.engine
+    ) : null;
   }
 };
 s.configLibrary = /* @__PURE__ */ new Map(), s.generatorLibrary = /* @__PURE__ */ new Map(), s.register = function({
@@ -88,7 +94,7 @@ s.configLibrary = /* @__PURE__ */ new Map(), s.generatorLibrary = /* @__PURE__ *
   generator: r
 }) {
   return s.configLibrary.has(e.name) ? (console.warn(
-    `EventManager has already exist this event generator: ${e.name}, that will be cover.`
+    `EventGeneratorManager has already exist this event generator: ${e.name}, that will be cover.`
   ), s) : (s.configLibrary.set(
     e.name,
     JSON.parse(JSON.stringify(e))
@@ -137,7 +143,7 @@ const g = function({
   const o = e[0];
   if (!b.has(r.name)) {
     console.warn(
-      `EventManager: can not support this event: ${r.name}`
+      `EventGeneratorManager: can not support this event: ${r.name}`
     );
     return;
   }
@@ -298,6 +304,7 @@ const g = function({
       engine: n
     }), !r.raycast && (e.raycast = t.emptyRaycast), r.children.forEach((o) => {
       v.call(t, {
+        model: t,
         target: e,
         config: r,
         value: o,
@@ -337,7 +344,7 @@ const g = function({
   }
 });
 export {
-  b as EventManager,
+  b as EventGeneratorManager,
   T as ObjectRule,
   R as defineObjectModel,
   C as getObjectConfig

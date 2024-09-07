@@ -9,7 +9,7 @@ import {
   ScriptAnimationConfig,
 } from "../AnimationConfig";
 import { ENGINE_EVENT } from "@vis-three/core";
-import { AniScriptManager } from "../AniScriptManager";
+import { AniScriptGeneratorManager } from "../AniScriptGeneratorManager";
 
 export default defineModel<
   ScriptAnimationConfig,
@@ -60,7 +60,7 @@ export default defineModel<
         object = object[key];
       }
 
-      return AniScriptManager.generateScript(
+      return AniScriptGeneratorManager.generateScript(
         engine,
         object,
         attribute,

@@ -31,3 +31,40 @@ import reflector from "@vis-three/module-reflector";
 import water from "@vis-three/module-water";
 import particle from "@vis-three/module-particle";
 export { animation, camera, controls, css2D, css3D, geometry, group, light, line, material, mesh, modifier, object3d, pass, points, renderer, scene, sprite, texture, path, shape, curve, helper, bone, skeleton, skinnedMesh, animationClip, animationAction, constraintor, reflector, water, particle, };
+export const modules = [
+    animation,
+    camera,
+    controls,
+    css2D,
+    css3D,
+    geometry,
+    group,
+    light,
+    line,
+    material,
+    mesh,
+    modifier,
+    object3d,
+    pass,
+    points,
+    renderer,
+    scene,
+    sprite,
+    texture,
+    path,
+    shape,
+    curve,
+    helper,
+    bone,
+    skeleton,
+    skinnedMesh,
+    animationClip,
+    animationAction,
+    constraintor,
+    reflector,
+    water,
+    particle,
+];
+export { EventGeneratorManager } from "@vis-three/module-object";
+export { AniScriptGeneratorManager } from "@vis-three/module-animation";
+export { ShaderGeneratorManager } from "@vis-three/module-material";

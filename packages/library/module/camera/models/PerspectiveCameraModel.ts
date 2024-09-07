@@ -76,13 +76,10 @@ export default defineObjectModel<
     camera.updateProjectionMatrix();
 
     if (config.adaptiveWindow) {
-      engine.addEventListener(ENGINE_EVENT.SETSIZE, model.updateFun);
+      camera.aspect = engine.dom!.offsetWidth / engine.dom!.offsetHeight;
+      camera.updateProjectionMatrix();
 
-      model.updateFun({
-        type: ENGINE_EVENT.SETSIZE,
-        width: engine.dom!.offsetWidth,
-        height: engine.dom!.offsetHeight,
-      });
+      engine.addEventListener(ENGINE_EVENT.SETSIZE, model.updateFun);
     }
 
     return camera;

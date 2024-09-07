@@ -1,5 +1,9 @@
 import { defineModule, SUPPORT_LIFE_CYCLE } from "@vis-three/tdcm";
-import { defineObjectModel, ObjectModel, ObjectRule } from "@vis-three/module-object";
+import {
+  defineObjectModel,
+  ObjectModel,
+  ObjectRule,
+} from "@vis-three/module-object";
 import { getGroupConfig, GroupConfig } from "./GroupConfig";
 import { Group } from "three";
 
@@ -11,7 +15,7 @@ export default defineModule({
   rule: ObjectRule,
   models: [
     defineObjectModel<GroupConfig, Group>((objectModel) => ({
-      type: "Object3D",
+      type: "Group",
       config: getGroupConfig,
       create({ model, config, engine }) {
         const object = new Group();

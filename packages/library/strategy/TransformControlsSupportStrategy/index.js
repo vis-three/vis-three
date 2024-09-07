@@ -1,8 +1,8 @@
-import { COMPILER_MANAGER_PLUGIN, CONFIGTYPE, DATA_SUPPORT_MANAGER_PLUGIN, MODULETYPE, uniqueSymbol, } from "@vis-three/middleware";
+import { COMPILER_MANAGER_PLUGIN, CONFIG_TYPE, DATA_SUPPORT_MANAGER_PLUGIN, generateConfig, MODULE_TYPE, } from "@vis-three/tdcm";
 import { TRANSFORM_CONTROLS_PLUGIN, TRANSFORM_EVENT, } from "@vis-three/plugin-transform-controls";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
-import TransformControlsProcessor from "./TransformControlsProcessor";
+import TransformControlsModel, { getTransformControlsConfig, } from "./TransformControlsModel";
 export const TRANSFORM_CONTROLS_SUPPORT_STRATEGY = transPkgName(pkgname);
 export const TransformControlsSupportStrategy = function () {
     return {
@@ -13,10 +13,9 @@ export const TransformControlsSupportStrategy = function () {
             TRANSFORM_CONTROLS_PLUGIN,
         ],
         exec(engine) {
-            const compiler = engine.compilerManager.getCompiler(MODULETYPE.CONTROLS);
-            compiler.reigstProcessor(TransformControlsProcessor, (compiler) => {
-                compiler.map.set(uniqueSymbol(CONFIGTYPE.TRNASFORMCONTROLS), engine.transformControls);
-                compiler.weakMap.set(engine.transformControls, uniqueSymbol(CONFIGTYPE.ORBITCONTROLS));
+            const compiler = engine.compilerManager.getCompiler(MODULE_TYPE.CONTROLS);
+            compiler.useModel(TransformControlsModel, (compiler) => {
+                engine.applyConfig(generateConfig(CONFIG_TYPE.TRANSFORMCONTROLS, getTransformControlsConfig()));
             });
             // TODO: compiler event pref to observer event
             let config = null;
@@ -24,7 +23,6 @@ export const TransformControlsSupportStrategy = function () {
                 event.transObjectSet.forEach((object) => {
                     config = engine.getObjectConfig(object);
                     if (config) {
-                        // slientUpdate(config, () => {
                         config.position.x = object.position.x;
                         config.position.y = object.position.y;
                         config.position.z = object.position.z;
@@ -34,7 +32,6 @@ export const TransformControlsSupportStrategy = function () {
                         config.scale.x = object.scale.x;
                         config.scale.y = object.scale.y;
                         config.scale.z = object.scale.z;
-                        // });
                     }
                 });
             });

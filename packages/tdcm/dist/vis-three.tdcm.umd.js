@@ -1,1 +1,2530 @@
-(function(a,f){typeof exports=="object"&&typeof module<"u"?f(exports,require("@vis-three/utils"),require("@vis-three/core"),require("rxjs"),require("nanoid"),require("@vis-three/plugin-loader-manager"),require("@vis-three/plugin-pointer-manager"),require("@vis-three/plugin-event-manager"),require("@vis-three/plugin-render-manager")):typeof define=="function"&&define.amd?define(["exports","@vis-three/utils","@vis-three/core","rxjs","nanoid","@vis-three/plugin-loader-manager","@vis-three/plugin-pointer-manager","@vis-three/plugin-event-manager","@vis-three/plugin-render-manager"],f):(a=typeof globalThis<"u"?globalThis:a||self,f((a["vis-three"]=a["vis-three"]||{},a["vis-three"].tdcm={}),a.utils,a.core,a.rxjs,a.nanoid,a.pluginLoaderManager,a.pluginPointerManager,a.pluginEventManager,a.pluginRenderManager))})(this,function(a,f,b,re,ke,y,_,k,F){"use strict";const Fe=function(r){return r=r.replace(/[\-_\s]+(.)?/g,function(e,t){return t?t.toUpperCase():""}),r.slice(0,1).toLowerCase()+r.slice(1)},Ve=function(r){return Fe(r).toUpperCase()},ne=function(r){const e=/(?=[A-Z])/;return r.split(e).map(t=>t.toUpperCase()).join("_")},M={},O={},L={},V={},A={},x={},q=M,qe=L,H=V,se=A,He=x,I=r=>x[r]||null,oe=r=>A[r],ie=r=>{const e=I(r);return e?oe(e):!1},W="vis.father",S="vis.key",Y="vis.observer",z="vis.model",ae=new WeakMap,G=function(r){Array.isArray(r)&&ae.set(r,r.concat([]))},We=function(r){return ae.get(r)},Z=function(r){let e="";const t=n=>{n[Symbol.for(S)]!==void 0&&(e=`${n[Symbol.for(S)]}${e?`.${e}`:""}`,n[Symbol.for(W)]&&t(n[Symbol.for(W)]))};return t(r),e},Ye=function(r){if(r.length&&f.isObject(r[0])){const e=r.length;for(let t=0;t<e;t+=1)r[t][Symbol.for(S)]=t}},D=function(r){return r[Symbol.for(Y)]},ce=function(r){return!!r[Symbol.for(Y)]},ze=function(r){return r[Symbol.for(z)]},d=class d{static exec(e){if(e(!1))return;d.list.includes(e)||d.list.push(e);let t=0;const n=()=>{d.timer&&clearTimeout(d.timer),d.timer=window.setTimeout(()=>{const s=[];for(const o of d.list)o(!1)||s.push(o);if(s.length)if(s.length===t){for(const o of s)o(!0);d.list=[]}else t=s.length,d.list=s,n();else d.list=[]},d.time)};n()}static append(e){d.list.length&&!d.list.includes(e)?d.list.push(e):d.exec(e)}static nextTick(e){window.setTimeout(()=>{e()},d.time)}};d.list=[],d.time=0;let R=d;class X extends b.EventDispatcher{constructor(e){super(),this.config=e.config,this.engine=e.engine,this.compiler=e.compiler}toConfig(e){return this.engine.getConfigBySymbol(e)}toModel(e){if(typeof e=="string")return this.engine.compilerManager.getModelBySymbol(e);{const t=this.engine.getObjectSymbol(e);return t?this.engine.compilerManager.getModelBySymbol(t):(console.warn("Model: can not found object symbol:",e),null)}}toObject(e){return this.engine.getObjectBySymbol(e)}toPuppet(e){return this.toObject(e)}toAsync(e){R.exec(e)}asyncNextTick(e){R.nextTick(e)}toTrigger(e,t){const n=this.engine.getTrigger(e);n&&n.register(t)}process(e){if(!this.commands||!this.commands[e.operate]){this[e.operate](e);return}let t=this.commands[e.operate];const n=e.path?e.path.split(".").concat(e.key):[e.key];for(const s of n)if(!t[s]&&!t.$reg){this[e.operate](e);return}else if(t[s])if(typeof t[s]=="function"){t[s].call(this,{model:this,ctx:this,config:this.config,target:this.puppet,puppet:this.puppet,engine:this.engine,compiler:this.compiler,...e});return}else t=t[s];else if(t.$reg){for(const o of t.$reg)if(o.reg.test(s)){o.handler.call(this,{model:this,ctx:this,config:this.config,target:this.puppet,puppet:this.puppet,engine:this.engine,compiler:this.compiler,...e});return}}this[e.operate](e)}add(e){let t=this.puppet;const n=e.path;for(const s of n)if(typeof t[s]!==void 0)t=t[s];else{console.warn("processor can not exec default add operate.",e);return}t[e.key]=e.value}set(e){let t=this.puppet;const n=e.path;for(const s of n)if(typeof t[s]!==void 0)t=t[s];else{console.warn("processor can not exec default set operate.",e);return}t[e.key]=e.value}delete(e){let t=this.puppet;const n=e.path;for(const s of n)if(typeof t[s]!==void 0)t=t[s];else{console.warn("processor can not exec default delete operate.",e);return}delete t[e.key]}create(){this.config[Symbol.for(z)]=this,this.puppet=this.createPuppet.call(this,{model:this,config:this.config,engine:this.engine,compiler:this.compiler})}dispose(){this.disposePuppet.call(this,{model:this,target:this.puppet,puppet:this.puppet,config:this.config,engine:this.engine,compiler:this.compiler}),this.config[Symbol.for(z)]=void 0,this.clear()}}const P=function(r){return r};P.extend=function(r){const e=function(t){const n=t(r);return n.shared=Object.assign({},r.shared,n.shared),n.commands=f.objectDeepMerge(n.commands,r.commands),n.context=function(s){return Object.assign(r.context?r.context(s):{},n.context?n.context.call(this,s):{})},n};return e.extend=function(t){const n=t(r);return n.shared=Object.assign({},r.shared,n.shared),n.commands=f.objectDeepMerge(n.commands,r.commands),n.context=function(s){return Object.assign(r.context?r.context(s):{},n.context?n.context.call(this,s):{})},P.extend(n)},e},P.expand=function(r){return r};const Ze=P;var m=(r=>(r.COMPILED_ADD="compiledAdd",r.COMPILED_REMOVE="compiledRemove",r.COMPILED_ATTR="compiledAttr",r.COMPILED_UPDATE="compiledUpdate",r.COMPILED="compiled",r.NOTICED="noticed",r))(m||{});class le{constructor(e){this.MODULE="",this.builders=new Map,this.target={},this.map=new Map,this.symbolMap=new WeakMap,this.MODULE=e.module;for(const t of e.models)this.useModel(t)}getMap(){return null}useEngine(e){return this.engine=e,this}setTarget(e){return this.target=e,this}add(e){if(!this.builders.has(e.type))return console.warn(`${this.MODULE} Compiler: can not support this type: ${e.type}`),null;const{option:t,Builder:n}=this.builders.get(e.type),s=n?new n({config:e,engine:this.engine,compiler:this}):new X({config:e,engine:this.engine,compiler:this});return t.context&&Object.assign(s,t.context({model:s})),s.createPuppet=t.create,s.disposePuppet=t.dispose,s.commands=t.commands,s.create(),this.map.set(e.vid,s),this.symbolMap.set(s.puppet,e.vid),s.emit(m.COMPILED_ADD),s.emit(m.COMPILED),s.puppet}remove(e){const t=e.vid;if(!this.map.has(t))return console.warn(`${this.MODULE} Compiler: can not found this vid object: ${t}.`),this;if(!this.builders.has(e.type))return console.warn(`${this.MODULE} Compiler: can not support this type: ${e.type}`),this;const n=this.map.get(t);return this.map.delete(t),this.symbolMap.delete(n.puppet),n.dispose(),n.emit(m.COMPILED_REMOVE),n.emit(m.COMPILED),this}cover(e){const t=e.vid;return this.map.has(t)?(Promise.resolve().then(()=>{f.syncObject(e,e,{vid:!0,type:!0})}),this):(console.warn(`${this.MODULE} Compiler: can not found this vid object: ${t}.`),this)}compile(e,t){if(!this.map.has(e))return console.warn(`${this.MODULE} Compiler: can not found model which vid is: '${e}'`),this;const n=this.map.get(e);n.process(t);const s=t.path;return n.emit(`${m.COMPILED_ATTR}:${s&&s+"."}${t.key}`),n.emit(m.COMPILED_UPDATE),n.emit(m.COMPILED),this}compileAll(){const e=this.target;for(const t of Object.values(e))this.add(t);return this}dispose(){for(const e of this.map.values())e.dispose();return this.map.clear(),this.target={},this}getObjectSymbol(e){return this.symbolMap.get(e)||null}getObjectBySymbol(e){var t;return((t=this.map.get(e))==null?void 0:t.puppet)||null}getModelBySymbol(e){return this.map.get(e)||null}useModel(e,t){if(this.builders.has(e.type))return console.warn(`${this.MODULE} Compiler: has already exist this model ${e.type}.`),this;let n;if(e.shared){n=class extends X{constructor(s){super(s)}};for(const s in e.shared)n.prototype[s]=e.shared[s]}if(e.expand){const s=function(o,i){o?(o.config=function(){return Object.assign(o.config(),i.config())},!o.commands&&(o.commands={}),o.commands=f.objectDeepMerge(o.commands,i.commands,{fresh:!1})):console.error("Compiler: model expend error, can not found model witch has not been registered.",i.models,O)};for(const o of e.expand)if(typeof o.models=="string")s(O[o.models],o);else if(Array.isArray(o.models))for(const i in o.models)s(O[i],o);else if(o.models instanceof RegExp)for(const i in O)o.models.test(i)&&s(O[i],o)}return this.builders.set(e.type,{option:e,Builder:n}),Object.defineProperty(M,e.type,{get(){return e.config}}),V[ne(e.type)]=e.type,H[Ve(e.type)]=e.type,x[e.type]=this.MODULE,O[e.type]=e,t&&t(this),this}useProcessor(e,t){return this.useModel(e,t)}}const h={proxy:{expand:void 0,timing:"before",toRaw:void 0},symbol:{generator:ke.nanoid,validator:r=>r.length===21},engine:void 0},Xe=function(r){r.proxy&&Object.assign(h.proxy,r.proxy),r.symbol&&Object.assign(h.symbol,r.symbol)},ue=function(r,e,t){return Reflect.get(r,e,t)},fe=function(r,e,t,n,s){if(typeof e=="symbol")return Reflect.set(r,e,t,n);if(r[e]===void 0){const o=Reflect.set(r,e,t);return s.add(t),s.next({operate:"add",path:"",key:e,value:t,symbol:e}),o}else{const o=Reflect.set(r,e,t);return s.remove(t.vid),s.add(t),s.next({operate:"set",path:"",key:e,value:t,symbol:e}),o}},de=function(r,e,t){if(typeof e=="symbol")return Reflect.deleteProperty(r,e);const n=r[e],s=Reflect.deleteProperty(r,e);return t.next({operate:"delete",path:"",key:e,value:n,symbol:e}),t.remove(n.vid),s};class he extends re.Subject{constructor(){super(),this.subscriptions=new Map;const e=h.proxy.expand?(t={})=>h.proxy.expand(t):(t={})=>t;h.proxy.timing==="before"?this.space=new Proxy(e(),{get:ue,set:(t,n,s,o)=>fe(t,n,s,o,this),deleteProperty:(t,n)=>de(t,n,this)}):this.space=e(new Proxy({},{get:ue,set:(t,n,s,o)=>fe(t,n,s,o,this),deleteProperty:(t,n)=>de(t,n,this)}))}add(e){const t=D(e);if(!t){console.error("Container: this config can not observer",e);return}this.subscriptions.set(t.target.vid,t.subscribe(n=>{this.next({operate:n.operate,path:n.path,key:n.key,value:n.value,symbol:t.target.vid})}))}remove(e){this.subscriptions.delete(e)}}const E=(r,e)=>e===1/0?"Infinity":e===-1/0?"-Infinity":e,K=(r,e)=>e==="Infinity"?1/0:e==="-Infinity"?-1/0:e,w=r=>JSON.parse(JSON.stringify(r,E),K),v={stringify:E,parse:K,clone:w},Ke=Object.freeze(Object.defineProperty({__proto__:null,clone:w,default:v,parse:K,stringify:E},Symbol.toStringTag,{value:"Module"})),p=function(r,e,t={observer:!0,strict:!0,warn:!0}){if(t.observer===void 0&&(t.observer=!0),t.strict===void 0&&(t.strict=!0),t.warn===void 0&&(t.warn=!0),t.handler===void 0&&(t.handler=h.proxy.expand),!q[r])return console.error(`type: ${r} can not be found in configList.`),{vid:"",type:r};const n=(i,c)=>{for(const l in c){if(i[l]===void 0){!t.strict&&(i[l]=c[l]),t.strict&&t.warn&&console.warn(`'${r}' config can not set key: ${l}`);continue}typeof c[l]=="object"&&c[l]!==null&&!Array.isArray(c[l])?(i[l]===null&&(i[l]={...c[l]}),n(i[l],c[l])):i[l]=c[l]}};let s=q[r]();if(s.vid===""&&(s.vid=h.symbol.generator()),e&&n(s,e),t.observer===!1)return s;t.handler&&h.proxy.timing==="before"&&(s=t.handler(s));let o=Oe(s);if(t.handler&&h.proxy.timing==="after"&&(o=t.handler(o)),p.autoInject&&p.injectEngine){const i=p.injectEngine;if(i.applyConfig(o),p.injectScene&&ie(s.type)&&s.type!==H.SCENE){let c=null;typeof p.injectScene=="boolean"?c=i.getObjectConfig(i.scene):typeof p.injectScene=="string"&&(c=i.getConfigBySymbol(p.injectScene)),c?c.children.push(s.vid):console.warn("current engine scene can not found it config",i,i.scene)}return o}return o};p.autoInject=!0,p.injectScene=!1,p.injectEngine=null;const pe=(r,e={})=>{let t=JSON.stringify(r,v.stringify);const n={};!e.filter&&(e.filter=["assets"]);const s=Object.keys(r).filter(i=>!e.filter.includes(i));for(const i of s)for(const c of r[i]){const l=c.vid,u=Ee();t=t.replace(new RegExp(l,"g"),u),e.detail&&(n[l]=u)}const o=JSON.parse(t,v.parse);if(e.fillName)if(typeof e.fillName=="function")for(const i of s)for(const c of o[i])c.name||(c.name=e.fillName(c));else for(const i of s)for(const c of o[i])c.name||(c.name=`${c.type}-${c.vid.slice(-2)}`);return e.detail?{config:o,detail:n}:o},Q=(r,e,t={filter:["assets"],clone:!0})=>{const n=t.clone?v.clone(r):r;!t.filter&&(t.filter=["assets"]);const s=Object.keys(n).filter(o=>!t.filter.includes(o));for(const o of s)n[o].forEach((c,l,u)=>{u[l]=e(c)});return n},ge=function(r){const e={};for(const t of Object.keys(r))for(const n of r[t])e[n.name]=n;return e},me=function(r,e){return typeof r=="string"&&(r=JSON.parse(r,v.parse)),Q(v.clone(r),t=>(t=p(t.type,t,{strict:!1}),e?e(t):t))},Qe=Object.freeze(Object.defineProperty({__proto__:null,clone:pe,default:{clone:pe,handler:Q,planish:ge,observable:me},handler:Q,observable:me,planish:ge},Symbol.toStringTag,{value:"Module"}));class ye{constructor(){this.list=[],this.time=0}exec(e){if(e(!1))return;this.list.includes(e)||this.list.push(e);let t=0;const n=()=>{this.timer&&clearTimeout(this.timer),this.timer=setTimeout(()=>{const s=[];for(const o of this.list)o(!1)||s.push(o);if(s.length)if(s.length===t){for(const o of s)o(!0);this.list=[]}else t=s.length,this.list=s,n();else this.list=[]},this.time)};n()}append(e){this.list.length&&!this.list.includes(e)?this.list.push(e):this.exec(e)}nextTick(e){setTimeout(()=>{e()},this.time)}}const et=new ye;class Me{constructor(e){this.MODULE="",this.container=new he,this.ruler=e.ruler,this.MODULE=e.module,this.container.subscribe(t=>{this.ruler.execute(t)})}getData(){return this.container.space}existSymbol(e){return!!this.container.space[e]}addConfig(e){return this.container.space[e.vid]=e,this}getConfig(e){return this.container.space[e]}removeConfig(e){const t=this.container.space;t[e]!==void 0&&delete t[e]}addCompiler(e){return e.setTarget(this.container.space),e.compileAll(),this.ruler.link(e),this}toJSON(e=!0){return JSON.stringify(e?this.exportConfig():Object.values(this.container.space),E)}exportConfig(e=!0){if(e){const t=this.container.space,n=[],s={},o=(i,c,l={})=>{for(const u in i){if(["vid","type"].includes(u)){l[u]=i[u];continue}if(typeof i[u]=="object"&&i[u]!==null){if(Array.isArray(i[u])){if(!i[u].length)continue;l[u]=i[u].map(g=>typeof g=="object"&&g!==null?w(g):g);continue}l[u]={},c[u]?(o(i[u],c[u],l[u]),Object.keys(l[u]).length===0&&delete l[u]):l[u]=w(i[u])}else c[u]!==i[u]&&(l[u]=i[u])}};for(const i of Object.values(t)){if(!s[i.type]){if(!M[i.type]){console.error(`can not font some config with: ${i.type}`);continue}s[i.type]=M[i.type]()}const c={};o(i,s[i.type],c),n.push(c)}return n}else return Object.values(w(this.container.space))}load(e){const t=this.container.space,n={},s=(o,i)=>{for(const c in i)typeof o[c]=="object"&&o[c]!==null&&typeof i[c]=="object"&&i[c]!==null?s(o[c],i[c]):o[c]===void 0&&(o[c]=i[c])};for(const o of e){if(!n[o.type]){if(!M[o.type]){console.error(`can not font some config with: ${o.type}`);continue}n[o.type]=M[o.type]()}s(o,n[o.type]),t[o.vid]=o}return this}remove(e){const t=this.container.space;for(const n of e)t[n.vid]!==void 0&&delete t[n.vid];return this}}const tt=["push","pop","shift","unshift","splice","sort","reverse"],j=new WeakSet,rt={get:function(r,e,t){return Array.isArray(r)&&tt.includes(e)&&j.add(r),Reflect.get(r,e,t)},set:function(r,e,t,n){const s=Z(r),o=D(r);if(typeof e=="symbol"||o.ignore(f.extendPath(s,e)))return Reflect.set(r,e,t,n);if(f.isObject(t)&&!ce(t)&&(t=$(o,t,r,e)),r[e]===void 0){f.isObject(t)&&(t[Symbol.for(S)]=e,f.isArray(t)&&G(t)),f.isArray(r)&&j.delete(r);const l=Reflect.set(r,e,t);return f.isArray(r)&&G(r),o.next({operate:"add",path:s,key:e,value:t}),l}const i=r[e],c=Reflect.set(r,e,t);if(f.isArray(r)){if(j.has(r)&&e==="length"){const l=We(r);if(!l)return Array.isArray(i)&&console.error("array value is not be cached:",r),c;Ye(r);const u=Math.abs(l.length-r.length),g=l.length>=r.length?"delete":"add",gt=l.length>=r.length?r:l;let Ue=0,Je=0;for(const _e of g==="delete"?l:r){if(!gt.includes(_e)&&(o.next({operate:g,path:s,key:Je.toString(),value:_e}),Ue+=1,Ue===u))break;Je+=1}return G(r),j.delete(r),c}else if(j.has(r)||e==="length")return c}return o.next({operate:"set",path:s,key:e,value:t}),c},deleteProperty:function(r,e){const t=Z(r),n=D(r);if(typeof e=="symbol"||n.ignore(t))return Reflect.deleteProperty(r,e);const s=r[e],o=Reflect.deleteProperty(r,e);return f.isArray(r)||n.next({operate:"delete",path:t,key:e,value:s}),o}},$=function(r,e,t,n){if(!f.isObject(e)||ce(e))return e;const s=t?Z(t):"";if(r.ignore(s))return e;t&&(e[Symbol.for(W)]=t),e[Symbol.for(Y)]=r;for(const i in e){const c=f.extendPath(s,i);if(!r.ignore(c)&&f.isObject(e[i])){if(f.isArray(e[i])){const l=e[i];e[i]=$(r,e[i],e),G(l)}else e[i]=$(r,e[i],e);e[i][Symbol.for(S)]=i}}return n&&(e[Symbol.for(S)]=n),new Proxy(e,rt)},N=class N extends re.Subject{constructor(e){super(),this.disable=!1,this.target=$(this,e)}ignore(e){const t=e.indexOf(".");return t===-1?N.IGNORE[e]:N.IGNORE[e.slice(0,t)]}next(e){if(this.disable)return;super.next(e);const t=ze(this.target);t&&t.emit(m.NOTICED)}};N.IGNORE={vid:!0,type:!0,alias:!0,meta:!0};let ee=N;const Oe=function(r){return new ee(r).target},nt=function(r,e){const t=D(r);if(!t){console.warn("this object can not found it observer:",r);return}t.disable=!0,e(),t.disable=!1},C={SYMBOL_VALIDATOR(r){return!h.symbol.validator(r.symbol)},OPERATE_ADD({operate:r,path:e,symbol:t,key:n,value:s},o){return r==="add"&&!e.length&&t===n?(o.add(s),!1):!0},OPERATE_DELETE({operate:r,path:e,value:t},n){return r==="delete"&&!e.length?(n.remove(t),!1):!0},OPERATE_COVER({operate:r,path:e,value:t,key:n,symbol:s},o){return r==="set"&&!e.length&&n===s?(o.cover(t),!1):!0},OPERATE_COMPILE(r,e){return e.compile(r.symbol,r),!1}};class be{constructor(e){this.rules=[],this.pointer=null,e?this.rules=e:this.rules.push(C.SYMBOL_VALIDATOR,C.OPERATE_ADD,C.OPERATE_DELETE,C.OPERATE_COVER,C.OPERATE_COMPILE)}link(e){this.compiler=e}execute(e){for(const t of this.rules)if(!t(e,this.compiler))break}remove(e){if(this.rules.includes(e)){const t=this.rules.indexOf(e);this.rules.splice(t,1)}else console.warn("Ruler: can not found rule",e,this.rules)}add(e,t){return this.rules.includes(e)?(console.warn("Ruler: rules has already exist this rule",this.rules),this):t!==void 0?(this.rules.splice(t,0,e),this):this.pointer===null?(console.error("Ruler:index is undefined, need a index or use before and after api to set a index"),this):(this.rules.splice(this.pointer,0,e),this)}before(e){return this.rules.includes(e)?(this.pointer=this.rules.indexOf(e),this):(console.warn("Ruler: rules not found this rule",this.rules),this)}after(e){return this.rules.includes(e)?(this.pointer=this.rules.indexOf(e)+1,this):(console.warn("Ruler: rules not found this rule",this.rules),this)}push(e){return this.rules.includes(e)?(console.warn("Ruler: rules has already exist this rule",this.rules),this):(this.rules.push(e),this)}unshift(e){return this.rules.includes(e)?(console.warn("Ruler: rules has already exist this rule",this.rules),this):(this.rules.unshift(e),this)}pop(){return this.rules.pop(),this}shift(){return this.rules.shift(),this}}const st=function(r){return r},Se=function(){return{vid:"",type:"",name:"",alias:"",meta:{}}},ot=Se,it=function(r){return`DEFUALT-${r}`},Ee=function(){return h.symbol.generator()},at=function(){};class ve{constructor(e){this.type="",this.module=e,this.type=e.type,this.ruler=new be(e.rule),this.compiler=e.compiler?new e.compiler({module:e.type,models:e.models}):new le({module:e.type,models:e.models}),this.converter=new Me({module:e.type,ruler:this.ruler}).addCompiler(this.compiler)}}const ct=function(r){return r};class Ce extends b.EventDispatcher{constructor(){super(),this.compilerMap=new Map}extend(e,t=!1){this.compilerMap.has(e.MODULE)?(console.warn("compiler manager has exist this compiler",e),t&&this.compilerMap.set(e.MODULE,e)):this.compilerMap.set(e.MODULE,e)}getCompiler(e){return this.compilerMap.has(e)?this.compilerMap.get(e):(console.warn(`can not found this type in compiler manager: ${e}`),null)}getObjectSymbol(e){for(const t of this.compilerMap.values()){const n=t.getObjectSymbol(e);if(n)return n}return null}getObjectBySymbol(e){for(const t of this.compilerMap.values()){const n=t.getObjectBySymbol(e);if(n)return n}return null}getModelBySymbol(e){for(const t of this.compilerMap.values()){const n=t.getModelBySymbol(e);if(n)return n}return null}getObjectfromModule(e,t){return this.getObjectFromModule(e,t)}getObjectFromModule(e,t){var s;return this.compilerMap.has(e)?((s=this.compilerMap.get(e).map.get(t))==null?void 0:s.puppet)||null:(console.warn(`compiler manager can not found this module: ${e}`),null)}getObjectfromModules(e,t){return this.getObjectFromModules(e,t)}getObjectFromModules(e,t){var n;Array.isArray(e)||(e=Object.keys(e));for(const s of e){if(!this.compilerMap.has(s)){console.warn(`compiler manager can not found this module: ${s}`);continue}const o=this.compilerMap.get(s);if(o.map.has(t))return(n=o.map.get(t))==null?void 0:n.puppet}return null}dispose(){for(const e of this.compilerMap.values())e.dispose();return this.compilerMap.clear(),this}}const B="CompilerManagerPlugin",Ae=function(){return{name:B,install(r){const e=new Ce;r.compilerManager=e,r.getObjectSymbol=function(t){return e.getObjectSymbol(t)},r.getObjectBySymbol=function(t){return e.getObjectBySymbol(t)},r.getObjectfromModule=function(t,n){return e.getObjectfromModule(t,n)},r.getObjectfromModules=function(t,n){return e.getObjectfromModules(t,n)},r.getObject3D=function(t){return e.getObjectfromModules(se,t)}},dispose(r){r.compilerManager.dispose(),delete r.compilerManager,delete r.getObjectSymbol,delete r.getObjectBySymbol,delete r.getObjectfromModule,delete r.getObjectfromModules,delete r.getObject3D}}};class De extends b.EventDispatcher{constructor(){super(),this.dataSupportMap=new Map}extend(e,t=!1){this.dataSupportMap.has(e.MODULE)?(console.warn("dataSupport manager has exist this dataSupport",e),t&&this.dataSupportMap.set(e.MODULE,e)):this.dataSupportMap.set(e.MODULE,e)}getDataSupport(e){return this.dataSupportMap.has(e)?this.dataSupportMap.get(e):(console.warn(`can not found this type in dataSupportManager: ${e}`),null)}getConfigBySymbol(e){const t=this.dataSupportMap.values();for(const n of t){const s=n.getConfig(e);if(s)return s}return null}getConfigfromModule(e,t){return this.getConfigFromModule(e,t)}getConfigFromModule(e,t){return this.dataSupportMap.has(e)?this.dataSupportMap.get(e).getConfig(t)||null:(console.warn(`data support manager can not found this module: ${e}`),null)}getConfigfromModules(e,t){return this.getConfigFromModules(e,t)}getConfigFromModules(e,t){Array.isArray(e)||(e=Object.keys(e));for(const n of e){if(!this.dataSupportMap.has(n)){console.warn(`data support manager can not found this module: ${n}`);continue}const o=this.dataSupportMap.get(n).getConfig(t);if(o)return o}return null}removeConfigBySymbol(...e){for(const t of e)for(const n of this.dataSupportMap.values())if(n.existSymbol(t)){n.removeConfig(t);break}return this}getModuleBySymbol(e){const t=this.dataSupportMap.values();for(const n of t)if(n.existSymbol(e))return n.MODULE;return null}applyConfig(...e){for(const t of e){const n=I(t.type);n?this.dataSupportMap.get(n).addConfig(t):console.warn(`dataSupportManager can not found this config module: ${t.type}`)}return this}load(e){return this.dataSupportMap.forEach((n,s)=>{e[s]&&n.load(e[s])}),this}loadByModule(e,t){const n=this.dataSupportMap.get(t);return n?(n.load(e),this):(console.warn(`DataSupportManager can not support this module: ${t}`),this)}remove(e){return this.dataSupportMap.forEach((n,s)=>{e[s]&&n.remove(e[s])}),this}toJSON(e={},t=!0){return JSON.stringify(this.exportConfig(e,t),E)}exportConfig(e={},t=!0){return this.dataSupportMap.forEach((s,o)=>{e[o]=s.exportConfig(t)}),e}}const T="DataSupportManagerPlugin",Re=function(){return{name:T,install(r){const e=new De;r.dataSupportManager=e,r.applyConfig=function(...t){return e.applyConfig(...t),r},r.getConfigBySymbol=function(t){return e.getConfigBySymbol(t)},r.getConfigfromModule=function(t,n){return e.getConfigfromModule(t,n)},r.getConfigfromModules=function(t,n){return e.getConfigfromModules(t,n)},r.removeConfigBySymbol=function(...t){return e.removeConfigBySymbol(...t),r},r.toJSON=function(){return e.toJSON()},r.exportConfig=function(){return e.exportConfig()}},dispose(r){delete r.dataSupportManager,delete r.applyConfig,delete r.getConfigBySymbol,delete r.removeConfigBySymbol,delete r.toJSON,delete r.exportConfig}}};class Pe{}class U extends Pe{constructor(){super(...arguments),this.selector=(e,t,n)=>n.get(U)||null}parse({url:e,resource:t,configMap:n,resourceMap:s}){s.set(e,t)}}var J=(r=>(r.MAPPED="mapped",r))(J||{});class we extends b.EventDispatcher{constructor(e={}){super(),this.configMap=new Map,this.resourceMap=new Map,this.paserMap=new Map,this.defalutParser=new U;const t=new Map;for(const n in e)t.has(n)&&console.warn(`resourceManager construct params rescource already exist: ${n}, that will be cover.`),t.set(n,e[n]);this.mappingResource(t)}addParser(e){return this.paserMap.has(e.constructor)?this:(this.paserMap.set(e.constructor,e),this)}mappingResource(e,t){const n=this.configMap,s=this.resourceMap,o=[...this.paserMap.values()],i={};for(const[c,l]of e.entries()){if(t!=null&&t.parser&&t.parser[c]){t.parser[c].parse({url:c,resource:l,configMap:n,resourceMap:s});continue}if(t!=null&&t.selector&&t.selector[c]){const g=t.selector[c](c,l,this.paserMap);if(!g){console.warn("resource manager hanlder can not found this resource parser: ",l,t.selector[c]);continue}g.parse({url:c,resource:l,configMap:n,resourceMap:s}),i[c]=this.getResourceConfig(c);continue}let u=null;for(const g of o)if(u=g.selector(c,l,this.paserMap),u)break;if(!u){console.warn("resouce manager can not found some handler to parser this resource, that will use default parser do it:",l),this.defalutParser.parse({url:c,resource:l,configMap:n,resourceMap:s});continue}u.parse({url:c,resource:l,configMap:n,resourceMap:s}),i[c]=this.getResourceConfig(c)}return this.dispatchEvent({type:"mapped",configMap:n,resourceMap:s,resourceConfig:i}),this}getResourceConfig(e){const t=this.configMap,n={};return[...t.keys()].filter(s=>s.startsWith(e)).forEach(s=>{const o=t.get(s);if(!o)console.error(`unknow error: can not found config by url: ${s}`);else{const i=I(o.type);i?(!n[i]&&(n[i]=[]),n[i].push(o)):console.error(`unknow error: can not found module by type: ${o.type}`,o)}}),n}hasResource(e){return this.resourceMap.has(e)}remove(e){const t=this.configMap,n=this.resourceMap;return[...t.keys()].filter(s=>s.startsWith(e)).forEach(s=>{t.delete(s);const o=n.get(s);o.dispose&&o.dispose(),n.delete(s)}),this}dispose(){this.resourceMap.forEach((e,t)=>{e.dispose&&e.dispose()}),this.resourceMap.clear(),this.configMap.clear()}}const te="ResourceManagerPlugin",je=function(r={}){return{name:te,install(e){const t=new we(r.resources);e.resourceManager=t,e.registerResources=n=>{const s=new Map;return Object.keys(n).forEach(o=>{s.set(o,n[o])}),t.mappingResource(s),e}},dispose(e){e.addEventListener(b.ENGINE_EVENT.DISPOSE,()=>{e.resourceManager.dispose()})}}},Te="LoaderDataSupportStrategy",Ne=function(){let r,e;return{name:Te,condition:[T,y.LOADER_MANAGER_PLUGIN],exec(t){r=t.toJSON,t.toJSON=function(){const n={assets:JSON.parse(t.loaderManager.toJSON())};return t.dataSupportManager.toJSON(n)},e=t.exportConfig,t.exportConfig=function(){let n={};return n={assets:t.loaderManager.exportConfig()},t.dataSupportManager.exportConfig(n)}},rollback(t){t.toJSON=r,t.exportConfig=e}}},Le="LoaderMappingStrategy",xe=function(){let r,e;return{name:Le,condition:[te,y.LOADER_MANAGER_PLUGIN],exec(t){r=t.loadResources,t.loadResources=(n,s)=>{const o=i=>{s(void 0,i),t.resourceManager.removeEventListener(y.LOADER_EVENT.LOADED,o)};try{t.resourceManager.addEventListener(y.LOADER_EVENT.LOADED,o)}catch(i){s(i)}return t.loaderManager.reset().load(n),t},e=t.loadResourcesAsync,t.loadResourcesAsync=n=>new Promise((s,o)=>{try{t.loaderManager.once(y.LOADER_EVENT.LOADED,i=>{t.resourceManager.once(J.MAPPED,l=>{s(l)});const c=new Map;n.forEach(l=>{typeof l=="string"?c.set(l,i.resourceMap.get(l)):c.set(l.url,i.resourceMap.get(l.url))}),t.resourceManager.mappingResource(c)})}catch(i){o(i)}t.loaderManager.reset().load(n)})},rollback(t){t.loadResources=r,t.loadResourcesAsync=e}}},Ie="CompilerSupportStrategy",Ge=function(){return{name:Ie,condition:[B,T],exec(r){r.compilerManager.compilerMap.forEach((e,t)=>{var n;e.useEngine(r),(n=r.dataSupportManager.dataSupportMap.get(t))==null||n.addCompiler(e)})},rollback(){}}};class lt{constructor(e){this.condition={},this.list=[],this.validator=()=>!0,e&&(this.validator=e)}add(e){return this.validator(e)&&(this.condition[e]=!1),this}reach(e){return this.condition[e]===void 0?(console.warn(`ModuleTrigger: can not set module condition: ${e}.`),this):(this.condition[e]=!0,this.check()&&this.trig(),this)}register(e){e(!0)||this.list.push(e)}trig(){const e=this.list;for(const t of e)t(!1);this.reset()}reset(){this.list=[],Object.keys(this.condition).forEach(e=>{this.condition[e]=!1})}check(){return!Object.values(this.condition).includes(!1)}}const ut=new lt(r=>!!A[r]);var $e=(r=>(r[r.ZERO=0]="ZERO",r[r.ONE=100]="ONE",r[r.TWO=200]="TWO",r[r.THREE=300]="THREE",r[r.FOUR=400]="FOUR",r[r.FIVE=500]="FIVE",r[r.SIX=600]="SIX",r[r.SEVEN=700]="SEVEN",r[r.EIGHT=800]="EIGHT",r[r.NINE=900]="NINE",r))($e||{});class Be extends b.Engine{constructor(e={}){super(),this.moduleLifeCycle=[],this.triggers={object:ut},this.install(y.LoaderManagerPlugin(e.LoaderManagerPlugin)).install(_.PointerManagerPlugin(e.PointerManagerPlugin)).install(k.EventManagerPlugin(e.EventManagerPlugin)).install(F.RenderManagerPlugin(e.RenderManagerPlugin)).install(je(e.ResourceManagerPlugin)).install(Re(e.DataSupportManagerPlugin)).install(Ae(e.CompilerManagerPlugin)),this.exec(Ne()).exec(xe()).exec(Ge())}loadLifeCycle(e){const t=this.dataSupportManager,n=this.triggers,s=this.moduleLifeCycle.sort((o,i)=>o.order-i.order);for(const{module:o}of s){e[o]&&t.loadByModule(e[o],o);for(const i in n)n[i].reach(o)}}removeLifeCycle(e){const t=this.dataSupportManager,n=this.moduleLifeCycle.sort((c,l)=>l.order-c.order);for(const{module:c}of n)e[c]&&t.remove({[c]:e[c]});const s=e.assets||[],o=this.resourceManager,i=this.loaderManager;s.forEach(c=>{o.remove(c),i.remove(c)})}loadConfig(e,t){const n=this.renderManager.hasRendering();if(n&&this.renderManager.stop(),e.assets&&e.assets.length){const s=o=>{delete e.assets,this.loadLifeCycle(e),this.resourceManager.removeEventListener("mapped",s),t&&t(o),n?this.renderManager.play():this.renderManager.render()};this.resourceManager.addEventListener("mapped",s),this.loaderManager.reset().load(e.assets)}else this.loadLifeCycle(e),t&&t(),n?this.renderManager.play():this.renderManager.render();return this}loadConfigAsync(e,t){return new Promise((n,s)=>{const o=this.renderManager.hasRendering();o&&this.renderManager.stop(),e.assets&&e.assets.length?this.loadResourcesAsync(e.assets).then(i=>{delete e.assets,this.loadLifeCycle(e),o?this.renderManager.play():this.renderManager.render(),n(i)}):(this.loadLifeCycle(e),o?this.renderManager.play():this.renderManager.render(),n({type:J.MAPPED,configMap:this.resourceManager.configMap,resourceMap:this.resourceManager.resourceMap,resourceConfig:{}}))})}removeConfig(e){this.removeLifeCycle(e)}getObjectConfig(e){const t=this.getObjectSymbol(e);return t?this.getConfigBySymbol(t):null}useModule(e){const t=ne(e.type);if(L[t])return console.warn(`Engine:module ${e.type} is already exist.`),this;L[t]=e.type,e.object&&(A[e.type]=!0);const n=new ve(e);return n.compiler.useEngine(this),this.dataSupportManager.extend(n.converter),this.compilerManager.extend(n.compiler),e.extend&&e.extend(this),this.moduleLifeCycle.push({module:e.type,order:e.lifeOrder||0}),Object.values(this.triggers).forEach(s=>{s.add(e.type)}),this}addTrigger(e,t){return this.triggers[e]?console.warn(`EngineSupport: this trigger has already exist: ${e}.`,this.triggers):this.triggers[e]=t,this}getTrigger(e){return this.triggers[e]?this.triggers[e]:(console.warn(`EngineSupport: not found this trigger: ${e}.`,this.triggers),null)}init(){}registModule(e){return this.useModule(e)}}const ft=function(r,e={}){const t=new Be(e);return r.modules&&r.modules.forEach(n=>{t.useModule(n)}),r.plugins&&r.plugins.forEach(n=>{t.install(n)}),r.strategy&&r.strategy.forEach(n=>{t.exec(n)}),t},dt=r=>{R.exec(r)},ht=()=>{},pt=[B,T];a.AntiShake=ye,a.COMPILER_MANAGER_PLUGIN=B,a.COMPILER_SUPPORT_STRATEGY=Ie,a.CONFIGFACTORY=q,a.CONFIGMODULE=He,a.CONFIGTYPE=H,a.CONFIG_FACTORY=M,a.CONFIG_MODEL=O,a.CONFIG_MODULE=x,a.CONFIG_TYPE=V,a.Compiler=le,a.CompilerManager=Ce,a.CompilerManagerPlugin=Ae,a.CompilerSupportStrategy=Ge,a.Container=he,a.Converter=Me,a.DATA_SUPPORT_MANAGER_PLUGIN=T,a.DEFAULT_RULE=C,a.DataSupportManager=De,a.DataSupportManagerPlugin=Re,a.DefaultParser=U,a.EngineSupport=Be,a.JSONHandler=Ke,a.LOADER_DATA_SUPPORT_STRATEGY=Te,a.LOADER_MAPPING_STRATEGY=Le,a.LoaderDataSupportStrategy=Ne,a.LoaderMappingStrategy=xe,a.MODEL_EVENT=m,a.MODULETYPE=qe,a.MODULE_TYPE=L,a.Model=X,a.Moduler=ve,a.OBJECTMODULE=se,a.OBJECT_MODULE=A,a.PLUGINS=pt,a.Parser=Pe,a.RESOURCE_EVENT=J,a.RESOURCE_MANAGER_PLUGIN=te,a.ResourceManager=we,a.ResourceManagerPlugin=je,a.Ruler=be,a.SUPPORT_LIFE_CYCLE=$e,a.Template=Qe,a.createSymbol=Ee,a.defineEngineSupport=ft,a.defineModel=P,a.defineModule=ct,a.defineOption=Xe,a.defineProcessor=Ze,a.defineRule=st,a.emptyHandler=at,a.generateConfig=p,a.getBasicConfig=Se,a.getModule=I,a.getObserver=D,a.getSymbolConfig=ot,a.globalAntiShake=et,a.globalOption=h,a.isObjectModule=oe,a.isObjectType=ie,a.observable=Oe,a.slientSync=nt,a.toAsync=dt,a.toTrigger=ht,a.uniqueSymbol=it,Object.keys(y).forEach(r=>{r!=="default"&&!Object.prototype.hasOwnProperty.call(a,r)&&Object.defineProperty(a,r,{enumerable:!0,get:()=>y[r]})}),Object.keys(_).forEach(r=>{r!=="default"&&!Object.prototype.hasOwnProperty.call(a,r)&&Object.defineProperty(a,r,{enumerable:!0,get:()=>_[r]})}),Object.keys(k).forEach(r=>{r!=="default"&&!Object.prototype.hasOwnProperty.call(a,r)&&Object.defineProperty(a,r,{enumerable:!0,get:()=>k[r]})}),Object.keys(F).forEach(r=>{r!=="default"&&!Object.prototype.hasOwnProperty.call(a,r)&&Object.defineProperty(a,r,{enumerable:!0,get:()=>F[r]})}),Object.defineProperty(a,Symbol.toStringTag,{value:"Module"})});
+(function(global, factory) {
+  typeof exports === "object" && typeof module !== "undefined" ? factory(exports, require("@vis-three/utils"), require("@vis-three/core"), require("rxjs"), require("nanoid"), require("@vis-three/plugin-loader-manager"), require("@vis-three/plugin-pointer-manager"), require("@vis-three/plugin-event-manager"), require("@vis-three/plugin-render-manager")) : typeof define === "function" && define.amd ? define(["exports", "@vis-three/utils", "@vis-three/core", "rxjs", "nanoid", "@vis-three/plugin-loader-manager", "@vis-three/plugin-pointer-manager", "@vis-three/plugin-event-manager", "@vis-three/plugin-render-manager"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, factory((global["vis-three"] = global["vis-three"] || {}, global["vis-three"].tdcm = {}), global.utils, global.core, global.rxjs, global.nanoid, global.pluginLoaderManager, global.pluginPointerManager, global.pluginEventManager, global.pluginRenderManager));
+})(this, function(exports2, utils, core, rxjs, nanoid, pluginLoaderManager, pluginPointerManager, pluginEventManager, pluginRenderManager) {
+  "use strict";
+  const camelize = function(str) {
+    str = str.replace(/[\-_\s]+(.)?/g, function(match, chr) {
+      return chr ? chr.toUpperCase() : "";
+    });
+    return str.slice(0, 1).toLowerCase() + str.slice(1);
+  };
+  const emunCamelize = function(str) {
+    return camelize(str).toUpperCase();
+  };
+  const emunDecamelize = function(str) {
+    const split = /(?=[A-Z])/;
+    return str.split(split).map((s) => s.toUpperCase()).join("_");
+  };
+  const CONFIG_FACTORY = {};
+  const CONFIG_MODEL = {};
+  const MODULE_TYPE = {};
+  const CONFIG_TYPE = {};
+  const OBJECT_MODULE = {};
+  const CONFIG_MODULE = {};
+  const CONFIGFACTORY = CONFIG_FACTORY;
+  const MODULETYPE = MODULE_TYPE;
+  const CONFIGTYPE = CONFIG_TYPE;
+  const OBJECTMODULE = OBJECT_MODULE;
+  const CONFIGMODULE = CONFIG_MODULE;
+  const getModule = (type) => {
+    return CONFIG_MODULE[type] || null;
+  };
+  const isObjectModule = (module2) => {
+    return OBJECT_MODULE[module2];
+  };
+  const isObjectType = (type) => {
+    const module2 = getModule(type);
+    if (module2) {
+      return isObjectModule(module2);
+    } else {
+      return false;
+    }
+  };
+  const SYMBOL_FATHER = "vis.father";
+  const SYMBOL_KEY = "vis.key";
+  const SYMBOL_OB = "vis.observer";
+  const SYMBOL_MODEL = "vis.model";
+  const arrayCache = /* @__PURE__ */ new WeakMap();
+  const cacheArray = function(object) {
+    if (Array.isArray(object)) {
+      arrayCache.set(object, object.concat([]));
+    }
+  };
+  const getCacheArray = function(object) {
+    return arrayCache.get(object);
+  };
+  const getPath = function(object) {
+    let path = "";
+    const recursion = (object2) => {
+      if (object2[Symbol.for(SYMBOL_KEY)] !== void 0) {
+        path = `${object2[Symbol.for(SYMBOL_KEY)]}${path ? `.${path}` : ""}`;
+        if (object2[Symbol.for(SYMBOL_FATHER)]) {
+          recursion(object2[Symbol.for(SYMBOL_FATHER)]);
+        }
+      }
+    };
+    recursion(object);
+    return path;
+  };
+  const updateArraySymbol = function(array) {
+    if (array.length && utils.isObject(array[0])) {
+      const length = array.length;
+      for (let index = 0; index < length; index += 1) {
+        array[index][Symbol.for(SYMBOL_KEY)] = index;
+      }
+    }
+  };
+  const getObserver = function(object) {
+    return object[Symbol.for(SYMBOL_OB)];
+  };
+  const hasObserver = function(object) {
+    return Boolean(object[Symbol.for(SYMBOL_OB)]);
+  };
+  const getModel = function(object) {
+    return object[Symbol.for(SYMBOL_MODEL)];
+  };
+  const _AsyncScheduler = class _AsyncScheduler {
+    static exec(fun) {
+      if (fun(false)) {
+        return;
+      }
+      if (!_AsyncScheduler.list.includes(fun)) {
+        _AsyncScheduler.list.push(fun);
+      }
+      let cacheCount = 0;
+      const autoSequential = () => {
+        _AsyncScheduler.timer && clearTimeout(_AsyncScheduler.timer);
+        _AsyncScheduler.timer = window.setTimeout(() => {
+          const nextList = [];
+          for (const fun2 of _AsyncScheduler.list) {
+            if (!fun2(false)) {
+              nextList.push(fun2);
+            }
+          }
+          if (nextList.length) {
+            if (nextList.length === cacheCount) {
+              for (const fun2 of nextList) {
+                fun2(true);
+              }
+              _AsyncScheduler.list = [];
+            } else {
+              cacheCount = nextList.length;
+              _AsyncScheduler.list = nextList;
+              autoSequential();
+            }
+          } else {
+            _AsyncScheduler.list = [];
+          }
+        }, _AsyncScheduler.time);
+      };
+      autoSequential();
+    }
+    static append(fun) {
+      if (_AsyncScheduler.list.length && !_AsyncScheduler.list.includes(fun)) {
+        _AsyncScheduler.list.push(fun);
+      } else {
+        _AsyncScheduler.exec(fun);
+      }
+    }
+    static nextTick(fun) {
+      window.setTimeout(() => {
+        fun();
+      }, _AsyncScheduler.time);
+    }
+  };
+  _AsyncScheduler.list = [];
+  _AsyncScheduler.time = 0;
+  let AsyncScheduler = _AsyncScheduler;
+  class Model extends core.EventDispatcher {
+    constructor(params) {
+      super();
+      this.config = params.config;
+      this.engine = params.engine;
+      this.compiler = params.compiler;
+    }
+    toConfig(vid) {
+      return this.engine.getConfigBySymbol(vid);
+    }
+    toModel(vid) {
+      if (typeof vid === "string") {
+        return this.engine.compilerManager.getModelBySymbol(vid);
+      } else {
+        const symbol = this.engine.getObjectSymbol(vid);
+        if (symbol) {
+          return this.engine.compilerManager.getModelBySymbol(symbol);
+        } else {
+          console.warn(`Model: can not found object symbol:`, vid);
+          return null;
+        }
+      }
+    }
+    toObject(vid) {
+      return this.engine.getObjectBySymbol(vid);
+    }
+    toPuppet(vid) {
+      return this.toObject(vid);
+    }
+    toAsync(fun) {
+      AsyncScheduler.exec(fun);
+    }
+    asyncNextTick(fun) {
+      AsyncScheduler.nextTick(fun);
+    }
+    toTrigger(name, fun) {
+      const trigger = this.engine.getTrigger(name);
+      if (trigger) {
+        trigger.register(fun);
+      }
+    }
+    process(params) {
+      if (!this.commands || !this.commands[params.operate]) {
+        this[params.operate](params);
+        return;
+      }
+      let commands = this.commands[params.operate];
+      const keyPath = params.path ? params.path.split(".").concat(params.key) : [params.key];
+      for (const key of keyPath) {
+        if (!commands[key] && !commands.$reg) {
+          this[params.operate](params);
+          return;
+        } else if (commands[key]) {
+          if (typeof commands[key] === "function") {
+            commands[key].call(this, {
+              model: this,
+              ctx: this,
+              config: this.config,
+              target: this.puppet,
+              puppet: this.puppet,
+              engine: this.engine,
+              compiler: this.compiler,
+              ...params
+            });
+            return;
+          } else {
+            commands = commands[key];
+          }
+        } else if (commands.$reg) {
+          for (const item of commands.$reg) {
+            if (item.reg.test(key)) {
+              item.handler.call(this, {
+                model: this,
+                ctx: this,
+                config: this.config,
+                target: this.puppet,
+                puppet: this.puppet,
+                engine: this.engine,
+                compiler: this.compiler,
+                ...params
+              });
+              return;
+            }
+          }
+        }
+      }
+      this[params.operate](params);
+    }
+    add(params) {
+      let target = this.puppet;
+      const path = params.path;
+      for (const key of path) {
+        if (typeof target[key] !== void 0) {
+          target = target[key];
+        } else {
+          console.warn(`processor can not exec default add operate.`, params);
+          return;
+        }
+      }
+      target[params.key] = params.value;
+    }
+    set(params) {
+      let target = this.puppet;
+      const path = params.path;
+      for (const key of path) {
+        if (typeof target[key] !== void 0) {
+          target = target[key];
+        } else {
+          console.warn(`processor can not exec default set operate.`, params);
+          return;
+        }
+      }
+      target[params.key] = params.value;
+    }
+    delete(params) {
+      let target = this.puppet;
+      const path = params.path;
+      for (const key of path) {
+        if (typeof target[key] !== void 0) {
+          target = target[key];
+        } else {
+          console.warn(`processor can not exec default delete operate.`, params);
+          return;
+        }
+      }
+      delete target[params.key];
+    }
+    create() {
+      this.config[Symbol.for(SYMBOL_MODEL)] = this;
+      this.puppet = this.createPuppet.call(this, {
+        model: this,
+        config: this.config,
+        engine: this.engine,
+        compiler: this.compiler
+      });
+    }
+    dispose() {
+      this.disposePuppet.call(this, {
+        model: this,
+        target: this.puppet,
+        puppet: this.puppet,
+        config: this.config,
+        engine: this.engine,
+        compiler: this.compiler
+      });
+      this.config[Symbol.for(SYMBOL_MODEL)] = void 0;
+      this.clear();
+    }
+  }
+  const defineModel = function(option) {
+    return option;
+  };
+  defineModel.extend = function(abstract) {
+    const extendFun = function(fun) {
+      const option = fun(abstract);
+      option.shared = Object.assign({}, abstract.shared, option.shared);
+      option.commands = utils.objectDeepMerge(option.commands, abstract.commands);
+      const optionContext = option.context;
+      const abstractContext = abstract.context;
+      option.context = function(params) {
+        return Object.assign(
+          abstractContext ? abstractContext(
+            params
+          ) : {},
+          optionContext ? optionContext.call(this, params) : {}
+        );
+      };
+      return option;
+    };
+    extendFun.extend = function(fun) {
+      const abstractOption = fun(abstract);
+      abstractOption.shared = Object.assign(
+        {},
+        abstract.shared,
+        abstractOption.shared
+      );
+      abstractOption.commands = utils.objectDeepMerge(
+        abstractOption.commands,
+        abstract.commands
+      );
+      const abstractContext = abstract.context;
+      const abstractOptionContext = abstractOption.context;
+      abstractOption.context = function(params) {
+        return Object.assign(
+          abstractContext ? abstractContext(
+            params
+          ) : {},
+          abstractOptionContext ? abstractOptionContext.call(this, params) : {}
+        );
+      };
+      return defineModel.extend(abstractOption);
+    };
+    return extendFun;
+  };
+  defineModel.expand = function(expandOption) {
+    return expandOption;
+  };
+  const defineProcessor = defineModel;
+  var MODEL_EVENT = /* @__PURE__ */ ((MODEL_EVENT2) => {
+    MODEL_EVENT2["COMPILED_ADD"] = "compiledAdd";
+    MODEL_EVENT2["COMPILED_REMOVE"] = "compiledRemove";
+    MODEL_EVENT2["COMPILED_ATTR"] = "compiledAttr";
+    MODEL_EVENT2["COMPILED_UPDATE"] = "compiledUpdate";
+    MODEL_EVENT2["COMPILED"] = "compiled";
+    MODEL_EVENT2["NOTICED"] = "noticed";
+    return MODEL_EVENT2;
+  })(MODEL_EVENT || {});
+  class Compiler {
+    constructor(params) {
+      this.MODULE = "";
+      this.builders = /* @__PURE__ */ new Map();
+      this.target = {};
+      this.map = /* @__PURE__ */ new Map();
+      this.symbolMap = /* @__PURE__ */ new WeakMap();
+      this.MODULE = params.module;
+      for (const option of params.models) {
+        this.useModel(option);
+      }
+    }
+    /**
+     * @deprecated
+     * @returns
+     */
+    getMap() {
+      return null;
+    }
+    useEngine(engine) {
+      this.engine = engine;
+      return this;
+    }
+    setTarget(target) {
+      this.target = target;
+      return this;
+    }
+    add(config) {
+      if (!this.builders.has(config.type)) {
+        console.warn(
+          `${this.MODULE} Compiler: can not support this type: ${config.type}`
+        );
+        return null;
+      }
+      const { option, Builder } = this.builders.get(config.type);
+      const model = Builder ? new Builder({ config, engine: this.engine, compiler: this }) : new Model({
+        config,
+        engine: this.engine,
+        compiler: this
+      });
+      if (option.context) {
+        Object.assign(model, option.context({ model }));
+      }
+      model.createPuppet = option.create;
+      model.disposePuppet = option.dispose;
+      model.commands = option.commands;
+      model.create();
+      this.map.set(config.vid, model);
+      this.symbolMap.set(model.puppet, config.vid);
+      model.emit(MODEL_EVENT.COMPILED_ADD);
+      model.emit(MODEL_EVENT.COMPILED);
+      return model.puppet;
+    }
+    remove(config) {
+      const vid = config.vid;
+      if (!this.map.has(vid)) {
+        console.warn(
+          `${this.MODULE} Compiler: can not found this vid object: ${vid}.`
+        );
+        return this;
+      }
+      if (!this.builders.has(config.type)) {
+        console.warn(
+          `${this.MODULE} Compiler: can not support this type: ${config.type}`
+        );
+        return this;
+      }
+      const model = this.map.get(vid);
+      this.map.delete(vid);
+      this.symbolMap.delete(model.puppet);
+      model.dispose();
+      model.emit(MODEL_EVENT.COMPILED_REMOVE);
+      model.emit(MODEL_EVENT.COMPILED);
+      return this;
+    }
+    cover(config) {
+      const vid = config.vid;
+      if (!this.map.has(vid)) {
+        console.warn(
+          `${this.MODULE} Compiler: can not found this vid object: ${vid}.`
+        );
+        return this;
+      }
+      Promise.resolve().then(() => {
+        utils.syncObject(config, config, {
+          vid: true,
+          type: true
+        });
+      });
+      return this;
+    }
+    compile(vid, notice) {
+      if (!this.map.has(vid)) {
+        console.warn(
+          `${this.MODULE} Compiler: can not found model which vid is: '${vid}'`
+        );
+        return this;
+      }
+      const model = this.map.get(vid);
+      model.process(notice);
+      const router = notice.path;
+      model.emit(
+        `${MODEL_EVENT.COMPILED_ATTR}:${router ? router + "." : router}${notice.key}`
+      );
+      model.emit(MODEL_EVENT.COMPILED_UPDATE);
+      model.emit(MODEL_EVENT.COMPILED);
+      return this;
+    }
+    compileAll() {
+      const target = this.target;
+      for (const config of Object.values(target)) {
+        this.add(config);
+      }
+      return this;
+    }
+    dispose() {
+      for (const model of this.map.values()) {
+        model.dispose();
+      }
+      this.map.clear();
+      this.target = {};
+      return this;
+    }
+    getObjectSymbol(object) {
+      return this.symbolMap.get(object) || null;
+    }
+    getObjectBySymbol(vid) {
+      var _a;
+      return ((_a = this.map.get(vid)) == null ? void 0 : _a.puppet) || null;
+    }
+    getModelBySymbol(vid) {
+      return this.map.get(vid) || null;
+    }
+    useModel(option, callback) {
+      if (CONFIG_MODEL[option.type]) {
+        console.warn(
+          `${this.MODULE} Compiler: has already exist this model ${option.type}.`
+        );
+        return this;
+      }
+      let Builder = void 0;
+      if (option.shared) {
+        Builder = class extends Model {
+          constructor(params) {
+            super(params);
+          }
+        };
+        for (const key in option.shared) {
+          Builder.prototype[key] = option.shared[key];
+        }
+      }
+      if (option.expand) {
+        const expendModel = function(target, merge) {
+          if (!target) {
+            console.error(
+              `Compiler: model expend error, can not found model witch has not been registered.`,
+              merge.models,
+              CONFIG_MODEL
+            );
+          } else {
+            const targetConfig = target.config;
+            target.config = function() {
+              return Object.assign(targetConfig(), merge.config());
+            };
+            !target.commands && (target.commands = {});
+            target.commands = utils.objectDeepMerge(target.commands, merge.commands, {
+              fresh: false
+            });
+          }
+        };
+        for (const rule of option.expand) {
+          if (typeof rule.models === "string") {
+            expendModel(CONFIG_MODEL[rule.models], rule);
+          } else if (Array.isArray(rule.models)) {
+            for (const key in rule.models) {
+              expendModel(CONFIG_MODEL[key], rule);
+            }
+          } else if (rule.models instanceof RegExp) {
+            for (const key in CONFIG_MODEL) {
+              if (rule.models.test(key)) {
+                expendModel(CONFIG_MODEL[key], rule);
+              }
+            }
+          }
+        }
+      }
+      this.builders.set(option.type, {
+        option,
+        Builder
+      });
+      Object.defineProperty(CONFIG_FACTORY, option.type, {
+        get() {
+          return () => Object.assign(option.config(), { type: option.type });
+        }
+      });
+      CONFIG_TYPE[emunDecamelize(option.type)] = option.type;
+      CONFIGTYPE[emunCamelize(option.type)] = option.type;
+      CONFIG_MODULE[option.type] = this.MODULE;
+      CONFIG_MODEL[option.type] = option;
+      callback && callback(this);
+      return this;
+    }
+    /**
+     * @deprecated use useModel
+     * @param processor
+     * @param callback
+     * @returns
+     */
+    useProcessor(processor, callback) {
+      return this.useModel(processor, callback);
+    }
+  }
+  const globalOption = {
+    proxy: {
+      expand: void 0,
+      timing: "before",
+      toRaw: void 0
+    },
+    symbol: {
+      generator: nanoid.nanoid,
+      validator: (id) => id.length === 21
+    },
+    engine: void 0
+  };
+  const defineOption = function(options) {
+    if (options.proxy) {
+      Object.assign(globalOption.proxy, options.proxy);
+    }
+    if (options.symbol) {
+      Object.assign(globalOption.symbol, options.symbol);
+    }
+  };
+  const containerGetter = function(target, key, receiver) {
+    return Reflect.get(target, key, receiver);
+  };
+  const containerSetter = function(target, key, value, receiver, container) {
+    if (typeof key === "symbol") {
+      return Reflect.set(target, key, value, receiver);
+    }
+    if (target[key] === void 0) {
+      const result = Reflect.set(target, key, value);
+      container.add(value);
+      container.next({
+        operate: "add",
+        path: "",
+        key,
+        value,
+        symbol: key
+      });
+      return result;
+    } else {
+      const result = Reflect.set(target, key, value);
+      container.remove(value.vid);
+      container.add(value);
+      container.next({
+        operate: "set",
+        path: "",
+        key,
+        value,
+        symbol: key
+      });
+      return result;
+    }
+  };
+  const containerDeleter = function(target, key, container) {
+    if (typeof key === "symbol") {
+      return Reflect.deleteProperty(target, key);
+    }
+    const value = target[key];
+    const result = Reflect.deleteProperty(target, key);
+    container.next({
+      operate: "delete",
+      path: "",
+      key,
+      value,
+      symbol: key
+    });
+    container.remove(value.vid);
+    return result;
+  };
+  class Container extends rxjs.Subject {
+    constructor() {
+      super();
+      this.subscriptions = /* @__PURE__ */ new Map();
+      const generator = globalOption.proxy.expand ? (data = {}) => globalOption.proxy.expand(data) : (data = {}) => data;
+      if (globalOption.proxy.timing === "before") {
+        this.space = new Proxy(generator(), {
+          get: containerGetter,
+          set: (target, key, value, receiver) => containerSetter(target, key, value, receiver, this),
+          deleteProperty: (target, key) => containerDeleter(target, key, this)
+        });
+      } else {
+        this.space = generator(
+          new Proxy(
+            {},
+            {
+              get: containerGetter,
+              set: (target, key, value, receiver) => containerSetter(target, key, value, receiver, this),
+              deleteProperty: (target, key) => containerDeleter(target, key, this)
+            }
+          )
+        );
+      }
+    }
+    add(config) {
+      const observer = getObserver(config);
+      if (!observer) {
+        console.error("Container: this config can not observer", config);
+        return;
+      }
+      this.subscriptions.set(
+        observer.target.vid,
+        observer.subscribe((notice) => {
+          this.next({
+            operate: notice.operate,
+            path: notice.path,
+            key: notice.key,
+            value: notice.value,
+            symbol: observer.target.vid
+          });
+        })
+      );
+    }
+    remove(vid) {
+      this.subscriptions.delete(vid);
+    }
+  }
+  const stringify = (key, value) => {
+    if (value === Infinity) {
+      return "Infinity";
+    }
+    if (value === -Infinity) {
+      return "-Infinity";
+    }
+    return value;
+  };
+  const parse = (key, value) => {
+    if (value === "Infinity") {
+      return Infinity;
+    }
+    if (value === "-Infinity") {
+      return -Infinity;
+    }
+    return value;
+  };
+  const clone$1 = (object) => {
+    return JSON.parse(JSON.stringify(object, stringify), parse);
+  };
+  const JSONHandler = {
+    stringify,
+    parse,
+    clone: clone$1
+  };
+  const JSONHandler$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    clone: clone$1,
+    default: JSONHandler,
+    parse,
+    stringify
+  }, Symbol.toStringTag, { value: "Module" }));
+  const generateConfig = function(type, merge, options = {
+    observer: true,
+    strict: true,
+    warn: true
+  }) {
+    if (options.observer === void 0) {
+      options.observer = true;
+    }
+    if (options.strict === void 0) {
+      options.strict = true;
+    }
+    if (options.warn === void 0) {
+      options.warn = true;
+    }
+    if (options.handler === void 0) {
+      options.handler = globalOption.proxy.expand;
+    }
+    if (!CONFIG_FACTORY[type]) {
+      console.error(`type: ${type} can not be found in configList.`);
+      return {
+        vid: "",
+        type
+      };
+    }
+    const recursion = (config, merge2) => {
+      for (const key in merge2) {
+        if (config[key] === void 0) {
+          !options.strict && (config[key] = merge2[key]);
+          options.strict && options.warn && console.warn(`'${type}' config can not set key: ${key}`);
+          continue;
+        }
+        if (typeof merge2[key] === "object" && merge2[key] !== null && !Array.isArray(merge2[key])) {
+          if (config[key] === null) {
+            config[key] = { ...merge2[key] };
+          }
+          recursion(config[key], merge2[key]);
+        } else {
+          config[key] = merge2[key];
+        }
+      }
+    };
+    let initConfig = CONFIG_FACTORY[type]();
+    if (initConfig.vid === "") {
+      initConfig.vid = globalOption.symbol.generator();
+    }
+    if (merge) {
+      delete merge.type;
+      recursion(initConfig, merge);
+    }
+    if (options.observer === false) {
+      return initConfig;
+    }
+    if (options.handler && globalOption.proxy.timing === "before") {
+      initConfig = options.handler(initConfig);
+    }
+    let ob = observable(initConfig);
+    if (options.handler && globalOption.proxy.timing === "after") {
+      ob = options.handler(ob);
+    }
+    if (generateConfig.autoInject && generateConfig.injectEngine) {
+      const engine = generateConfig.injectEngine;
+      engine.applyConfig(ob);
+      if (generateConfig.injectScene) {
+        if (isObjectType(initConfig.type) && initConfig.type !== CONFIG_TYPE.SCENE) {
+          let sceneConfig = null;
+          if (typeof generateConfig.injectScene === "boolean") {
+            sceneConfig = engine.getObjectConfig(engine.scene);
+          } else if (typeof generateConfig.injectScene === "string") {
+            sceneConfig = engine.getConfigBySymbol(generateConfig.injectScene);
+          }
+          if (!sceneConfig) {
+            console.warn(
+              `current engine scene can not found it config`,
+              engine,
+              engine.scene
+            );
+          } else {
+            sceneConfig.children.push(
+              initConfig.vid
+            );
+          }
+        }
+      }
+      return ob;
+    }
+    return ob;
+  };
+  generateConfig.autoInject = true;
+  generateConfig.injectScene = false;
+  generateConfig.injectEngine = null;
+  const clone = (object, options = {}) => {
+    let jsonObject = JSON.stringify(object, JSONHandler.stringify);
+    const detail = {};
+    !options.filter && (options.filter = ["assets"]);
+    const modulekeys = Object.keys(object).filter(
+      (key) => !options.filter.includes(key)
+    );
+    for (const modulekey of modulekeys) {
+      for (const config of object[modulekey]) {
+        const vid = config.vid;
+        const newVid = createSymbol();
+        jsonObject = jsonObject.replace(new RegExp(vid, "g"), newVid);
+        if (options.detail) {
+          detail[vid] = newVid;
+        }
+      }
+    }
+    const newConfig = JSON.parse(jsonObject, JSONHandler.parse);
+    if (options.fillName) {
+      if (typeof options.fillName === "function") {
+        for (const modulekey of modulekeys) {
+          for (const config of newConfig[modulekey]) {
+            if (!config.name) {
+              config.name = options.fillName(config);
+            }
+          }
+        }
+      } else {
+        for (const modulekey of modulekeys) {
+          for (const config of newConfig[modulekey]) {
+            if (!config.name) {
+              config.name = `${config.type}-${config.vid.slice(-2)}`;
+            }
+          }
+        }
+      }
+    }
+    return options.detail ? { config: newConfig, detail } : newConfig;
+  };
+  const handler$1 = (object, handler2, options = {
+    filter: ["assets"],
+    clone: true
+  }) => {
+    const config = options.clone ? JSONHandler.clone(object) : object;
+    !options.filter && (options.filter = ["assets"]);
+    const modulekeys = Object.keys(config).filter(
+      (key) => !options.filter.includes(key)
+    );
+    for (const modulekey of modulekeys) {
+      const module2 = config[modulekey];
+      module2.forEach((elem, i, arr) => {
+        arr[i] = handler2(elem);
+      });
+    }
+    return config;
+  };
+  const planish = function(configs) {
+    const result = {};
+    for (const module2 of Object.keys(configs)) {
+      for (const config of configs[module2]) {
+        result[config.name] = config;
+      }
+    }
+    return result;
+  };
+  const observable$1 = function(object, obCallback) {
+    if (typeof object === "string") {
+      object = JSON.parse(object, JSONHandler.parse);
+    }
+    return handler$1(JSONHandler.clone(object), (c) => {
+      c = generateConfig(c.type, c, { strict: false });
+      if (obCallback) {
+        return obCallback(c);
+      } else {
+        return c;
+      }
+    });
+  };
+  const template = {
+    clone,
+    handler: handler$1,
+    planish,
+    observable: observable$1
+  };
+  const template$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    clone,
+    default: template,
+    handler: handler$1,
+    observable: observable$1,
+    planish
+  }, Symbol.toStringTag, { value: "Module" }));
+  class AntiShake {
+    constructor() {
+      this.list = [];
+      this.time = 0;
+    }
+    exec(fun) {
+      if (fun(false)) {
+        return;
+      }
+      if (!this.list.includes(fun)) {
+        this.list.push(fun);
+      }
+      let cacheCount = 0;
+      const autoSequential = () => {
+        this.timer && clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+          const nextList = [];
+          for (const fun2 of this.list) {
+            if (!fun2(false)) {
+              nextList.push(fun2);
+            }
+          }
+          if (nextList.length) {
+            if (nextList.length === cacheCount) {
+              for (const fun2 of nextList) {
+                fun2(true);
+              }
+              this.list = [];
+            } else {
+              cacheCount = nextList.length;
+              this.list = nextList;
+              autoSequential();
+            }
+          } else {
+            this.list = [];
+          }
+        }, this.time);
+      };
+      autoSequential();
+    }
+    append(fun) {
+      if (this.list.length && !this.list.includes(fun)) {
+        this.list.push(fun);
+      } else {
+        this.exec(fun);
+      }
+    }
+    nextTick(fun) {
+      setTimeout(() => {
+        fun();
+      }, this.time);
+    }
+  }
+  const globalAntiShake = new AntiShake();
+  class Converter {
+    constructor(params) {
+      this.MODULE = "";
+      this.container = new Container();
+      this.ruler = params.ruler;
+      this.MODULE = params.module;
+      this.container.subscribe((notice) => {
+        this.ruler.execute(notice);
+      });
+    }
+    getData() {
+      return this.container.space;
+    }
+    existSymbol(vid) {
+      return Boolean(this.container.space[vid]);
+    }
+    addConfig(config) {
+      this.container.space[config.vid] = config;
+      return this;
+    }
+    getConfig(vid) {
+      return this.container.space[vid];
+    }
+    removeConfig(vid) {
+      const data = this.container.space;
+      data[vid] !== void 0 && delete data[vid];
+    }
+    addCompiler(compiler) {
+      compiler.setTarget(this.container.space);
+      compiler.compileAll();
+      this.ruler.link(compiler);
+      return this;
+    }
+    /**
+     * 导出json化配置单
+     * @returns json config
+     */
+    toJSON(compress = true) {
+      if (!compress) {
+        return JSON.stringify(
+          Object.values(this.container.space),
+          stringify
+        );
+      } else {
+        return JSON.stringify(this.exportConfig(), stringify);
+      }
+    }
+    /**
+     * 导出配置单
+     * @param compress 是否压缩配置单 default true
+     * @returns config
+     */
+    exportConfig(compress = true) {
+      if (!compress) {
+        return Object.values(clone$1(this.container.space));
+      } else {
+        const data = this.container.space;
+        const target = [];
+        const cacheConfigTemplate = {};
+        const recursion = (config, template2, result = {}) => {
+          for (const key in config) {
+            if (["vid", "type"].includes(key)) {
+              result[key] = config[key];
+              continue;
+            }
+            if (typeof config[key] === "object" && config[key] !== null) {
+              if (Array.isArray(config[key])) {
+                if (!config[key].length) {
+                  continue;
+                }
+                result[key] = config[key].map((elem) => {
+                  if (typeof elem === "object" && elem !== null) {
+                    return clone$1(elem);
+                  } else {
+                    return elem;
+                  }
+                });
+                continue;
+              }
+              result[key] = {};
+              if (!template2[key]) {
+                result[key] = clone$1(config[key]);
+              } else {
+                recursion(config[key], template2[key], result[key]);
+                if (Object.keys(result[key]).length === 0) {
+                  delete result[key];
+                }
+              }
+            } else {
+              if (template2[key] !== config[key]) {
+                result[key] = config[key];
+              }
+            }
+          }
+        };
+        for (const config of Object.values(data)) {
+          if (!cacheConfigTemplate[config.type]) {
+            if (!CONFIG_FACTORY[config.type]) {
+              console.error(`can not font some config with: ${config.type}`);
+              continue;
+            }
+            cacheConfigTemplate[config.type] = CONFIG_FACTORY[config.type]();
+          }
+          const temp = {};
+          recursion(config, cacheConfigTemplate[config.type], temp);
+          target.push(temp);
+        }
+        return target;
+      }
+    }
+    /**
+     * 加载配置
+     * @param configs this module configs
+     * @returns true
+     */
+    load(configs) {
+      const data = this.container.space;
+      const cacheConfigTemplate = {};
+      const restore = (config, template2) => {
+        for (const key in template2) {
+          if (typeof config[key] === "object" && config[key] !== null && typeof template2[key] === "object" && template2[key] !== null) {
+            restore(config[key], template2[key]);
+          } else if (config[key] === void 0) {
+            config[key] = template2[key];
+          }
+        }
+      };
+      for (const config of configs) {
+        if (!cacheConfigTemplate[config.type]) {
+          if (!CONFIG_FACTORY[config.type]) {
+            console.error(`can not font some config with: ${config.type}`);
+            continue;
+          }
+          cacheConfigTemplate[config.type] = CONFIG_FACTORY[config.type]();
+        }
+        restore(config, cacheConfigTemplate[config.type]);
+        data[config.vid] = config;
+      }
+      return this;
+    }
+    remove(configs) {
+      const data = this.container.space;
+      for (const config of configs) {
+        data[config.vid] !== void 0 && delete data[config.vid];
+      }
+      return this;
+    }
+  }
+  const arrayMethods = [
+    "push",
+    "pop",
+    "shift",
+    "unshift",
+    "splice",
+    "sort",
+    "reverse"
+  ];
+  const arrayMutation = /* @__PURE__ */ new WeakSet();
+  const proxyGetter = function(target, key, receiver) {
+    if (Array.isArray(target) && arrayMethods.includes(key)) {
+      arrayMutation.add(target);
+    }
+    return Reflect.get(target, key, receiver);
+  };
+  const proxySetter = function(target, key, value, receiver) {
+    const path = getPath(target);
+    const observer = getObserver(target);
+    if (typeof key === "symbol" || observer.ignore(utils.extendPath(path, key))) {
+      return Reflect.set(target, key, value, receiver);
+    }
+    if (utils.isObject(value) && !hasObserver(value)) {
+      value = react(observer, value, target, key);
+    }
+    if (target[key] === void 0) {
+      if (utils.isObject(value)) {
+        value[Symbol.for(SYMBOL_KEY)] = key;
+        utils.isArray(value) && cacheArray(value);
+      }
+      utils.isArray(target) && arrayMutation.delete(target);
+      const result2 = Reflect.set(target, key, value);
+      utils.isArray(target) && cacheArray(target);
+      observer.next({
+        operate: "add",
+        path,
+        key,
+        value
+      });
+      return result2;
+    }
+    const oldValue = target[key];
+    const result = Reflect.set(target, key, value);
+    if (utils.isArray(target)) {
+      if (arrayMutation.has(target) && key === "length") {
+        const cacheValue = getCacheArray(target);
+        if (!cacheValue) {
+          if (Array.isArray(oldValue)) {
+            console.error("array value is not be cached:", target);
+          }
+          return result;
+        }
+        updateArraySymbol(target);
+        const num = Math.abs(cacheValue.length - target.length);
+        const operate = cacheValue.length >= target.length ? "delete" : "add";
+        const contrast = cacheValue.length >= target.length ? target : cacheValue;
+        let execNum = 0;
+        let index = 0;
+        for (const member of operate === "delete" ? cacheValue : target) {
+          if (!contrast.includes(member)) {
+            observer.next({
+              operate,
+              path,
+              key: index.toString(),
+              value: member
+            });
+            execNum += 1;
+            if (execNum === num) {
+              break;
+            }
+          }
+          index += 1;
+        }
+        cacheArray(target);
+        arrayMutation.delete(target);
+        return result;
+      } else if (arrayMutation.has(target) || key === "length") {
+        return result;
+      }
+    }
+    observer.next({
+      operate: "set",
+      path,
+      key,
+      value
+    });
+    return result;
+  };
+  const proxyDeleter = function(target, key) {
+    const path = getPath(target);
+    const observer = getObserver(target);
+    if (typeof key === "symbol" || observer.ignore(path)) {
+      return Reflect.deleteProperty(target, key);
+    }
+    const value = target[key];
+    const result = Reflect.deleteProperty(target, key);
+    if (utils.isArray(target)) {
+      return result;
+    }
+    observer.next({
+      operate: "delete",
+      path,
+      key,
+      value
+    });
+    return result;
+  };
+  const handler = {
+    get: proxyGetter,
+    set: proxySetter,
+    deleteProperty: proxyDeleter
+  };
+  const react = function(observer, object, father, key) {
+    if (!utils.isObject(object)) {
+      return object;
+    }
+    if (hasObserver(object)) {
+      return object;
+    }
+    const path = father ? getPath(father) : "";
+    if (observer.ignore(path)) {
+      return object;
+    }
+    father && (object[Symbol.for(SYMBOL_FATHER)] = father);
+    object[Symbol.for(SYMBOL_OB)] = observer;
+    for (const key2 in object) {
+      const tempPath = utils.extendPath(path, key2);
+      if (observer.ignore(tempPath)) {
+        continue;
+      }
+      if (utils.isObject(object[key2])) {
+        if (utils.isArray(object[key2])) {
+          const rawArray = object[key2];
+          object[key2] = react(
+            observer,
+            object[key2],
+            object
+          );
+          cacheArray(rawArray);
+        } else {
+          object[key2] = react(
+            observer,
+            object[key2],
+            object
+          );
+        }
+        object[key2][Symbol.for(SYMBOL_KEY)] = key2;
+      }
+    }
+    if (key) {
+      object[Symbol.for(SYMBOL_KEY)] = key;
+    }
+    const proxy = new Proxy(object, handler);
+    return proxy;
+  };
+  const _Observer = class _Observer extends rxjs.Subject {
+    constructor(object) {
+      super();
+      this.disable = false;
+      this.target = react(this, object);
+    }
+    ignore(path) {
+      const split = path.indexOf(".");
+      if (split === -1) {
+        return _Observer.IGNORE[path];
+      }
+      return _Observer.IGNORE[path.slice(0, split)];
+    }
+    next(value) {
+      if (this.disable) {
+        return;
+      }
+      super.next(value);
+      const model = getModel(this.target);
+      if (model) {
+        model.emit(MODEL_EVENT.NOTICED);
+      }
+    }
+  };
+  _Observer.IGNORE = {
+    vid: true,
+    type: true,
+    alias: true,
+    meta: true
+  };
+  let Observer = _Observer;
+  const observable = function(object) {
+    const observer = new Observer(object);
+    return observer.target;
+  };
+  const slientSync = function(config, fun) {
+    const ob = getObserver(config);
+    if (!ob) {
+      console.warn(`this object can not found it observer:`, config);
+      return;
+    }
+    ob.disable = true;
+    fun();
+    ob.disable = false;
+  };
+  const DEFAULT_RULE = {
+    SYMBOL_VALIDATOR(input) {
+      return globalOption.symbol.validator(input.symbol);
+    },
+    OPERATE_ADD({ operate, path, symbol, key, value }, compiler) {
+      if (operate === "add" && !path.length && symbol === key) {
+        compiler.add(value);
+        return false;
+      } else {
+        return true;
+      }
+    },
+    OPERATE_DELETE({ operate, path, value }, compiler) {
+      if (operate === "delete" && !path.length) {
+        compiler.remove(value);
+        return false;
+      } else {
+        return true;
+      }
+    },
+    OPERATE_COVER({ operate, path, value, key, symbol }, compiler) {
+      if (operate === "set" && !path.length && key === symbol) {
+        compiler.cover(value);
+        return false;
+      } else {
+        return true;
+      }
+    },
+    OPERATE_COMPILE(input, compiler) {
+      compiler.compile(input.symbol, input);
+      return false;
+    }
+  };
+  class Ruler {
+    constructor(rules) {
+      this.rules = [];
+      this.pointer = null;
+      if (rules) {
+        this.rules = rules;
+      } else {
+        this.rules.push(
+          DEFAULT_RULE.SYMBOL_VALIDATOR,
+          DEFAULT_RULE.OPERATE_ADD,
+          DEFAULT_RULE.OPERATE_DELETE,
+          DEFAULT_RULE.OPERATE_COVER,
+          DEFAULT_RULE.OPERATE_COMPILE
+        );
+      }
+    }
+    link(compiler) {
+      this.compiler = compiler;
+    }
+    execute(input) {
+      for (const rule of this.rules) {
+        if (!rule(input, this.compiler)) {
+          break;
+        }
+      }
+    }
+    remove(rule) {
+      if (this.rules.includes(rule)) {
+        const index = this.rules.indexOf(rule);
+        this.rules.splice(index, 1);
+      } else {
+        console.warn(`Ruler: can not found rule`, rule, this.rules);
+      }
+    }
+    add(rule, index) {
+      if (this.rules.includes(rule)) {
+        console.warn(`Ruler: rules has already exist this rule`, this.rules);
+        return this;
+      }
+      if (index !== void 0) {
+        this.rules.splice(index, 0, rule);
+        return this;
+      }
+      if (this.pointer === null) {
+        console.error(
+          `Ruler:index is undefined, need a index or use before and after api to set a index`
+        );
+        return this;
+      }
+      this.rules.splice(this.pointer, 0, rule);
+      return this;
+    }
+    before(rule) {
+      if (!this.rules.includes(rule)) {
+        console.warn(`Ruler: rules not found this rule`, this.rules);
+        return this;
+      }
+      this.pointer = this.rules.indexOf(rule);
+      return this;
+    }
+    after(rule) {
+      if (!this.rules.includes(rule)) {
+        console.warn(`Ruler: rules not found this rule`, this.rules);
+        return this;
+      }
+      this.pointer = this.rules.indexOf(rule) + 1;
+      return this;
+    }
+    push(rule) {
+      if (this.rules.includes(rule)) {
+        console.warn(`Ruler: rules has already exist this rule`, this.rules);
+        return this;
+      }
+      this.rules.push(rule);
+      return this;
+    }
+    unshift(rule) {
+      if (this.rules.includes(rule)) {
+        console.warn(`Ruler: rules has already exist this rule`, this.rules);
+        return this;
+      }
+      this.rules.unshift(rule);
+      return this;
+    }
+    pop() {
+      this.rules.pop();
+      return this;
+    }
+    shift() {
+      this.rules.shift();
+      return this;
+    }
+  }
+  const defineRule = function(rules) {
+    return rules;
+  };
+  const getBasicConfig = function() {
+    return {
+      vid: "",
+      type: "",
+      name: "",
+      alias: "",
+      meta: {}
+    };
+  };
+  const getSymbolConfig = getBasicConfig;
+  const uniqueSymbol = function(type) {
+    return `DEFUALT-${type}`;
+  };
+  const createSymbol = function() {
+    return globalOption.symbol.generator();
+  };
+  const emptyHandler = function() {
+  };
+  class Moduler {
+    constructor(module2) {
+      this.type = "";
+      this.module = module2;
+      this.type = module2.type;
+      this.ruler = new Ruler(module2.rule);
+      this.compiler = module2.compiler ? new module2.compiler({
+        module: module2.type,
+        models: module2.models
+      }) : new Compiler({
+        module: module2.type,
+        models: module2.models
+      });
+      this.converter = new Converter({
+        module: module2.type,
+        ruler: this.ruler
+      }).addCompiler(this.compiler);
+    }
+  }
+  const defineModule = function(module2) {
+    return module2;
+  };
+  class CompilerManager extends core.EventDispatcher {
+    constructor() {
+      super();
+      this.compilerMap = /* @__PURE__ */ new Map();
+    }
+    /**
+     * 编译器扩展
+     * @param compiler
+     */
+    extend(compiler, focus = false) {
+      if (this.compilerMap.has(compiler.MODULE)) {
+        console.warn("compiler manager has exist this compiler", compiler);
+        if (focus) {
+          this.compilerMap.set(compiler.MODULE, compiler);
+        }
+      } else {
+        this.compilerMap.set(compiler.MODULE, compiler);
+      }
+    }
+    getCompiler(module2) {
+      if (this.compilerMap.has(module2)) {
+        return this.compilerMap.get(module2);
+      } else {
+        console.warn(`can not found this type in compiler manager: ${module2}`);
+        return null;
+      }
+    }
+    /**
+     * 获取该three物体的vid标识
+     * @param object three object
+     * @returns vid or null
+     */
+    getObjectSymbol(object) {
+      for (const compiler of this.compilerMap.values()) {
+        const vid = compiler.getObjectSymbol(object);
+        if (vid) {
+          return vid;
+        }
+      }
+      return null;
+    }
+    /**
+     * 通过vid标识获取相应的three对象
+     * @param vid vid标识
+     * @returns three object || null
+     */
+    getObjectBySymbol(vid) {
+      for (const compiler of this.compilerMap.values()) {
+        const object = compiler.getObjectBySymbol(vid);
+        if (object) {
+          return object;
+        }
+      }
+      return null;
+    }
+    // TODO: getModelBySymbol
+    getModelBySymbol(vid) {
+      for (const compiler of this.compilerMap.values()) {
+        const model = compiler.getModelBySymbol(vid);
+        if (model) {
+          return model;
+        }
+      }
+      return null;
+    }
+    /**
+     * @deprecated use getObjectFromModule
+     * @param module
+     * @param vid
+     * @returns
+     */
+    getObjectfromModule(module2, vid) {
+      return this.getObjectFromModule(module2, vid);
+    }
+    getObjectFromModule(module2, vid) {
+      var _a;
+      if (!this.compilerMap.has(module2)) {
+        console.warn(`compiler manager can not found this module: ${module2}`);
+        return null;
+      }
+      const compiler = this.compilerMap.get(module2);
+      return ((_a = compiler.map.get(vid)) == null ? void 0 : _a.puppet) || null;
+    }
+    /**
+     * @deprecated use getObjectFromModules
+     * @param modules
+     * @param vid
+     * @returns
+     */
+    getObjectfromModules(modules, vid) {
+      return this.getObjectFromModules(modules, vid);
+    }
+    getObjectFromModules(modules, vid) {
+      var _a;
+      if (!Array.isArray(modules)) {
+        modules = Object.keys(modules);
+      }
+      for (const module2 of modules) {
+        if (!this.compilerMap.has(module2)) {
+          console.warn(`compiler manager can not found this module: ${module2}`);
+          continue;
+        }
+        const compiler = this.compilerMap.get(module2);
+        if (compiler.map.has(vid)) {
+          return (_a = compiler.map.get(vid)) == null ? void 0 : _a.puppet;
+        }
+      }
+      return null;
+    }
+    dispose() {
+      for (const compiler of this.compilerMap.values()) {
+        compiler.dispose();
+      }
+      this.compilerMap.clear();
+      return this;
+    }
+  }
+  const COMPILER_MANAGER_PLUGIN = "CompilerManagerPlugin";
+  const CompilerManagerPlugin = function() {
+    return {
+      name: COMPILER_MANAGER_PLUGIN,
+      install(engine) {
+        const compilerManager = new CompilerManager();
+        engine.compilerManager = compilerManager;
+        engine.getObjectSymbol = function(object) {
+          return compilerManager.getObjectSymbol(object);
+        };
+        engine.getObjectBySymbol = function(vid) {
+          return compilerManager.getObjectBySymbol(vid);
+        };
+        engine.getObjectfromModule = function(module2, vid) {
+          return compilerManager.getObjectfromModule(module2, vid);
+        };
+        engine.getObjectfromModules = function(modules, vid) {
+          return compilerManager.getObjectfromModules(modules, vid);
+        };
+        engine.getObjectFromModule = function(module2, vid) {
+          return compilerManager.getObjectFromModule(module2, vid);
+        };
+        engine.getObjectFromModules = function(modules, vid) {
+          return compilerManager.getObjectFromModules(modules, vid);
+        };
+        engine.getObject3D = function(vid) {
+          return compilerManager.getObjectFromModules(OBJECT_MODULE, vid);
+        };
+      },
+      dispose(engine) {
+        engine.compilerManager.dispose();
+        delete engine.compilerManager;
+        delete engine.getObjectSymbol;
+        delete engine.getObjectBySymbol;
+        delete engine.getObjectfromModule;
+        delete engine.getObjectfromModules;
+        delete engine.getObjectFromModule;
+        delete engine.getObjectFromModules;
+        delete engine.getObject3D;
+      }
+    };
+  };
+  class DataSupportManager extends core.EventDispatcher {
+    constructor() {
+      super();
+      this.dataSupportMap = /* @__PURE__ */ new Map();
+    }
+    /**
+     * 编译器扩展
+     * @param compiler
+     */
+    extend(dataSupport, focus = false) {
+      if (this.dataSupportMap.has(dataSupport.MODULE)) {
+        console.warn(
+          "dataSupport manager has exist this dataSupport",
+          dataSupport
+        );
+        if (focus) {
+          this.dataSupportMap.set(dataSupport.MODULE, dataSupport);
+        }
+      } else {
+        this.dataSupportMap.set(dataSupport.MODULE, dataSupport);
+      }
+    }
+    /**
+     * 获取该模块下的支持插件
+     * @param type MODULETYPE
+     * @returns Converter
+     */
+    getDataSupport(type) {
+      if (this.dataSupportMap.has(type)) {
+        return this.dataSupportMap.get(type);
+      } else {
+        console.warn(`can not found this type in dataSupportManager: ${type}`);
+        return null;
+      }
+    }
+    /**
+     * 通过vid标识获取相应配置对象
+     * @param vid vid标识
+     * @returns config || null
+     */
+    getConfigBySymbol(vid) {
+      const dataSupportList = this.dataSupportMap.values();
+      for (const dataSupport of dataSupportList) {
+        const config = dataSupport.getConfig(vid);
+        if (config) {
+          return config;
+        }
+      }
+      return null;
+    }
+    /**
+     * @deprecated use getConfigFromModule
+     * @param module
+     * @param vid
+     * @returns
+     */
+    getConfigfromModule(module2, vid) {
+      return this.getConfigFromModule(module2, vid);
+    }
+    getConfigFromModule(module2, vid) {
+      if (!this.dataSupportMap.has(module2)) {
+        console.warn(`data support manager can not found this module: ${module2}`);
+        return null;
+      }
+      const dataSupport = this.dataSupportMap.get(module2);
+      return dataSupport.getConfig(vid) || null;
+    }
+    /**
+     * @deprecated use getConfigFromModules
+     * @param modules
+     * @param vid
+     * @returns
+     */
+    getConfigfromModules(modules, vid) {
+      return this.getConfigFromModules(modules, vid);
+    }
+    getConfigFromModules(modules, vid) {
+      if (!Array.isArray(modules)) {
+        modules = Object.keys(modules);
+      }
+      for (const module2 of modules) {
+        if (!this.dataSupportMap.has(module2)) {
+          console.warn(
+            `data support manager can not found this module: ${module2}`
+          );
+          continue;
+        }
+        const dataSupport = this.dataSupportMap.get(module2);
+        const config = dataSupport.getConfig(vid);
+        if (config) {
+          return config;
+        }
+      }
+      return null;
+    }
+    /**
+     * 通过vid标识移除相关配置对象
+     * @param vid ...vid标识
+     * @returns this
+     */
+    removeConfigBySymbol(...vids) {
+      for (const vid of vids) {
+        for (const dataSupport of this.dataSupportMap.values()) {
+          if (dataSupport.existSymbol(vid)) {
+            dataSupport.removeConfig(vid);
+            break;
+          }
+        }
+      }
+      return this;
+    }
+    /**
+     * 通过vid标识获取该标识所处的模块
+     * @param vid vid标识
+     * @returns MODULETYPE || null
+     */
+    getModuleBySymbol(vid) {
+      const dataSupportList = this.dataSupportMap.values();
+      for (const dataSupport of dataSupportList) {
+        if (dataSupport.existSymbol(vid)) {
+          return dataSupport.MODULE;
+        }
+      }
+      return null;
+    }
+    /**
+     * 应用配置对象
+     * @param config vis相关配置对象
+     * @returns this
+     */
+    applyConfig(...configs) {
+      for (const config of configs) {
+        const module2 = getModule(config.type);
+        if (module2) {
+          this.dataSupportMap.get(module2).addConfig(config);
+        } else {
+          console.warn(
+            `dataSupportManager can not found this config module: ${config.type}`
+          );
+        }
+      }
+      return this;
+    }
+    /**
+     * 根据配置单加载对象
+     * @param config 符合vis配置选项的配置单对象
+     * @returns this
+     */
+    load(config) {
+      const dataSupportMap = this.dataSupportMap;
+      dataSupportMap.forEach((dataSupport, module2) => {
+        config[module2] && dataSupport.load(config[module2]);
+      });
+      return this;
+    }
+    /**
+     * 根据模块加载配置
+     * @param config
+     * @param module
+     * @returns
+     */
+    loadByModule(config, module2) {
+      const dataSupport = this.dataSupportMap.get(module2);
+      if (!dataSupport) {
+        console.warn(`DataSupportManager can not support this module: ${module2}`);
+        return this;
+      }
+      dataSupport.load(config);
+      return this;
+    }
+    /**
+     * 根据配置单移除相关对象
+     * @param config  符合vis配置选项的配置单对象
+     * @returns this
+     */
+    remove(config) {
+      const dataSupportMap = this.dataSupportMap;
+      dataSupportMap.forEach((dataSupport, module2) => {
+        config[module2] && dataSupport.remove(config[module2]);
+      });
+      return this;
+    }
+    /**
+     * 获取JSON化的配置单
+     * @param extendsConfig 需要额外JSON化的配置对象，会被dataSupport的对象覆盖
+     * @param compress 是否压缩配置单 default true
+     * @returns JSON string
+     */
+    toJSON(extendsConfig = {}, compress = true) {
+      return JSON.stringify(
+        this.exportConfig(extendsConfig, compress),
+        stringify
+      );
+    }
+    /**
+     * 导出配置单
+     * @param extendsConfig 拓展配置对象
+     * @param compress 是否压缩配置单 default true
+     * @returns LoadOptions
+     */
+    exportConfig(extendsConfig = {}, compress = true) {
+      const dataSupportMap = this.dataSupportMap;
+      dataSupportMap.forEach((dataSupport, module2) => {
+        extendsConfig[module2] = dataSupport.exportConfig(compress);
+      });
+      return extendsConfig;
+    }
+  }
+  const DATA_SUPPORT_MANAGER_PLUGIN = "DataSupportManagerPlugin";
+  const DataSupportManagerPlugin = function() {
+    return {
+      name: DATA_SUPPORT_MANAGER_PLUGIN,
+      install(engine) {
+        const dataSupportManager = new DataSupportManager();
+        engine.dataSupportManager = dataSupportManager;
+        engine.applyConfig = function(...config) {
+          dataSupportManager.applyConfig(...config);
+          return engine;
+        };
+        engine.getConfigBySymbol = function(vid) {
+          return dataSupportManager.getConfigBySymbol(vid);
+        };
+        engine.getConfigfromModule = function(module2, vid) {
+          return dataSupportManager.getConfigfromModule(module2, vid);
+        };
+        engine.getConfigfromModules = function(modules, vid) {
+          return dataSupportManager.getConfigfromModules(modules, vid);
+        };
+        engine.removeConfigBySymbol = function(...vids) {
+          dataSupportManager.removeConfigBySymbol(...vids);
+          return engine;
+        };
+        engine.toJSON = function() {
+          return dataSupportManager.toJSON();
+        };
+        engine.exportConfig = function() {
+          return dataSupportManager.exportConfig();
+        };
+      },
+      dispose(engine) {
+        delete engine.dataSupportManager;
+        delete engine.applyConfig;
+        delete engine.getConfigBySymbol;
+        delete engine.removeConfigBySymbol;
+        delete engine.toJSON;
+        delete engine.exportConfig;
+      }
+    };
+  };
+  class Parser {
+  }
+  class DefaultParser extends Parser {
+    constructor() {
+      super(...arguments);
+      this.selector = (url, resource, parseMap) => {
+        return parseMap.get(DefaultParser) || null;
+      };
+    }
+    parse({ url, resource, configMap, resourceMap }) {
+      resourceMap.set(url, resource);
+    }
+  }
+  var RESOURCE_EVENT = /* @__PURE__ */ ((RESOURCE_EVENT2) => {
+    RESOURCE_EVENT2["MAPPED"] = "mapped";
+    return RESOURCE_EVENT2;
+  })(RESOURCE_EVENT || {});
+  class ResourceManager extends core.EventDispatcher {
+    constructor(resources = {}) {
+      super();
+      this.configMap = /* @__PURE__ */ new Map();
+      this.resourceMap = /* @__PURE__ */ new Map();
+      this.paserMap = /* @__PURE__ */ new Map();
+      this.defalutParser = new DefaultParser();
+      const map = /* @__PURE__ */ new Map();
+      for (const key in resources) {
+        if (map.has(key)) {
+          console.warn(
+            `resourceManager construct params rescource already exist: ${key}, that will be cover.`
+          );
+        }
+        map.set(key, resources[key]);
+      }
+      this.mappingResource(map);
+    }
+    /**
+     * 添加解析器
+     * @param parser  extends VIS.Parser
+     * @returns this
+     */
+    addParser(parser) {
+      if (this.paserMap.has(parser.constructor)) {
+        return this;
+      }
+      this.paserMap.set(parser.constructor, parser);
+      return this;
+    }
+    /**
+     *  根据加载好的资源拆解映射为最小资源单位与形成相应的配置与结构
+     * @param loadResourceMap loaderManager的resourceMap
+     * @param options options.handler: {url, hanlder}可以根据特定的url指定特定的解析器
+     * @returns this
+     */
+    mappingResource(loadResourceMap, options) {
+      const configMap = this.configMap;
+      const resourceMap = this.resourceMap;
+      const parserList = [...this.paserMap.values()];
+      const resourceConfig = {};
+      for (const [url, resource] of loadResourceMap.entries()) {
+        if ((options == null ? void 0 : options.parser) && options.parser[url]) {
+          options.parser[url].parse({
+            url,
+            resource,
+            configMap,
+            resourceMap
+          });
+          continue;
+        }
+        if ((options == null ? void 0 : options.selector) && options.selector[url]) {
+          const parser2 = options.selector[url](url, resource, this.paserMap);
+          if (!parser2) {
+            console.warn(
+              `resource manager hanlder can not found this resource parser: `,
+              resource,
+              options.selector[url]
+            );
+            continue;
+          }
+          parser2.parse({
+            url,
+            resource,
+            configMap,
+            resourceMap
+          });
+          resourceConfig[url] = this.getResourceConfig(url);
+          continue;
+        }
+        let parser = null;
+        for (const TParser of parserList) {
+          parser = TParser.selector(url, resource, this.paserMap);
+          if (parser) {
+            break;
+          }
+        }
+        if (!parser) {
+          console.warn(
+            `resouce manager can not found some handler to parser this resource, that will use default parser do it:`,
+            resource
+          );
+          this.defalutParser.parse({
+            url,
+            resource,
+            configMap,
+            resourceMap
+          });
+          continue;
+        }
+        parser.parse({
+          url,
+          resource,
+          configMap,
+          resourceMap
+        });
+        resourceConfig[url] = this.getResourceConfig(url);
+      }
+      this.dispatchEvent({
+        type: "mapped",
+        configMap,
+        resourceMap,
+        resourceConfig
+      });
+      return this;
+    }
+    /**
+     * 获取资源的配置单，该配置单根据资源结构生成
+     * @param url 资源url
+     * @returns LoadOptions
+     */
+    getResourceConfig(url) {
+      const configMap = this.configMap;
+      const loadOptions = {};
+      [...configMap.keys()].filter((key) => key.startsWith(url)).forEach((url2) => {
+        const config = configMap.get(url2);
+        if (!config) {
+          console.error(`unknow error: can not found config by url: ${url2}`);
+        } else {
+          const module2 = getModule(config.type);
+          if (!module2) {
+            console.error(
+              `unknow error: can not found module by type: ${config.type}`,
+              config
+            );
+          } else {
+            !loadOptions[module2] && (loadOptions[module2] = []);
+            loadOptions[module2].push(config);
+          }
+        }
+      });
+      return loadOptions;
+    }
+    /**
+     * 是否有此资源
+     * @param url 资源 url
+     * @returns boolean
+     */
+    hasResource(url) {
+      return this.resourceMap.has(url);
+    }
+    /**
+     * 移除url下的所有资源
+     * @param url url
+     * @returns this
+     */
+    remove(url) {
+      const configMap = this.configMap;
+      const resourceMap = this.resourceMap;
+      [...configMap.keys()].filter((key) => key.startsWith(url)).forEach((url2) => {
+        configMap.delete(url2);
+        const resource = resourceMap.get(url2);
+        resource.dispose && resource.dispose();
+        resourceMap.delete(url2);
+      });
+      return this;
+    }
+    /**
+     * 清空所有资源
+     */
+    dispose() {
+      this.resourceMap.forEach((object, url) => {
+        object.dispose && object.dispose();
+      });
+      this.resourceMap.clear();
+      this.configMap.clear();
+    }
+  }
+  const RESOURCE_MANAGER_PLUGIN = "ResourceManagerPlugin";
+  const ResourceManagerPlugin = function(params = {}) {
+    return {
+      name: RESOURCE_MANAGER_PLUGIN,
+      install(engine) {
+        const resourceManager = new ResourceManager(params.resources);
+        engine.resourceManager = resourceManager;
+        engine.registerResources = (resourceMap) => {
+          const map = /* @__PURE__ */ new Map();
+          Object.keys(resourceMap).forEach((key) => {
+            map.set(key, resourceMap[key]);
+          });
+          resourceManager.mappingResource(map);
+          return engine;
+        };
+      },
+      dispose(engine) {
+        engine.addEventListener(core.ENGINE_EVENT.DISPOSE, () => {
+          engine.resourceManager.dispose();
+        });
+      }
+    };
+  };
+  const LOADER_DATA_SUPPORT_STRATEGY = "LoaderDataSupportStrategy";
+  const LoaderDataSupportStrategy = function() {
+    let cacheToJSON;
+    let cacheExportConfig;
+    return {
+      name: LOADER_DATA_SUPPORT_STRATEGY,
+      condition: [DATA_SUPPORT_MANAGER_PLUGIN, pluginLoaderManager.LOADER_MANAGER_PLUGIN],
+      exec(engine) {
+        cacheToJSON = engine.toJSON;
+        engine.toJSON = function() {
+          const assets = {
+            assets: JSON.parse(engine.loaderManager.toJSON())
+          };
+          return engine.dataSupportManager.toJSON(assets);
+        };
+        cacheExportConfig = engine.exportConfig;
+        engine.exportConfig = function() {
+          let extendConfig = {};
+          extendConfig = {
+            assets: engine.loaderManager.exportConfig()
+          };
+          return engine.dataSupportManager.exportConfig(extendConfig);
+        };
+      },
+      rollback(engine) {
+        engine.toJSON = cacheToJSON;
+        engine.exportConfig = cacheExportConfig;
+      }
+    };
+  };
+  const LOADER_MAPPING_STRATEGY = "LoaderMappingStrategy";
+  const LoaderMappingStrategy = function() {
+    let cacheLoadResources;
+    let cacheAsync;
+    return {
+      name: LOADER_MAPPING_STRATEGY,
+      condition: [RESOURCE_MANAGER_PLUGIN, pluginLoaderManager.LOADER_MANAGER_PLUGIN],
+      exec(engine) {
+        cacheLoadResources = engine.loadResources;
+        engine.loadResources = (urlList, callback) => {
+          const lodedFun = (event) => {
+            callback(void 0, event);
+            engine.resourceManager.removeEventListener(
+              pluginLoaderManager.LOADER_EVENT.LOADED,
+              lodedFun
+            );
+          };
+          try {
+            engine.resourceManager.addEventListener(
+              pluginLoaderManager.LOADER_EVENT.LOADED,
+              lodedFun
+            );
+          } catch (error) {
+            callback(error);
+          }
+          engine.loaderManager.reset().load(urlList);
+          return engine;
+        };
+        cacheAsync = engine.loadResourcesAsync;
+        engine.loadResourcesAsync = (urlList) => {
+          return new Promise((resolve, reject) => {
+            try {
+              engine.loaderManager.once(
+                pluginLoaderManager.LOADER_EVENT.LOADED,
+                (e) => {
+                  engine.resourceManager.once(
+                    RESOURCE_EVENT.MAPPED,
+                    (event) => {
+                      resolve(event);
+                    }
+                  );
+                  const map = /* @__PURE__ */ new Map();
+                  urlList.forEach((unit) => {
+                    if (typeof unit === "string") {
+                      map.set(unit, e.resourceMap.get(unit));
+                    } else {
+                      map.set(unit.url, e.resourceMap.get(unit.url));
+                    }
+                  });
+                  engine.resourceManager.mappingResource(map);
+                }
+              );
+            } catch (error) {
+              reject(error);
+            }
+            engine.loaderManager.reset().load(urlList);
+          });
+        };
+      },
+      rollback(engine) {
+        engine.loadResources = cacheLoadResources;
+        engine.loadResourcesAsync = cacheAsync;
+      }
+    };
+  };
+  const COMPILER_SUPPORT_STRATEGY = "CompilerSupportStrategy";
+  const CompilerSupportStrategy = function() {
+    return {
+      name: COMPILER_SUPPORT_STRATEGY,
+      condition: [COMPILER_MANAGER_PLUGIN, DATA_SUPPORT_MANAGER_PLUGIN],
+      exec(engine) {
+        engine.compilerManager.compilerMap.forEach((compiler, module2) => {
+          var _a;
+          compiler.useEngine(engine);
+          (_a = engine.dataSupportManager.dataSupportMap.get(module2)) == null ? void 0 : _a.addCompiler(compiler);
+        });
+      },
+      rollback() {
+      }
+    };
+  };
+  class Trigger {
+    constructor(validator) {
+      this.condition = {};
+      this.list = [];
+      this.validator = () => true;
+      if (validator) {
+        this.validator = validator;
+      }
+    }
+    add(module2) {
+      if (this.validator(module2)) {
+        this.condition[module2] = false;
+      }
+      return this;
+    }
+    reach(module2) {
+      if (this.condition[module2] === void 0) {
+        console.warn(`ModuleTrigger: can not set module condition: ${module2}.`);
+        return this;
+      }
+      this.condition[module2] = true;
+      if (this.check()) {
+        this.trig();
+      }
+      return this;
+    }
+    register(fun) {
+      if (!fun(true)) {
+        this.list.push(fun);
+      }
+    }
+    trig() {
+      const list = this.list;
+      for (const fun of list) {
+        fun(false);
+      }
+      this.reset();
+    }
+    reset() {
+      this.list = [];
+      Object.keys(this.condition).forEach((key) => {
+        this.condition[key] = false;
+      });
+    }
+    check() {
+      return !Object.values(this.condition).includes(false);
+    }
+  }
+  const ObjectTrigger = new Trigger((module2) => {
+    return Boolean(OBJECT_MODULE[module2]);
+  });
+  var SUPPORT_LIFE_CYCLE = /* @__PURE__ */ ((SUPPORT_LIFE_CYCLE2) => {
+    SUPPORT_LIFE_CYCLE2[SUPPORT_LIFE_CYCLE2["ZERO"] = 0] = "ZERO";
+    SUPPORT_LIFE_CYCLE2[SUPPORT_LIFE_CYCLE2["ONE"] = 100] = "ONE";
+    SUPPORT_LIFE_CYCLE2[SUPPORT_LIFE_CYCLE2["TWO"] = 200] = "TWO";
+    SUPPORT_LIFE_CYCLE2[SUPPORT_LIFE_CYCLE2["THREE"] = 300] = "THREE";
+    SUPPORT_LIFE_CYCLE2[SUPPORT_LIFE_CYCLE2["FOUR"] = 400] = "FOUR";
+    SUPPORT_LIFE_CYCLE2[SUPPORT_LIFE_CYCLE2["FIVE"] = 500] = "FIVE";
+    SUPPORT_LIFE_CYCLE2[SUPPORT_LIFE_CYCLE2["SIX"] = 600] = "SIX";
+    SUPPORT_LIFE_CYCLE2[SUPPORT_LIFE_CYCLE2["SEVEN"] = 700] = "SEVEN";
+    SUPPORT_LIFE_CYCLE2[SUPPORT_LIFE_CYCLE2["EIGHT"] = 800] = "EIGHT";
+    SUPPORT_LIFE_CYCLE2[SUPPORT_LIFE_CYCLE2["NINE"] = 900] = "NINE";
+    return SUPPORT_LIFE_CYCLE2;
+  })(SUPPORT_LIFE_CYCLE || {});
+  class EngineSupport extends core.Engine {
+    constructor(params = {}) {
+      super();
+      this.moduleLifeCycle = [];
+      this.triggers = { object: ObjectTrigger };
+      this.install(pluginLoaderManager.LoaderManagerPlugin(params.LoaderManagerPlugin)).install(pluginPointerManager.PointerManagerPlugin(params.PointerManagerPlugin)).install(pluginEventManager.EventManagerPlugin(params.EventManagerPlugin)).install(pluginRenderManager.RenderManagerPlugin(params.RenderManagerPlugin)).install(ResourceManagerPlugin(params.ResourceManagerPlugin)).install(DataSupportManagerPlugin(params.DataSupportManagerPlugin)).install(CompilerManagerPlugin(params.CompilerManagerPlugin));
+      this.exec(LoaderDataSupportStrategy()).exec(LoaderMappingStrategy()).exec(CompilerSupportStrategy());
+    }
+    loadLifeCycle(config) {
+      const dataSupportManager = this.dataSupportManager;
+      const triggers = this.triggers;
+      const loadCycle = this.moduleLifeCycle.sort((a, b) => a.order - b.order);
+      for (const { module: module2 } of loadCycle) {
+        config[module2] && dataSupportManager.loadByModule(config[module2], module2);
+        for (const key in triggers) {
+          triggers[key].reach(module2);
+        }
+      }
+    }
+    removeLifeCycle(config) {
+      const dataSupportManager = this.dataSupportManager;
+      const removeCycle = this.moduleLifeCycle.sort((a, b) => b.order - a.order);
+      for (const { module: module2 } of removeCycle) {
+        config[module2] && dataSupportManager.remove({ [module2]: config[module2] });
+      }
+      const assets = config.assets || [];
+      const resourceManager = this.resourceManager;
+      const loaderManager = this.loaderManager;
+      assets.forEach((url) => {
+        resourceManager.remove(url);
+        loaderManager.remove(url);
+      });
+    }
+    loadConfig(config, callback) {
+      const renderFlag = this.renderManager.hasRendering();
+      if (renderFlag) {
+        this.renderManager.stop();
+      }
+      if (config.assets && config.assets.length) {
+        const mappedFun = (event) => {
+          delete config.assets;
+          this.loadLifeCycle(config);
+          this.resourceManager.removeEventListener("mapped", mappedFun);
+          callback && callback(event);
+          if (renderFlag) {
+            this.renderManager.play();
+          } else {
+            this.renderManager.render();
+          }
+        };
+        this.resourceManager.addEventListener("mapped", mappedFun);
+        this.loaderManager.reset().load(config.assets);
+      } else {
+        this.loadLifeCycle(config);
+        callback && callback();
+        if (renderFlag) {
+          this.renderManager.play();
+        } else {
+          this.renderManager.render();
+        }
+      }
+      return this;
+    }
+    loadConfigAsync(config, pretreat) {
+      return new Promise((resolve, reject) => {
+        const renderFlag = this.renderManager.hasRendering();
+        if (renderFlag) {
+          this.renderManager.stop();
+        }
+        if (config.assets && config.assets.length) {
+          this.loadResourcesAsync(config.assets).then((event) => {
+            delete config.assets;
+            this.loadLifeCycle(config);
+            if (renderFlag) {
+              this.renderManager.play();
+            } else {
+              this.renderManager.render();
+            }
+            resolve(event);
+          });
+        } else {
+          this.loadLifeCycle(config);
+          if (renderFlag) {
+            this.renderManager.play();
+          } else {
+            this.renderManager.render();
+          }
+          resolve({
+            type: RESOURCE_EVENT.MAPPED,
+            configMap: this.resourceManager.configMap,
+            resourceMap: this.resourceManager.resourceMap,
+            resourceConfig: {}
+          });
+        }
+      });
+    }
+    removeConfig(config) {
+      this.removeLifeCycle(config);
+    }
+    getObjectConfig(object) {
+      const symbol = this.getObjectSymbol(object);
+      if (symbol) {
+        return this.getConfigBySymbol(symbol);
+      } else {
+        return null;
+      }
+    }
+    useModule(options) {
+      const typeName = emunDecamelize(options.type);
+      if (MODULE_TYPE[typeName]) {
+        console.warn(`Engine:module ${options.type} is already exist.`);
+        return this;
+      }
+      MODULE_TYPE[typeName] = options.type;
+      if (options.object) {
+        OBJECT_MODULE[options.type] = true;
+      }
+      const moduler = new Moduler(options);
+      moduler.compiler.useEngine(this);
+      this.dataSupportManager.extend(moduler.converter);
+      this.compilerManager.extend(moduler.compiler);
+      if (options.extend) {
+        options.extend(this);
+      }
+      this.moduleLifeCycle.push({
+        module: options.type,
+        order: options.lifeOrder || 0
+      });
+      Object.values(this.triggers).forEach((trigger) => {
+        trigger.add(options.type);
+      });
+      return this;
+    }
+    addTrigger(name, trigger) {
+      if (!this.triggers[name]) {
+        this.triggers[name] = trigger;
+      } else {
+        console.warn(
+          `EngineSupport: this trigger has already exist: ${name}.`,
+          this.triggers
+        );
+      }
+      return this;
+    }
+    getTrigger(name) {
+      if (!this.triggers[name]) {
+        console.warn(
+          `EngineSupport: not found this trigger: ${name}.`,
+          this.triggers
+        );
+        return null;
+      } else {
+        return this.triggers[name];
+      }
+    }
+    //TODO: module init
+    init() {
+    }
+    /**
+     * @deprecated
+     * use useModule
+     */
+    registModule(options) {
+      return this.useModule(options);
+    }
+  }
+  const defineEngineSupport = function(options, params = {}) {
+    const engine = new EngineSupport(params);
+    if (options.modules) {
+      options.modules.forEach((module2) => {
+        engine.useModule(module2);
+      });
+    }
+    if (options.plugins) {
+      options.plugins.forEach((plugin) => {
+        engine.install(plugin);
+      });
+    }
+    if (options.strategy) {
+      options.strategy.forEach((strategy) => {
+        engine.exec(strategy);
+      });
+    }
+    return engine;
+  };
+  const toAsync = (fun) => {
+    AsyncScheduler.exec(fun);
+  };
+  const toTrigger = () => {
+  };
+  const PLUGINS = [COMPILER_MANAGER_PLUGIN, DATA_SUPPORT_MANAGER_PLUGIN];
+  exports2.AntiShake = AntiShake;
+  exports2.COMPILER_MANAGER_PLUGIN = COMPILER_MANAGER_PLUGIN;
+  exports2.COMPILER_SUPPORT_STRATEGY = COMPILER_SUPPORT_STRATEGY;
+  exports2.CONFIGFACTORY = CONFIGFACTORY;
+  exports2.CONFIGMODULE = CONFIGMODULE;
+  exports2.CONFIGTYPE = CONFIGTYPE;
+  exports2.CONFIG_FACTORY = CONFIG_FACTORY;
+  exports2.CONFIG_MODEL = CONFIG_MODEL;
+  exports2.CONFIG_MODULE = CONFIG_MODULE;
+  exports2.CONFIG_TYPE = CONFIG_TYPE;
+  exports2.Compiler = Compiler;
+  exports2.CompilerManager = CompilerManager;
+  exports2.CompilerManagerPlugin = CompilerManagerPlugin;
+  exports2.CompilerSupportStrategy = CompilerSupportStrategy;
+  exports2.Container = Container;
+  exports2.Converter = Converter;
+  exports2.DATA_SUPPORT_MANAGER_PLUGIN = DATA_SUPPORT_MANAGER_PLUGIN;
+  exports2.DEFAULT_RULE = DEFAULT_RULE;
+  exports2.DataSupportManager = DataSupportManager;
+  exports2.DataSupportManagerPlugin = DataSupportManagerPlugin;
+  exports2.DefaultParser = DefaultParser;
+  exports2.EngineSupport = EngineSupport;
+  exports2.JSONHandler = JSONHandler$1;
+  exports2.LOADER_DATA_SUPPORT_STRATEGY = LOADER_DATA_SUPPORT_STRATEGY;
+  exports2.LOADER_MAPPING_STRATEGY = LOADER_MAPPING_STRATEGY;
+  exports2.LoaderDataSupportStrategy = LoaderDataSupportStrategy;
+  exports2.LoaderMappingStrategy = LoaderMappingStrategy;
+  exports2.MODEL_EVENT = MODEL_EVENT;
+  exports2.MODULETYPE = MODULETYPE;
+  exports2.MODULE_TYPE = MODULE_TYPE;
+  exports2.Model = Model;
+  exports2.Moduler = Moduler;
+  exports2.OBJECTMODULE = OBJECTMODULE;
+  exports2.OBJECT_MODULE = OBJECT_MODULE;
+  exports2.PLUGINS = PLUGINS;
+  exports2.Parser = Parser;
+  exports2.RESOURCE_EVENT = RESOURCE_EVENT;
+  exports2.RESOURCE_MANAGER_PLUGIN = RESOURCE_MANAGER_PLUGIN;
+  exports2.ResourceManager = ResourceManager;
+  exports2.ResourceManagerPlugin = ResourceManagerPlugin;
+  exports2.Ruler = Ruler;
+  exports2.SUPPORT_LIFE_CYCLE = SUPPORT_LIFE_CYCLE;
+  exports2.Template = template$1;
+  exports2.createSymbol = createSymbol;
+  exports2.defineEngineSupport = defineEngineSupport;
+  exports2.defineModel = defineModel;
+  exports2.defineModule = defineModule;
+  exports2.defineOption = defineOption;
+  exports2.defineProcessor = defineProcessor;
+  exports2.defineRule = defineRule;
+  exports2.emptyHandler = emptyHandler;
+  exports2.generateConfig = generateConfig;
+  exports2.getBasicConfig = getBasicConfig;
+  exports2.getModule = getModule;
+  exports2.getObserver = getObserver;
+  exports2.getSymbolConfig = getSymbolConfig;
+  exports2.globalAntiShake = globalAntiShake;
+  exports2.globalOption = globalOption;
+  exports2.isObjectModule = isObjectModule;
+  exports2.isObjectType = isObjectType;
+  exports2.observable = observable;
+  exports2.slientSync = slientSync;
+  exports2.toAsync = toAsync;
+  exports2.toTrigger = toTrigger;
+  exports2.uniqueSymbol = uniqueSymbol;
+  Object.keys(pluginLoaderManager).forEach((k) => {
+    if (k !== "default" && !Object.prototype.hasOwnProperty.call(exports2, k)) Object.defineProperty(exports2, k, {
+      enumerable: true,
+      get: () => pluginLoaderManager[k]
+    });
+  });
+  Object.keys(pluginPointerManager).forEach((k) => {
+    if (k !== "default" && !Object.prototype.hasOwnProperty.call(exports2, k)) Object.defineProperty(exports2, k, {
+      enumerable: true,
+      get: () => pluginPointerManager[k]
+    });
+  });
+  Object.keys(pluginEventManager).forEach((k) => {
+    if (k !== "default" && !Object.prototype.hasOwnProperty.call(exports2, k)) Object.defineProperty(exports2, k, {
+      enumerable: true,
+      get: () => pluginEventManager[k]
+    });
+  });
+  Object.keys(pluginRenderManager).forEach((k) => {
+    if (k !== "default" && !Object.prototype.hasOwnProperty.call(exports2, k)) Object.defineProperty(exports2, k, {
+      enumerable: true,
+      get: () => pluginRenderManager[k]
+    });
+  });
+  Object.defineProperty(exports2, Symbol.toStringTag, { value: "Module" });
+});

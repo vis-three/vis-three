@@ -12,7 +12,6 @@
     "build": "tsc",
     "lint": "npx eslint *.js src/**/*.ts --fix"
   },
-  "devDependencies": {},
   "dependencies": {
     "@vis-three/module-animation": "workspace:^",
     "@vis-three/module-animation-action": "workspace:^",
@@ -32,6 +31,7 @@
     "@vis-three/module-material": "workspace:^",
     "@vis-three/module-mesh": "workspace:^",
     "@vis-three/module-modifier": "workspace:^",
+    "@vis-three/module-object": "workspace:^",
     "@vis-three/module-object3d": "workspace:^",
     "@vis-three/module-particle": "workspace:^",
     "@vis-three/module-pass": "workspace:^",

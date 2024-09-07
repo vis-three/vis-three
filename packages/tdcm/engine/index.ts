@@ -321,7 +321,7 @@ export class EngineSupport
     }
   }
 
-  useModule(options: ModuleOptions): this {
+  useModule(options: ModuleOptions<any, any>): this {
     const typeName = emunDecamelize(options.type);
 
     if (MODULE_TYPE[typeName]) {

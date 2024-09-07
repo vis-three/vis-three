@@ -1,17 +1,12 @@
 {
   "name": "@vis-three/test",
   "version": "0.5.0",
-  "main": "dist/Vis.umd.js",
-  "module": "dist/Vis.es.js",
-  "types": "types/src/main.d.ts",
+  "main": "",
+  "module": "",
+  "types": "",
   "license": "MPL-2.0",
   "author": "Shiotsuki_",
-  "repository": "https://github.com/Shiotsukikaedesari/vis-three",
-  "homepage": "https://shiotsukikaedesari.github.io/vis-three",
   "private": true,
-  "bugs": {
-    "url": "https://github.com/Shiotsukikaedesari/vis-three/issues"
-  },
   "scripts": {
     "test:unit": "cypress run --spec 'cypress/integration/unit/**/*'",
     "test:e2e": "cypress run --spec 'cypress/integration/e2e/**/*'",
@@ -20,26 +15,11 @@
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.10.0",
-    "@rollup/plugin-alias": "^3.1.9",
-    "@types/three": "^0.141.0",
-    "@typescript-eslint/eslint-plugin": "^5.18.0",
-    "@typescript-eslint/parser": "^5.18.0",
-    "@vitejs/plugin-vue": "^2.3.3",
     "babel-loader": "^8.2.5",
     "babel-plugin-istanbul": "^6.1.1",
     "cypress": "^9.5.4",
     "esbuild-windows-64": "^0.15.13",
-    "eslint": "^8.12.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-vue": "^9.1.0",
     "lite-server": "^2.6.1",
-    "prettier": "^2.6.2",
-    "three": "^0.141.0",
-    "typescript": "^5.2.2",
-    "vite": "^2.9.15",
-    "vue": "^3.2.21",
-    "vue-tsc": "^0.37.0",
     "webpack": "^5.74.0"
   },
   "files": [

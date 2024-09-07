@@ -13,7 +13,7 @@ import {
 import { ObjectConfig } from "./ObjectConfig";
 import { Object3D, Vector3 } from "three";
 import { IgnoreAttribute, syncObject } from "@vis-three/utils";
-import { EventManager } from "./EventManager";
+import { EventGeneratorManager } from "./EventGeneratorManager";
 
 export interface ObjectModelShared {
   eventSymbol: string;
@@ -107,15 +107,15 @@ const addEventHanlder: ObjectCommandHandler = function ({
 }) {
   const eventName = path[0];
 
-  if (!EventManager.has(value.name)) {
+  if (!EventGeneratorManager.has(value.name)) {
     console.warn(
-      `EventManager: can not support this event: ${value.name}`
+      `EventGeneratorManager: can not support this event: ${value.name}`
     );
     return;
   }
 
   // 生成函数
-  const fun = EventManager.generateEvent(value, engine);
+  const fun = EventGeneratorManager.generateEvent(value, engine);
 
   // 映射缓存
   const symbol = Symbol.for(model.eventSymbol);
@@ -167,7 +167,7 @@ const updateEventHandler: ObjectCommandHandler = function ({
   target.removeEventListener(eventName, fun!);
 
   // 生成函数
-  const newFun = EventManager.generateEvent(eventConfig, engine);
+  const newFun = EventGeneratorManager.generateEvent(eventConfig, engine);
 
   // 映射缓存
   eventConfig[Symbol.for(model.eventSymbol)] = newFun;
@@ -375,6 +375,7 @@ export const defineObjectModel = defineModel.extend<
     // children
     config.children.forEach((vid) => {
       addChildrenHanlder.call(model, {
+        model,
         target,
         config,
         value: vid,

@@ -9,6 +9,7 @@ export default defineConfig({
       entry: "./index.ts",
       name: `vis-three.${pkg}`,
     },
+    minify: false,
     rollupOptions: {
       output: {
         entryFileNames: `vis-three.${pkg}.[format].js`,

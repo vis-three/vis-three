@@ -104,7 +104,6 @@ export const getFinalReference = function (object, attr) {
 };
 export const objectDeepMerge = function (target, merge, option = { cover: false, fresh: true }) {
     if (!isObject(target)) {
-        console.warn(`target is not a object: ${target}`);
         target = {};
     }
     if (!isObject(merge)) {

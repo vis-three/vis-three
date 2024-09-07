@@ -1,129 +1,203 @@
-import { isObject as C, objectDeepMerge as $, syncObject as me, extendPath as se, isArray as m } from "@vis-three/utils";
-import { EventDispatcher as j, ENGINE_EVENT as ye, Engine as Me } from "@vis-three/core";
-import { Subject as oe } from "rxjs";
-import { nanoid as Oe } from "nanoid";
-import { LOADER_MANAGER_PLUGIN as ne, LOADER_EVENT as L, LoaderManagerPlugin as be } from "@vis-three/plugin-loader-manager";
+import { isObject, objectDeepMerge, syncObject, extendPath, isArray } from "@vis-three/utils";
+import { EventDispatcher, ENGINE_EVENT, Engine } from "@vis-three/core";
+import { Subject } from "rxjs";
+import { nanoid } from "nanoid";
+import { LOADER_MANAGER_PLUGIN, LOADER_EVENT, LoaderManagerPlugin } from "@vis-three/plugin-loader-manager";
 export * from "@vis-three/plugin-loader-manager";
-import { PointerManagerPlugin as Se } from "@vis-three/plugin-pointer-manager";
+import { PointerManagerPlugin } from "@vis-three/plugin-pointer-manager";
 export * from "@vis-three/plugin-pointer-manager";
-import { EventManagerPlugin as xe } from "@vis-three/plugin-event-manager";
+import { EventManagerPlugin } from "@vis-three/plugin-event-manager";
 export * from "@vis-three/plugin-event-manager";
-import { RenderManagerPlugin as Ee } from "@vis-three/plugin-render-manager";
+import { RenderManagerPlugin } from "@vis-three/plugin-render-manager";
 export * from "@vis-three/plugin-render-manager";
-const ve = function(r) {
-  return r = r.replace(/[\-_\s]+(.)?/g, function(e, t) {
-    return t ? t.toUpperCase() : "";
-  }), r.slice(0, 1).toLowerCase() + r.slice(1);
-}, Ce = function(r) {
-  return ve(r).toUpperCase();
-}, ie = function(r) {
-  const e = /(?=[A-Z])/;
-  return r.split(e).map((t) => t.toUpperCase()).join("_");
-}, y = {}, g = {}, B = {}, ae = {}, P = {}, J = {}, Y = y, Mt = B, ce = ae, we = P, Ot = J, U = (r) => J[r] || null, Ae = (r) => P[r], De = (r) => {
-  const e = U(r);
-  return e ? Ae(e) : !1;
-}, I = "vis.father", M = "vis.key", F = "vis.observer", G = "vis.model", le = /* @__PURE__ */ new WeakMap(), A = function(r) {
-  Array.isArray(r) && le.set(r, r.concat([]));
-}, Re = function(r) {
-  return le.get(r);
-}, V = function(r) {
-  let e = "";
-  const t = (s) => {
-    s[Symbol.for(M)] !== void 0 && (e = `${s[Symbol.for(M)]}${e ? `.${e}` : ""}`, s[Symbol.for(I)] && t(s[Symbol.for(I)]));
-  };
-  return t(r), e;
-}, je = function(r) {
-  if (r.length && C(r[0])) {
-    const e = r.length;
-    for (let t = 0; t < e; t += 1)
-      r[t][Symbol.for(M)] = t;
-  }
-}, N = function(r) {
-  return r[Symbol.for(F)];
-}, ue = function(r) {
-  return !!r[Symbol.for(F)];
-}, Pe = function(r) {
-  return r[Symbol.for(G)];
-}, u = class u {
-  static exec(e) {
-    if (e(!1))
-      return;
-    u.list.includes(e) || u.list.push(e);
-    let t = 0;
-    const s = () => {
-      u.timer && clearTimeout(u.timer), u.timer = window.setTimeout(() => {
-        const o = [];
-        for (const n of u.list)
-          n(!1) || o.push(n);
-        if (o.length)
-          if (o.length === t) {
-            for (const n of o)
-              n(!0);
-            u.list = [];
-          } else
-            t = o.length, u.list = o, s();
-        else
-          u.list = [];
-      }, u.time);
-    };
-    s();
-  }
-  static append(e) {
-    u.list.length && !u.list.includes(e) ? u.list.push(e) : u.exec(e);
-  }
-  static nextTick(e) {
-    window.setTimeout(() => {
-      e();
-    }, u.time);
+const camelize = function(str) {
+  str = str.replace(/[\-_\s]+(.)?/g, function(match, chr) {
+    return chr ? chr.toUpperCase() : "";
+  });
+  return str.slice(0, 1).toLowerCase() + str.slice(1);
+};
+const emunCamelize = function(str) {
+  return camelize(str).toUpperCase();
+};
+const emunDecamelize = function(str) {
+  const split = /(?=[A-Z])/;
+  return str.split(split).map((s) => s.toUpperCase()).join("_");
+};
+const CONFIG_FACTORY = {};
+const CONFIG_MODEL = {};
+const MODULE_TYPE = {};
+const CONFIG_TYPE = {};
+const OBJECT_MODULE = {};
+const CONFIG_MODULE = {};
+const CONFIGFACTORY = CONFIG_FACTORY;
+const MODULETYPE = MODULE_TYPE;
+const CONFIGTYPE = CONFIG_TYPE;
+const OBJECTMODULE = OBJECT_MODULE;
+const CONFIGMODULE = CONFIG_MODULE;
+const getModule = (type) => {
+  return CONFIG_MODULE[type] || null;
+};
+const isObjectModule = (module) => {
+  return OBJECT_MODULE[module];
+};
+const isObjectType = (type) => {
+  const module = getModule(type);
+  if (module) {
+    return isObjectModule(module);
+  } else {
+    return false;
   }
 };
-u.list = [], u.time = 0;
-let w = u;
-class _ extends j {
-  constructor(e) {
-    super(), this.config = e.config, this.engine = e.engine, this.compiler = e.compiler;
+const SYMBOL_FATHER = "vis.father";
+const SYMBOL_KEY = "vis.key";
+const SYMBOL_OB = "vis.observer";
+const SYMBOL_MODEL = "vis.model";
+const arrayCache = /* @__PURE__ */ new WeakMap();
+const cacheArray = function(object) {
+  if (Array.isArray(object)) {
+    arrayCache.set(object, object.concat([]));
   }
-  toConfig(e) {
-    return this.engine.getConfigBySymbol(e);
-  }
-  toModel(e) {
-    if (typeof e == "string")
-      return this.engine.compilerManager.getModelBySymbol(e);
-    {
-      const t = this.engine.getObjectSymbol(e);
-      return t ? this.engine.compilerManager.getModelBySymbol(t) : (console.warn("Model: can not found object symbol:", e), null);
+};
+const getCacheArray = function(object) {
+  return arrayCache.get(object);
+};
+const getPath = function(object) {
+  let path = "";
+  const recursion = (object2) => {
+    if (object2[Symbol.for(SYMBOL_KEY)] !== void 0) {
+      path = `${object2[Symbol.for(SYMBOL_KEY)]}${path ? `.${path}` : ""}`;
+      if (object2[Symbol.for(SYMBOL_FATHER)]) {
+        recursion(object2[Symbol.for(SYMBOL_FATHER)]);
+      }
+    }
+  };
+  recursion(object);
+  return path;
+};
+const updateArraySymbol = function(array) {
+  if (array.length && isObject(array[0])) {
+    const length = array.length;
+    for (let index = 0; index < length; index += 1) {
+      array[index][Symbol.for(SYMBOL_KEY)] = index;
     }
   }
-  toObject(e) {
-    return this.engine.getObjectBySymbol(e);
-  }
-  toPuppet(e) {
-    return this.toObject(e);
-  }
-  toAsync(e) {
-    w.exec(e);
-  }
-  asyncNextTick(e) {
-    w.nextTick(e);
-  }
-  toTrigger(e, t) {
-    const s = this.engine.getTrigger(e);
-    s && s.register(t);
-  }
-  process(e) {
-    if (!this.commands || !this.commands[e.operate]) {
-      this[e.operate](e);
+};
+const getObserver = function(object) {
+  return object[Symbol.for(SYMBOL_OB)];
+};
+const hasObserver = function(object) {
+  return Boolean(object[Symbol.for(SYMBOL_OB)]);
+};
+const getModel = function(object) {
+  return object[Symbol.for(SYMBOL_MODEL)];
+};
+const _AsyncScheduler = class _AsyncScheduler {
+  static exec(fun) {
+    if (fun(false)) {
       return;
     }
-    let t = this.commands[e.operate];
-    const s = e.path ? e.path.split(".").concat(e.key) : [e.key];
-    for (const o of s)
-      if (!t[o] && !t.$reg) {
-        this[e.operate](e);
+    if (!_AsyncScheduler.list.includes(fun)) {
+      _AsyncScheduler.list.push(fun);
+    }
+    let cacheCount = 0;
+    const autoSequential = () => {
+      _AsyncScheduler.timer && clearTimeout(_AsyncScheduler.timer);
+      _AsyncScheduler.timer = window.setTimeout(() => {
+        const nextList = [];
+        for (const fun2 of _AsyncScheduler.list) {
+          if (!fun2(false)) {
+            nextList.push(fun2);
+          }
+        }
+        if (nextList.length) {
+          if (nextList.length === cacheCount) {
+            for (const fun2 of nextList) {
+              fun2(true);
+            }
+            _AsyncScheduler.list = [];
+          } else {
+            cacheCount = nextList.length;
+            _AsyncScheduler.list = nextList;
+            autoSequential();
+          }
+        } else {
+          _AsyncScheduler.list = [];
+        }
+      }, _AsyncScheduler.time);
+    };
+    autoSequential();
+  }
+  static append(fun) {
+    if (_AsyncScheduler.list.length && !_AsyncScheduler.list.includes(fun)) {
+      _AsyncScheduler.list.push(fun);
+    } else {
+      _AsyncScheduler.exec(fun);
+    }
+  }
+  static nextTick(fun) {
+    window.setTimeout(() => {
+      fun();
+    }, _AsyncScheduler.time);
+  }
+};
+_AsyncScheduler.list = [];
+_AsyncScheduler.time = 0;
+let AsyncScheduler = _AsyncScheduler;
+class Model extends EventDispatcher {
+  constructor(params) {
+    super();
+    this.config = params.config;
+    this.engine = params.engine;
+    this.compiler = params.compiler;
+  }
+  toConfig(vid) {
+    return this.engine.getConfigBySymbol(vid);
+  }
+  toModel(vid) {
+    if (typeof vid === "string") {
+      return this.engine.compilerManager.getModelBySymbol(vid);
+    } else {
+      const symbol = this.engine.getObjectSymbol(vid);
+      if (symbol) {
+        return this.engine.compilerManager.getModelBySymbol(symbol);
+      } else {
+        console.warn(`Model: can not found object symbol:`, vid);
+        return null;
+      }
+    }
+  }
+  toObject(vid) {
+    return this.engine.getObjectBySymbol(vid);
+  }
+  toPuppet(vid) {
+    return this.toObject(vid);
+  }
+  toAsync(fun) {
+    AsyncScheduler.exec(fun);
+  }
+  asyncNextTick(fun) {
+    AsyncScheduler.nextTick(fun);
+  }
+  toTrigger(name, fun) {
+    const trigger = this.engine.getTrigger(name);
+    if (trigger) {
+      trigger.register(fun);
+    }
+  }
+  process(params) {
+    if (!this.commands || !this.commands[params.operate]) {
+      this[params.operate](params);
+      return;
+    }
+    let commands = this.commands[params.operate];
+    const keyPath = params.path ? params.path.split(".").concat(params.key) : [params.key];
+    for (const key of keyPath) {
+      if (!commands[key] && !commands.$reg) {
+        this[params.operate](params);
         return;
-      } else if (t[o])
-        if (typeof t[o] == "function") {
-          t[o].call(this, {
+      } else if (commands[key]) {
+        if (typeof commands[key] === "function") {
+          commands[key].call(this, {
             model: this,
             ctx: this,
             config: this.config,
@@ -131,15 +205,16 @@ class _ extends j {
             puppet: this.puppet,
             engine: this.engine,
             compiler: this.compiler,
-            ...e
+            ...params
           });
           return;
-        } else
-          t = t[o];
-      else if (t.$reg) {
-        for (const n of t.$reg)
-          if (n.reg.test(o)) {
-            n.handler.call(this, {
+        } else {
+          commands = commands[key];
+        }
+      } else if (commands.$reg) {
+        for (const item of commands.$reg) {
+          if (item.reg.test(key)) {
+            item.handler.call(this, {
               model: this,
               ctx: this,
               config: this.config,
@@ -147,51 +222,57 @@ class _ extends j {
               puppet: this.puppet,
               engine: this.engine,
               compiler: this.compiler,
-              ...e
+              ...params
             });
             return;
           }
+        }
       }
-    this[e.operate](e);
+    }
+    this[params.operate](params);
   }
-  add(e) {
-    let t = this.puppet;
-    const s = e.path;
-    for (const o of s)
-      if (typeof t[o] !== void 0)
-        t = t[o];
-      else {
-        console.warn("processor can not exec default add operate.", e);
+  add(params) {
+    let target = this.puppet;
+    const path = params.path;
+    for (const key of path) {
+      if (typeof target[key] !== void 0) {
+        target = target[key];
+      } else {
+        console.warn(`processor can not exec default add operate.`, params);
         return;
       }
-    t[e.key] = e.value;
+    }
+    target[params.key] = params.value;
   }
-  set(e) {
-    let t = this.puppet;
-    const s = e.path;
-    for (const o of s)
-      if (typeof t[o] !== void 0)
-        t = t[o];
-      else {
-        console.warn("processor can not exec default set operate.", e);
+  set(params) {
+    let target = this.puppet;
+    const path = params.path;
+    for (const key of path) {
+      if (typeof target[key] !== void 0) {
+        target = target[key];
+      } else {
+        console.warn(`processor can not exec default set operate.`, params);
         return;
       }
-    t[e.key] = e.value;
+    }
+    target[params.key] = params.value;
   }
-  delete(e) {
-    let t = this.puppet;
-    const s = e.path;
-    for (const o of s)
-      if (typeof t[o] !== void 0)
-        t = t[o];
-      else {
-        console.warn("processor can not exec default delete operate.", e);
+  delete(params) {
+    let target = this.puppet;
+    const path = params.path;
+    for (const key of path) {
+      if (typeof target[key] !== void 0) {
+        target = target[key];
+      } else {
+        console.warn(`processor can not exec default delete operate.`, params);
         return;
       }
-    delete t[e.key];
+    }
+    delete target[params.key];
   }
   create() {
-    this.config[Symbol.for(G)] = this, this.puppet = this.createPuppet.call(this, {
+    this.config[Symbol.for(SYMBOL_MODEL)] = this;
+    this.puppet = this.createPuppet.call(this, {
       model: this,
       config: this.config,
       engine: this.engine,
@@ -206,56 +287,80 @@ class _ extends j {
       config: this.config,
       engine: this.engine,
       compiler: this.compiler
-    }), this.config[Symbol.for(G)] = void 0, this.clear();
+    });
+    this.config[Symbol.for(SYMBOL_MODEL)] = void 0;
+    this.clear();
   }
 }
-const D = function(r) {
-  return r;
+const defineModel = function(option) {
+  return option;
 };
-D.extend = function(r) {
-  const e = function(t) {
-    const s = t(r);
-    return s.shared = Object.assign({}, r.shared, s.shared), s.commands = $(
-      s.commands,
-      r.commands
-    ), s.context = function(o) {
+defineModel.extend = function(abstract) {
+  const extendFun = function(fun) {
+    const option = fun(abstract);
+    option.shared = Object.assign({}, abstract.shared, option.shared);
+    option.commands = objectDeepMerge(option.commands, abstract.commands);
+    const optionContext = option.context;
+    const abstractContext = abstract.context;
+    option.context = function(params) {
       return Object.assign(
-        r.context ? r.context(
-          o
+        abstractContext ? abstractContext(
+          params
         ) : {},
-        s.context ? s.context.call(this, o) : {}
+        optionContext ? optionContext.call(this, params) : {}
       );
-    }, s;
+    };
+    return option;
   };
-  return e.extend = function(t) {
-    const s = t(r);
-    return s.shared = Object.assign(
+  extendFun.extend = function(fun) {
+    const abstractOption = fun(abstract);
+    abstractOption.shared = Object.assign(
       {},
-      r.shared,
-      s.shared
-    ), s.commands = $(
-      s.commands,
-      r.commands
-    ), s.context = function(o) {
+      abstract.shared,
+      abstractOption.shared
+    );
+    abstractOption.commands = objectDeepMerge(
+      abstractOption.commands,
+      abstract.commands
+    );
+    const abstractContext = abstract.context;
+    const abstractOptionContext = abstractOption.context;
+    abstractOption.context = function(params) {
       return Object.assign(
-        r.context ? r.context(
-          o
+        abstractContext ? abstractContext(
+          params
         ) : {},
-        s.context ? s.context.call(this, o) : {}
+        abstractOptionContext ? abstractOptionContext.call(this, params) : {}
       );
-    }, D.extend(s);
-  }, e;
+    };
+    return defineModel.extend(abstractOption);
+  };
+  return extendFun;
 };
-D.expand = function(r) {
-  return r;
+defineModel.expand = function(expandOption) {
+  return expandOption;
 };
-const bt = D;
-var d = /* @__PURE__ */ ((r) => (r.COMPILED_ADD = "compiledAdd", r.COMPILED_REMOVE = "compiledRemove", r.COMPILED_ATTR = "compiledAttr", r.COMPILED_UPDATE = "compiledUpdate", r.COMPILED = "compiled", r.NOTICED = "noticed", r))(d || {});
-class Ne {
-  constructor(e) {
-    this.MODULE = "", this.builders = /* @__PURE__ */ new Map(), this.target = {}, this.map = /* @__PURE__ */ new Map(), this.symbolMap = /* @__PURE__ */ new WeakMap(), this.MODULE = e.module;
-    for (const t of e.models)
-      this.useModel(t);
+const defineProcessor = defineModel;
+var MODEL_EVENT = /* @__PURE__ */ ((MODEL_EVENT2) => {
+  MODEL_EVENT2["COMPILED_ADD"] = "compiledAdd";
+  MODEL_EVENT2["COMPILED_REMOVE"] = "compiledRemove";
+  MODEL_EVENT2["COMPILED_ATTR"] = "compiledAttr";
+  MODEL_EVENT2["COMPILED_UPDATE"] = "compiledUpdate";
+  MODEL_EVENT2["COMPILED"] = "compiled";
+  MODEL_EVENT2["NOTICED"] = "noticed";
+  return MODEL_EVENT2;
+})(MODEL_EVENT || {});
+class Compiler {
+  constructor(params) {
+    this.MODULE = "";
+    this.builders = /* @__PURE__ */ new Map();
+    this.target = {};
+    this.map = /* @__PURE__ */ new Map();
+    this.symbolMap = /* @__PURE__ */ new WeakMap();
+    this.MODULE = params.module;
+    for (const option of params.models) {
+      this.useModel(option);
+    }
   }
   /**
    * @deprecated
@@ -264,126 +369,188 @@ class Ne {
   getMap() {
     return null;
   }
-  useEngine(e) {
-    return this.engine = e, this;
+  useEngine(engine) {
+    this.engine = engine;
+    return this;
   }
-  setTarget(e) {
-    return this.target = e, this;
+  setTarget(target) {
+    this.target = target;
+    return this;
   }
-  add(e) {
-    if (!this.builders.has(e.type))
-      return console.warn(
-        `${this.MODULE} Compiler: can not support this type: ${e.type}`
-      ), null;
-    const { option: t, Builder: s } = this.builders.get(e.type), o = s ? new s({ config: e, engine: this.engine, compiler: this }) : new _({
-      config: e,
+  add(config) {
+    if (!this.builders.has(config.type)) {
+      console.warn(
+        `${this.MODULE} Compiler: can not support this type: ${config.type}`
+      );
+      return null;
+    }
+    const { option, Builder } = this.builders.get(config.type);
+    const model = Builder ? new Builder({ config, engine: this.engine, compiler: this }) : new Model({
+      config,
       engine: this.engine,
       compiler: this
     });
-    return t.context && Object.assign(o, t.context({ model: o })), o.createPuppet = t.create, o.disposePuppet = t.dispose, o.commands = t.commands, o.create(), this.map.set(e.vid, o), this.symbolMap.set(o.puppet, e.vid), o.emit(d.COMPILED_ADD), o.emit(d.COMPILED), o.puppet;
+    if (option.context) {
+      Object.assign(model, option.context({ model }));
+    }
+    model.createPuppet = option.create;
+    model.disposePuppet = option.dispose;
+    model.commands = option.commands;
+    model.create();
+    this.map.set(config.vid, model);
+    this.symbolMap.set(model.puppet, config.vid);
+    model.emit(MODEL_EVENT.COMPILED_ADD);
+    model.emit(MODEL_EVENT.COMPILED);
+    return model.puppet;
   }
-  remove(e) {
-    const t = e.vid;
-    if (!this.map.has(t))
-      return console.warn(
-        `${this.MODULE} Compiler: can not found this vid object: ${t}.`
-      ), this;
-    if (!this.builders.has(e.type))
-      return console.warn(
-        `${this.MODULE} Compiler: can not support this type: ${e.type}`
-      ), this;
-    const s = this.map.get(t);
-    return this.map.delete(t), this.symbolMap.delete(s.puppet), s.dispose(), s.emit(d.COMPILED_REMOVE), s.emit(d.COMPILED), this;
+  remove(config) {
+    const vid = config.vid;
+    if (!this.map.has(vid)) {
+      console.warn(
+        `${this.MODULE} Compiler: can not found this vid object: ${vid}.`
+      );
+      return this;
+    }
+    if (!this.builders.has(config.type)) {
+      console.warn(
+        `${this.MODULE} Compiler: can not support this type: ${config.type}`
+      );
+      return this;
+    }
+    const model = this.map.get(vid);
+    this.map.delete(vid);
+    this.symbolMap.delete(model.puppet);
+    model.dispose();
+    model.emit(MODEL_EVENT.COMPILED_REMOVE);
+    model.emit(MODEL_EVENT.COMPILED);
+    return this;
   }
-  cover(e) {
-    const t = e.vid;
-    return this.map.has(t) ? (Promise.resolve().then(() => {
-      me(e, e, {
-        vid: !0,
-        type: !0
+  cover(config) {
+    const vid = config.vid;
+    if (!this.map.has(vid)) {
+      console.warn(
+        `${this.MODULE} Compiler: can not found this vid object: ${vid}.`
+      );
+      return this;
+    }
+    Promise.resolve().then(() => {
+      syncObject(config, config, {
+        vid: true,
+        type: true
       });
-    }), this) : (console.warn(
-      `${this.MODULE} Compiler: can not found this vid object: ${t}.`
-    ), this);
+    });
+    return this;
   }
-  compile(e, t) {
-    if (!this.map.has(e))
-      return console.warn(
-        `${this.MODULE} Compiler: can not found model which vid is: '${e}'`
-      ), this;
-    const s = this.map.get(e);
-    s.process(t);
-    const o = t.path;
-    return s.emit(
-      `${d.COMPILED_ATTR}:${o && o + "."}${t.key}`
-    ), s.emit(d.COMPILED_UPDATE), s.emit(d.COMPILED), this;
+  compile(vid, notice) {
+    if (!this.map.has(vid)) {
+      console.warn(
+        `${this.MODULE} Compiler: can not found model which vid is: '${vid}'`
+      );
+      return this;
+    }
+    const model = this.map.get(vid);
+    model.process(notice);
+    const router = notice.path;
+    model.emit(
+      `${MODEL_EVENT.COMPILED_ATTR}:${router ? router + "." : router}${notice.key}`
+    );
+    model.emit(MODEL_EVENT.COMPILED_UPDATE);
+    model.emit(MODEL_EVENT.COMPILED);
+    return this;
   }
   compileAll() {
-    const e = this.target;
-    for (const t of Object.values(e))
-      this.add(t);
+    const target = this.target;
+    for (const config of Object.values(target)) {
+      this.add(config);
+    }
     return this;
   }
   dispose() {
-    for (const e of this.map.values())
-      e.dispose();
-    return this.map.clear(), this.target = {}, this;
+    for (const model of this.map.values()) {
+      model.dispose();
+    }
+    this.map.clear();
+    this.target = {};
+    return this;
   }
-  getObjectSymbol(e) {
-    return this.symbolMap.get(e) || null;
+  getObjectSymbol(object) {
+    return this.symbolMap.get(object) || null;
   }
-  getObjectBySymbol(e) {
-    var t;
-    return ((t = this.map.get(e)) == null ? void 0 : t.puppet) || null;
+  getObjectBySymbol(vid) {
+    var _a;
+    return ((_a = this.map.get(vid)) == null ? void 0 : _a.puppet) || null;
   }
-  getModelBySymbol(e) {
-    return this.map.get(e) || null;
+  getModelBySymbol(vid) {
+    return this.map.get(vid) || null;
   }
-  useModel(e, t) {
-    if (this.builders.has(e.type))
-      return console.warn(
-        `${this.MODULE} Compiler: has already exist this model ${e.type}.`
-      ), this;
-    let s;
-    if (e.shared) {
-      s = class extends _ {
-        constructor(o) {
-          super(o);
+  useModel(option, callback) {
+    if (CONFIG_MODEL[option.type]) {
+      console.warn(
+        `${this.MODULE} Compiler: has already exist this model ${option.type}.`
+      );
+      return this;
+    }
+    let Builder = void 0;
+    if (option.shared) {
+      Builder = class extends Model {
+        constructor(params) {
+          super(params);
         }
       };
-      for (const o in e.shared)
-        s.prototype[o] = e.shared[o];
-    }
-    if (e.expand) {
-      const o = function(n, i) {
-        n ? (n.config = function() {
-          return Object.assign(n.config(), i.config());
-        }, !n.commands && (n.commands = {}), n.commands = $(n.commands, i.commands, {
-          fresh: !1
-        })) : console.error(
-          "Compiler: model expend error, can not found model witch has not been registered.",
-          i.models,
-          g
-        );
-      };
-      for (const n of e.expand)
-        if (typeof n.models == "string")
-          o(g[n.models], n);
-        else if (Array.isArray(n.models))
-          for (const i in n.models)
-            o(g[i], n);
-        else if (n.models instanceof RegExp)
-          for (const i in g)
-            n.models.test(i) && o(g[i], n);
-    }
-    return this.builders.set(e.type, {
-      option: e,
-      Builder: s
-    }), Object.defineProperty(y, e.type, {
-      get() {
-        return e.config;
+      for (const key in option.shared) {
+        Builder.prototype[key] = option.shared[key];
       }
-    }), ae[ie(e.type)] = e.type, ce[Ce(e.type)] = e.type, J[e.type] = this.MODULE, g[e.type] = e, t && t(this), this;
+    }
+    if (option.expand) {
+      const expendModel = function(target, merge) {
+        if (!target) {
+          console.error(
+            `Compiler: model expend error, can not found model witch has not been registered.`,
+            merge.models,
+            CONFIG_MODEL
+          );
+        } else {
+          const targetConfig = target.config;
+          target.config = function() {
+            return Object.assign(targetConfig(), merge.config());
+          };
+          !target.commands && (target.commands = {});
+          target.commands = objectDeepMerge(target.commands, merge.commands, {
+            fresh: false
+          });
+        }
+      };
+      for (const rule of option.expand) {
+        if (typeof rule.models === "string") {
+          expendModel(CONFIG_MODEL[rule.models], rule);
+        } else if (Array.isArray(rule.models)) {
+          for (const key in rule.models) {
+            expendModel(CONFIG_MODEL[key], rule);
+          }
+        } else if (rule.models instanceof RegExp) {
+          for (const key in CONFIG_MODEL) {
+            if (rule.models.test(key)) {
+              expendModel(CONFIG_MODEL[key], rule);
+            }
+          }
+        }
+      }
+    }
+    this.builders.set(option.type, {
+      option,
+      Builder
+    });
+    Object.defineProperty(CONFIG_FACTORY, option.type, {
+      get() {
+        return () => Object.assign(option.config(), { type: option.type });
+      }
+    });
+    CONFIG_TYPE[emunDecamelize(option.type)] = option.type;
+    CONFIGTYPE[emunCamelize(option.type)] = option.type;
+    CONFIG_MODULE[option.type] = this.MODULE;
+    CONFIG_MODEL[option.type] = option;
+    callback && callback(this);
+    return this;
   }
   /**
    * @deprecated use useModel
@@ -391,351 +558,543 @@ class Ne {
    * @param callback
    * @returns
    */
-  useProcessor(e, t) {
-    return this.useModel(e, t);
+  useProcessor(processor, callback) {
+    return this.useModel(processor, callback);
   }
 }
-const h = {
+const globalOption = {
   proxy: {
     expand: void 0,
     timing: "before",
     toRaw: void 0
   },
   symbol: {
-    generator: Oe,
-    validator: (r) => r.length === 21
+    generator: nanoid,
+    validator: (id) => id.length === 21
   },
   engine: void 0
-}, St = function(r) {
-  r.proxy && Object.assign(h.proxy, r.proxy), r.symbol && Object.assign(h.symbol, r.symbol);
-}, ee = function(r, e, t) {
-  return Reflect.get(r, e, t);
-}, te = function(r, e, t, s, o) {
-  if (typeof e == "symbol")
-    return Reflect.set(r, e, t, s);
-  if (r[e] === void 0) {
-    const n = Reflect.set(r, e, t);
-    return o.add(t), o.next({
+};
+const defineOption = function(options) {
+  if (options.proxy) {
+    Object.assign(globalOption.proxy, options.proxy);
+  }
+  if (options.symbol) {
+    Object.assign(globalOption.symbol, options.symbol);
+  }
+};
+const containerGetter = function(target, key, receiver) {
+  return Reflect.get(target, key, receiver);
+};
+const containerSetter = function(target, key, value, receiver, container) {
+  if (typeof key === "symbol") {
+    return Reflect.set(target, key, value, receiver);
+  }
+  if (target[key] === void 0) {
+    const result = Reflect.set(target, key, value);
+    container.add(value);
+    container.next({
       operate: "add",
       path: "",
-      key: e,
-      value: t,
-      symbol: e
-    }), n;
+      key,
+      value,
+      symbol: key
+    });
+    return result;
   } else {
-    const n = Reflect.set(r, e, t);
-    return o.remove(t.vid), o.add(t), o.next({
+    const result = Reflect.set(target, key, value);
+    container.remove(value.vid);
+    container.add(value);
+    container.next({
       operate: "set",
       path: "",
-      key: e,
-      value: t,
-      symbol: e
-    }), n;
+      key,
+      value,
+      symbol: key
+    });
+    return result;
   }
-}, re = function(r, e, t) {
-  if (typeof e == "symbol")
-    return Reflect.deleteProperty(r, e);
-  const s = r[e], o = Reflect.deleteProperty(r, e);
-  return t.next({
+};
+const containerDeleter = function(target, key, container) {
+  if (typeof key === "symbol") {
+    return Reflect.deleteProperty(target, key);
+  }
+  const value = target[key];
+  const result = Reflect.deleteProperty(target, key);
+  container.next({
     operate: "delete",
     path: "",
-    key: e,
-    value: s,
-    symbol: e
-  }), t.remove(s.vid), o;
+    key,
+    value,
+    symbol: key
+  });
+  container.remove(value.vid);
+  return result;
 };
-class Te extends oe {
+class Container extends Subject {
   constructor() {
-    super(), this.subscriptions = /* @__PURE__ */ new Map();
-    const e = h.proxy.expand ? (t = {}) => h.proxy.expand(t) : (t = {}) => t;
-    h.proxy.timing === "before" ? this.space = new Proxy(e(), {
-      get: ee,
-      set: (t, s, o, n) => te(t, s, o, n, this),
-      deleteProperty: (t, s) => re(t, s, this)
-    }) : this.space = e(
-      new Proxy(
-        {},
-        {
-          get: ee,
-          set: (t, s, o, n) => te(t, s, o, n, this),
-          deleteProperty: (t, s) => re(t, s, this)
-        }
-      )
-    );
+    super();
+    this.subscriptions = /* @__PURE__ */ new Map();
+    const generator = globalOption.proxy.expand ? (data = {}) => globalOption.proxy.expand(data) : (data = {}) => data;
+    if (globalOption.proxy.timing === "before") {
+      this.space = new Proxy(generator(), {
+        get: containerGetter,
+        set: (target, key, value, receiver) => containerSetter(target, key, value, receiver, this),
+        deleteProperty: (target, key) => containerDeleter(target, key, this)
+      });
+    } else {
+      this.space = generator(
+        new Proxy(
+          {},
+          {
+            get: containerGetter,
+            set: (target, key, value, receiver) => containerSetter(target, key, value, receiver, this),
+            deleteProperty: (target, key) => containerDeleter(target, key, this)
+          }
+        )
+      );
+    }
   }
-  add(e) {
-    const t = N(e);
-    if (!t) {
-      console.error("Container: this config can not observer", e);
+  add(config) {
+    const observer = getObserver(config);
+    if (!observer) {
+      console.error("Container: this config can not observer", config);
       return;
     }
     this.subscriptions.set(
-      t.target.vid,
-      t.subscribe((s) => {
+      observer.target.vid,
+      observer.subscribe((notice) => {
         this.next({
-          operate: s.operate,
-          path: s.path,
-          key: s.key,
-          value: s.value,
-          symbol: t.target.vid
+          operate: notice.operate,
+          path: notice.path,
+          key: notice.key,
+          value: notice.value,
+          symbol: observer.target.vid
         });
       })
     );
   }
-  remove(e) {
-    this.subscriptions.delete(e);
+  remove(vid) {
+    this.subscriptions.delete(vid);
   }
 }
-const O = (r, e) => e === 1 / 0 ? "Infinity" : e === -1 / 0 ? "-Infinity" : e, H = (r, e) => e === "Infinity" ? 1 / 0 : e === "-Infinity" ? -1 / 0 : e, E = (r) => JSON.parse(JSON.stringify(r, O), H), b = {
-  stringify: O,
-  parse: H,
-  clone: E
-}, xt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const stringify = (key, value) => {
+  if (value === Infinity) {
+    return "Infinity";
+  }
+  if (value === -Infinity) {
+    return "-Infinity";
+  }
+  return value;
+};
+const parse = (key, value) => {
+  if (value === "Infinity") {
+    return Infinity;
+  }
+  if (value === "-Infinity") {
+    return -Infinity;
+  }
+  return value;
+};
+const clone$1 = (object) => {
+  return JSON.parse(JSON.stringify(object, stringify), parse);
+};
+const JSONHandler = {
+  stringify,
+  parse,
+  clone: clone$1
+};
+const JSONHandler$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  clone: E,
-  default: b,
-  parse: H,
-  stringify: O
-}, Symbol.toStringTag, { value: "Module" })), p = function(r, e, t = {
-  observer: !0,
-  strict: !0,
-  warn: !0
+  clone: clone$1,
+  default: JSONHandler,
+  parse,
+  stringify
+}, Symbol.toStringTag, { value: "Module" }));
+const generateConfig = function(type, merge, options = {
+  observer: true,
+  strict: true,
+  warn: true
 }) {
-  if (t.observer === void 0 && (t.observer = !0), t.strict === void 0 && (t.strict = !0), t.warn === void 0 && (t.warn = !0), t.handler === void 0 && (t.handler = h.proxy.expand), !Y[r])
-    return console.error(`type: ${r} can not be found in configList.`), {
+  if (options.observer === void 0) {
+    options.observer = true;
+  }
+  if (options.strict === void 0) {
+    options.strict = true;
+  }
+  if (options.warn === void 0) {
+    options.warn = true;
+  }
+  if (options.handler === void 0) {
+    options.handler = globalOption.proxy.expand;
+  }
+  if (!CONFIG_FACTORY[type]) {
+    console.error(`type: ${type} can not be found in configList.`);
+    return {
       vid: "",
-      type: r
+      type
     };
-  const s = (i, a) => {
-    for (const c in a) {
-      if (i[c] === void 0) {
-        !t.strict && (i[c] = a[c]), t.strict && t.warn && console.warn(`'${r}' config can not set key: ${c}`);
+  }
+  const recursion = (config, merge2) => {
+    for (const key in merge2) {
+      if (config[key] === void 0) {
+        !options.strict && (config[key] = merge2[key]);
+        options.strict && options.warn && console.warn(`'${type}' config can not set key: ${key}`);
         continue;
       }
-      typeof a[c] == "object" && a[c] !== null && !Array.isArray(a[c]) ? (i[c] === null && (i[c] = { ...a[c] }), s(i[c], a[c])) : i[c] = a[c];
+      if (typeof merge2[key] === "object" && merge2[key] !== null && !Array.isArray(merge2[key])) {
+        if (config[key] === null) {
+          config[key] = { ...merge2[key] };
+        }
+        recursion(config[key], merge2[key]);
+      } else {
+        config[key] = merge2[key];
+      }
     }
   };
-  let o = Y[r]();
-  if (o.vid === "" && (o.vid = h.symbol.generator()), e && s(o, e), t.observer === !1)
-    return o;
-  t.handler && h.proxy.timing === "before" && (o = t.handler(o));
-  let n = Fe(o);
-  if (t.handler && h.proxy.timing === "after" && (n = t.handler(n)), p.autoInject && p.injectEngine) {
-    const i = p.injectEngine;
-    if (i.applyConfig(n), p.injectScene && De(o.type) && o.type !== ce.SCENE) {
-      let a = null;
-      typeof p.injectScene == "boolean" ? a = i.getObjectConfig(i.scene) : typeof p.injectScene == "string" && (a = i.getConfigBySymbol(p.injectScene)), a ? a.children.push(
-        o.vid
-      ) : console.warn(
-        "current engine scene can not found it config",
-        i,
-        i.scene
-      );
-    }
-    return n;
+  let initConfig = CONFIG_FACTORY[type]();
+  if (initConfig.vid === "") {
+    initConfig.vid = globalOption.symbol.generator();
   }
-  return n;
+  if (merge) {
+    delete merge.type;
+    recursion(initConfig, merge);
+  }
+  if (options.observer === false) {
+    return initConfig;
+  }
+  if (options.handler && globalOption.proxy.timing === "before") {
+    initConfig = options.handler(initConfig);
+  }
+  let ob = observable(initConfig);
+  if (options.handler && globalOption.proxy.timing === "after") {
+    ob = options.handler(ob);
+  }
+  if (generateConfig.autoInject && generateConfig.injectEngine) {
+    const engine = generateConfig.injectEngine;
+    engine.applyConfig(ob);
+    if (generateConfig.injectScene) {
+      if (isObjectType(initConfig.type) && initConfig.type !== CONFIG_TYPE.SCENE) {
+        let sceneConfig = null;
+        if (typeof generateConfig.injectScene === "boolean") {
+          sceneConfig = engine.getObjectConfig(engine.scene);
+        } else if (typeof generateConfig.injectScene === "string") {
+          sceneConfig = engine.getConfigBySymbol(generateConfig.injectScene);
+        }
+        if (!sceneConfig) {
+          console.warn(
+            `current engine scene can not found it config`,
+            engine,
+            engine.scene
+          );
+        } else {
+          sceneConfig.children.push(
+            initConfig.vid
+          );
+        }
+      }
+    }
+    return ob;
+  }
+  return ob;
 };
-p.autoInject = !0;
-p.injectScene = !1;
-p.injectEngine = null;
-const fe = (r, e = {}) => {
-  let t = JSON.stringify(r, b.stringify);
-  const s = {};
-  !e.filter && (e.filter = ["assets"]);
-  const o = Object.keys(r).filter(
-    (i) => !e.filter.includes(i)
+generateConfig.autoInject = true;
+generateConfig.injectScene = false;
+generateConfig.injectEngine = null;
+const clone = (object, options = {}) => {
+  let jsonObject = JSON.stringify(object, JSONHandler.stringify);
+  const detail = {};
+  !options.filter && (options.filter = ["assets"]);
+  const modulekeys = Object.keys(object).filter(
+    (key) => !options.filter.includes(key)
   );
-  for (const i of o)
-    for (const a of r[i]) {
-      const c = a.vid, l = We();
-      t = t.replace(new RegExp(c, "g"), l), e.detail && (s[c] = l);
+  for (const modulekey of modulekeys) {
+    for (const config of object[modulekey]) {
+      const vid = config.vid;
+      const newVid = createSymbol();
+      jsonObject = jsonObject.replace(new RegExp(vid, "g"), newVid);
+      if (options.detail) {
+        detail[vid] = newVid;
+      }
     }
-  const n = JSON.parse(t, b.parse);
-  if (e.fillName)
-    if (typeof e.fillName == "function")
-      for (const i of o)
-        for (const a of n[i])
-          a.name || (a.name = e.fillName(a));
-    else
-      for (const i of o)
-        for (const a of n[i])
-          a.name || (a.name = `${a.type}-${a.vid.slice(-2)}`);
-  return e.detail ? { config: n, detail: s } : n;
-}, W = (r, e, t = {
-  filter: ["assets"],
-  clone: !0
-}) => {
-  const s = t.clone ? b.clone(r) : r;
-  !t.filter && (t.filter = ["assets"]);
-  const o = Object.keys(s).filter(
-    (n) => !t.filter.includes(n)
-  );
-  for (const n of o)
-    s[n].forEach((a, c, l) => {
-      l[c] = e(a);
-    });
-  return s;
-}, pe = function(r) {
-  const e = {};
-  for (const t of Object.keys(r))
-    for (const s of r[t])
-      e[s.name] = s;
-  return e;
-}, he = function(r, e) {
-  return typeof r == "string" && (r = JSON.parse(r, b.parse)), W(b.clone(r), (t) => (t = p(t.type, t, { strict: !1 }), e ? e(t) : t));
-}, Le = {
-  clone: fe,
-  handler: W,
-  planish: pe,
-  observable: he
-}, Et = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  clone: fe,
-  default: Le,
-  handler: W,
-  observable: he,
-  planish: pe
-}, Symbol.toStringTag, { value: "Module" }));
-class $e {
-  constructor() {
-    this.list = [], this.time = 0;
   }
-  exec(e) {
-    if (e(!1))
+  const newConfig = JSON.parse(jsonObject, JSONHandler.parse);
+  if (options.fillName) {
+    if (typeof options.fillName === "function") {
+      for (const modulekey of modulekeys) {
+        for (const config of newConfig[modulekey]) {
+          if (!config.name) {
+            config.name = options.fillName(config);
+          }
+        }
+      }
+    } else {
+      for (const modulekey of modulekeys) {
+        for (const config of newConfig[modulekey]) {
+          if (!config.name) {
+            config.name = `${config.type}-${config.vid.slice(-2)}`;
+          }
+        }
+      }
+    }
+  }
+  return options.detail ? { config: newConfig, detail } : newConfig;
+};
+const handler$1 = (object, handler2, options = {
+  filter: ["assets"],
+  clone: true
+}) => {
+  const config = options.clone ? JSONHandler.clone(object) : object;
+  !options.filter && (options.filter = ["assets"]);
+  const modulekeys = Object.keys(config).filter(
+    (key) => !options.filter.includes(key)
+  );
+  for (const modulekey of modulekeys) {
+    const module = config[modulekey];
+    module.forEach((elem, i, arr) => {
+      arr[i] = handler2(elem);
+    });
+  }
+  return config;
+};
+const planish = function(configs) {
+  const result = {};
+  for (const module of Object.keys(configs)) {
+    for (const config of configs[module]) {
+      result[config.name] = config;
+    }
+  }
+  return result;
+};
+const observable$1 = function(object, obCallback) {
+  if (typeof object === "string") {
+    object = JSON.parse(object, JSONHandler.parse);
+  }
+  return handler$1(JSONHandler.clone(object), (c) => {
+    c = generateConfig(c.type, c, { strict: false });
+    if (obCallback) {
+      return obCallback(c);
+    } else {
+      return c;
+    }
+  });
+};
+const template = {
+  clone,
+  handler: handler$1,
+  planish,
+  observable: observable$1
+};
+const template$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  clone,
+  default: template,
+  handler: handler$1,
+  observable: observable$1,
+  planish
+}, Symbol.toStringTag, { value: "Module" }));
+class AntiShake {
+  constructor() {
+    this.list = [];
+    this.time = 0;
+  }
+  exec(fun) {
+    if (fun(false)) {
       return;
-    this.list.includes(e) || this.list.push(e);
-    let t = 0;
-    const s = () => {
-      this.timer && clearTimeout(this.timer), this.timer = setTimeout(() => {
-        const o = [];
-        for (const n of this.list)
-          n(!1) || o.push(n);
-        if (o.length)
-          if (o.length === t) {
-            for (const n of o)
-              n(!0);
+    }
+    if (!this.list.includes(fun)) {
+      this.list.push(fun);
+    }
+    let cacheCount = 0;
+    const autoSequential = () => {
+      this.timer && clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
+        const nextList = [];
+        for (const fun2 of this.list) {
+          if (!fun2(false)) {
+            nextList.push(fun2);
+          }
+        }
+        if (nextList.length) {
+          if (nextList.length === cacheCount) {
+            for (const fun2 of nextList) {
+              fun2(true);
+            }
             this.list = [];
-          } else
-            t = o.length, this.list = o, s();
-        else
+          } else {
+            cacheCount = nextList.length;
+            this.list = nextList;
+            autoSequential();
+          }
+        } else {
           this.list = [];
+        }
       }, this.time);
     };
-    s();
+    autoSequential();
   }
-  append(e) {
-    this.list.length && !this.list.includes(e) ? this.list.push(e) : this.exec(e);
+  append(fun) {
+    if (this.list.length && !this.list.includes(fun)) {
+      this.list.push(fun);
+    } else {
+      this.exec(fun);
+    }
   }
-  nextTick(e) {
+  nextTick(fun) {
     setTimeout(() => {
-      e();
+      fun();
     }, this.time);
   }
 }
-const vt = new $e();
-class Be {
-  constructor(e) {
-    this.MODULE = "", this.container = new Te(), this.ruler = e.ruler, this.MODULE = e.module, this.container.subscribe((t) => {
-      this.ruler.execute(t);
+const globalAntiShake = new AntiShake();
+class Converter {
+  constructor(params) {
+    this.MODULE = "";
+    this.container = new Container();
+    this.ruler = params.ruler;
+    this.MODULE = params.module;
+    this.container.subscribe((notice) => {
+      this.ruler.execute(notice);
     });
   }
   getData() {
     return this.container.space;
   }
-  existSymbol(e) {
-    return !!this.container.space[e];
+  existSymbol(vid) {
+    return Boolean(this.container.space[vid]);
   }
-  addConfig(e) {
-    return this.container.space[e.vid] = e, this;
+  addConfig(config) {
+    this.container.space[config.vid] = config;
+    return this;
   }
-  getConfig(e) {
-    return this.container.space[e];
+  getConfig(vid) {
+    return this.container.space[vid];
   }
-  removeConfig(e) {
-    const t = this.container.space;
-    t[e] !== void 0 && delete t[e];
+  removeConfig(vid) {
+    const data = this.container.space;
+    data[vid] !== void 0 && delete data[vid];
   }
-  addCompiler(e) {
-    return e.setTarget(this.container.space), e.compileAll(), this.ruler.link(e), this;
+  addCompiler(compiler) {
+    compiler.setTarget(this.container.space);
+    compiler.compileAll();
+    this.ruler.link(compiler);
+    return this;
   }
   /**
    * 导出json化配置单
    * @returns json config
    */
-  toJSON(e = !0) {
-    return JSON.stringify(e ? this.exportConfig() : Object.values(this.container.space), O);
+  toJSON(compress = true) {
+    if (!compress) {
+      return JSON.stringify(
+        Object.values(this.container.space),
+        stringify
+      );
+    } else {
+      return JSON.stringify(this.exportConfig(), stringify);
+    }
   }
   /**
    * 导出配置单
    * @param compress 是否压缩配置单 default true
    * @returns config
    */
-  exportConfig(e = !0) {
-    if (e) {
-      const t = this.container.space, s = [], o = {}, n = (i, a, c = {}) => {
-        for (const l in i) {
-          if (["vid", "type"].includes(l)) {
-            c[l] = i[l];
+  exportConfig(compress = true) {
+    if (!compress) {
+      return Object.values(clone$1(this.container.space));
+    } else {
+      const data = this.container.space;
+      const target = [];
+      const cacheConfigTemplate = {};
+      const recursion = (config, template2, result = {}) => {
+        for (const key in config) {
+          if (["vid", "type"].includes(key)) {
+            result[key] = config[key];
             continue;
           }
-          if (typeof i[l] == "object" && i[l] !== null) {
-            if (Array.isArray(i[l])) {
-              if (!i[l].length)
+          if (typeof config[key] === "object" && config[key] !== null) {
+            if (Array.isArray(config[key])) {
+              if (!config[key].length) {
                 continue;
-              c[l] = i[l].map((f) => typeof f == "object" && f !== null ? E(f) : f);
+              }
+              result[key] = config[key].map((elem) => {
+                if (typeof elem === "object" && elem !== null) {
+                  return clone$1(elem);
+                } else {
+                  return elem;
+                }
+              });
               continue;
             }
-            c[l] = {}, a[l] ? (n(i[l], a[l], c[l]), Object.keys(c[l]).length === 0 && delete c[l]) : c[l] = E(i[l]);
-          } else
-            a[l] !== i[l] && (c[l] = i[l]);
+            result[key] = {};
+            if (!template2[key]) {
+              result[key] = clone$1(config[key]);
+            } else {
+              recursion(config[key], template2[key], result[key]);
+              if (Object.keys(result[key]).length === 0) {
+                delete result[key];
+              }
+            }
+          } else {
+            if (template2[key] !== config[key]) {
+              result[key] = config[key];
+            }
+          }
         }
       };
-      for (const i of Object.values(t)) {
-        if (!o[i.type]) {
-          if (!y[i.type]) {
-            console.error(`can not font some config with: ${i.type}`);
+      for (const config of Object.values(data)) {
+        if (!cacheConfigTemplate[config.type]) {
+          if (!CONFIG_FACTORY[config.type]) {
+            console.error(`can not font some config with: ${config.type}`);
             continue;
           }
-          o[i.type] = y[i.type]();
+          cacheConfigTemplate[config.type] = CONFIG_FACTORY[config.type]();
         }
-        const a = {};
-        n(i, o[i.type], a), s.push(a);
+        const temp = {};
+        recursion(config, cacheConfigTemplate[config.type], temp);
+        target.push(temp);
       }
-      return s;
-    } else
-      return Object.values(E(this.container.space));
+      return target;
+    }
   }
   /**
    * 加载配置
    * @param configs this module configs
    * @returns true
    */
-  load(e) {
-    const t = this.container.space, s = {}, o = (n, i) => {
-      for (const a in i)
-        typeof n[a] == "object" && n[a] !== null && typeof i[a] == "object" && i[a] !== null ? o(n[a], i[a]) : n[a] === void 0 && (n[a] = i[a]);
+  load(configs) {
+    const data = this.container.space;
+    const cacheConfigTemplate = {};
+    const restore = (config, template2) => {
+      for (const key in template2) {
+        if (typeof config[key] === "object" && config[key] !== null && typeof template2[key] === "object" && template2[key] !== null) {
+          restore(config[key], template2[key]);
+        } else if (config[key] === void 0) {
+          config[key] = template2[key];
+        }
+      }
     };
-    for (const n of e) {
-      if (!s[n.type]) {
-        if (!y[n.type]) {
-          console.error(`can not font some config with: ${n.type}`);
+    for (const config of configs) {
+      if (!cacheConfigTemplate[config.type]) {
+        if (!CONFIG_FACTORY[config.type]) {
+          console.error(`can not font some config with: ${config.type}`);
           continue;
         }
-        s[n.type] = y[n.type]();
+        cacheConfigTemplate[config.type] = CONFIG_FACTORY[config.type]();
       }
-      o(n, s[n.type]), t[n.vid] = n;
+      restore(config, cacheConfigTemplate[config.type]);
+      data[config.vid] = config;
     }
     return this;
   }
-  remove(e) {
-    const t = this.container.space;
-    for (const s of e)
-      t[s.vid] !== void 0 && delete t[s.vid];
+  remove(configs) {
+    const data = this.container.space;
+    for (const config of configs) {
+      data[config.vid] !== void 0 && delete data[config.vid];
+    }
     return this;
   }
 }
-const Ie = [
+const arrayMethods = [
   "push",
   "pop",
   "shift",
@@ -743,194 +1102,328 @@ const Ie = [
   "splice",
   "sort",
   "reverse"
-], x = /* @__PURE__ */ new WeakSet(), Ge = function(r, e, t) {
-  return Array.isArray(r) && Ie.includes(e) && x.add(r), Reflect.get(r, e, t);
-}, ke = function(r, e, t, s) {
-  const o = V(r), n = N(r);
-  if (typeof e == "symbol" || n.ignore(se(o, e)))
-    return Reflect.set(r, e, t, s);
-  if (C(t) && !ue(t) && (t = R(n, t, r, e)), r[e] === void 0) {
-    C(t) && (t[Symbol.for(M)] = e, m(t) && A(t)), m(r) && x.delete(r);
-    const c = Reflect.set(r, e, t);
-    return m(r) && A(r), n.next({
+];
+const arrayMutation = /* @__PURE__ */ new WeakSet();
+const proxyGetter = function(target, key, receiver) {
+  if (Array.isArray(target) && arrayMethods.includes(key)) {
+    arrayMutation.add(target);
+  }
+  return Reflect.get(target, key, receiver);
+};
+const proxySetter = function(target, key, value, receiver) {
+  const path = getPath(target);
+  const observer = getObserver(target);
+  if (typeof key === "symbol" || observer.ignore(extendPath(path, key))) {
+    return Reflect.set(target, key, value, receiver);
+  }
+  if (isObject(value) && !hasObserver(value)) {
+    value = react(observer, value, target, key);
+  }
+  if (target[key] === void 0) {
+    if (isObject(value)) {
+      value[Symbol.for(SYMBOL_KEY)] = key;
+      isArray(value) && cacheArray(value);
+    }
+    isArray(target) && arrayMutation.delete(target);
+    const result2 = Reflect.set(target, key, value);
+    isArray(target) && cacheArray(target);
+    observer.next({
       operate: "add",
-      path: o,
-      key: e,
-      value: t
-    }), c;
+      path,
+      key,
+      value
+    });
+    return result2;
   }
-  const i = r[e], a = Reflect.set(r, e, t);
-  if (m(r)) {
-    if (x.has(r) && e === "length") {
-      const c = Re(r);
-      if (!c)
-        return Array.isArray(i) && console.error("array value is not be cached:", r), a;
-      je(r);
-      const l = Math.abs(c.length - r.length), f = c.length >= r.length ? "delete" : "add", ge = c.length >= r.length ? r : c;
-      let X = 0, K = 0;
-      for (const Q of f === "delete" ? c : r) {
-        if (!ge.includes(Q) && (n.next({
-          operate: f,
-          path: o,
-          key: K.toString(),
-          value: Q
-        }), X += 1, X === l))
-          break;
-        K += 1;
+  const oldValue = target[key];
+  const result = Reflect.set(target, key, value);
+  if (isArray(target)) {
+    if (arrayMutation.has(target) && key === "length") {
+      const cacheValue = getCacheArray(target);
+      if (!cacheValue) {
+        if (Array.isArray(oldValue)) {
+          console.error("array value is not be cached:", target);
+        }
+        return result;
       }
-      return A(r), x.delete(r), a;
-    } else if (x.has(r) || e === "length")
-      return a;
-  }
-  return n.next({
-    operate: "set",
-    path: o,
-    key: e,
-    value: t
-  }), a;
-}, Je = function(r, e) {
-  const t = V(r), s = N(r);
-  if (typeof e == "symbol" || s.ignore(t))
-    return Reflect.deleteProperty(r, e);
-  const o = r[e], n = Reflect.deleteProperty(r, e);
-  return m(r) || s.next({
-    operate: "delete",
-    path: t,
-    key: e,
-    value: o
-  }), n;
-}, Ue = {
-  get: Ge,
-  set: ke,
-  deleteProperty: Je
-}, R = function(r, e, t, s) {
-  if (!C(e) || ue(e))
-    return e;
-  const o = t ? V(t) : "";
-  if (r.ignore(o))
-    return e;
-  t && (e[Symbol.for(I)] = t), e[Symbol.for(F)] = r;
-  for (const i in e) {
-    const a = se(o, i);
-    if (!r.ignore(a) && C(e[i])) {
-      if (m(e[i])) {
-        const c = e[i];
-        e[i] = R(
-          r,
-          e[i],
-          e
-        ), A(c);
-      } else
-        e[i] = R(
-          r,
-          e[i],
-          e
-        );
-      e[i][Symbol.for(M)] = i;
+      updateArraySymbol(target);
+      const num = Math.abs(cacheValue.length - target.length);
+      const operate = cacheValue.length >= target.length ? "delete" : "add";
+      const contrast = cacheValue.length >= target.length ? target : cacheValue;
+      let execNum = 0;
+      let index = 0;
+      for (const member of operate === "delete" ? cacheValue : target) {
+        if (!contrast.includes(member)) {
+          observer.next({
+            operate,
+            path,
+            key: index.toString(),
+            value: member
+          });
+          execNum += 1;
+          if (execNum === num) {
+            break;
+          }
+        }
+        index += 1;
+      }
+      cacheArray(target);
+      arrayMutation.delete(target);
+      return result;
+    } else if (arrayMutation.has(target) || key === "length") {
+      return result;
     }
   }
-  return s && (e[Symbol.for(M)] = s), new Proxy(e, Ue);
-}, v = class v extends oe {
-  constructor(e) {
-    super(), this.disable = !1, this.target = R(this, e);
+  observer.next({
+    operate: "set",
+    path,
+    key,
+    value
+  });
+  return result;
+};
+const proxyDeleter = function(target, key) {
+  const path = getPath(target);
+  const observer = getObserver(target);
+  if (typeof key === "symbol" || observer.ignore(path)) {
+    return Reflect.deleteProperty(target, key);
   }
-  ignore(e) {
-    const t = e.indexOf(".");
-    return t === -1 ? v.IGNORE[e] : v.IGNORE[e.slice(0, t)];
+  const value = target[key];
+  const result = Reflect.deleteProperty(target, key);
+  if (isArray(target)) {
+    return result;
   }
-  next(e) {
-    if (this.disable)
+  observer.next({
+    operate: "delete",
+    path,
+    key,
+    value
+  });
+  return result;
+};
+const handler = {
+  get: proxyGetter,
+  set: proxySetter,
+  deleteProperty: proxyDeleter
+};
+const react = function(observer, object, father, key) {
+  if (!isObject(object)) {
+    return object;
+  }
+  if (hasObserver(object)) {
+    return object;
+  }
+  const path = father ? getPath(father) : "";
+  if (observer.ignore(path)) {
+    return object;
+  }
+  father && (object[Symbol.for(SYMBOL_FATHER)] = father);
+  object[Symbol.for(SYMBOL_OB)] = observer;
+  for (const key2 in object) {
+    const tempPath = extendPath(path, key2);
+    if (observer.ignore(tempPath)) {
+      continue;
+    }
+    if (isObject(object[key2])) {
+      if (isArray(object[key2])) {
+        const rawArray = object[key2];
+        object[key2] = react(
+          observer,
+          object[key2],
+          object
+        );
+        cacheArray(rawArray);
+      } else {
+        object[key2] = react(
+          observer,
+          object[key2],
+          object
+        );
+      }
+      object[key2][Symbol.for(SYMBOL_KEY)] = key2;
+    }
+  }
+  if (key) {
+    object[Symbol.for(SYMBOL_KEY)] = key;
+  }
+  const proxy = new Proxy(object, handler);
+  return proxy;
+};
+const _Observer = class _Observer extends Subject {
+  constructor(object) {
+    super();
+    this.disable = false;
+    this.target = react(this, object);
+  }
+  ignore(path) {
+    const split = path.indexOf(".");
+    if (split === -1) {
+      return _Observer.IGNORE[path];
+    }
+    return _Observer.IGNORE[path.slice(0, split)];
+  }
+  next(value) {
+    if (this.disable) {
       return;
-    super.next(e);
-    const t = Pe(this.target);
-    t && t.emit(d.NOTICED);
+    }
+    super.next(value);
+    const model = getModel(this.target);
+    if (model) {
+      model.emit(MODEL_EVENT.NOTICED);
+    }
   }
 };
-v.IGNORE = {
-  vid: !0,
-  type: !0,
-  alias: !0,
-  meta: !0
+_Observer.IGNORE = {
+  vid: true,
+  type: true,
+  alias: true,
+  meta: true
 };
-let k = v;
-const Fe = function(r) {
-  return new k(r).target;
-}, Ct = function(r, e) {
-  const t = N(r);
-  if (!t) {
-    console.warn("this object can not found it observer:", r);
+let Observer = _Observer;
+const observable = function(object) {
+  const observer = new Observer(object);
+  return observer.target;
+};
+const slientSync = function(config, fun) {
+  const ob = getObserver(config);
+  if (!ob) {
+    console.warn(`this object can not found it observer:`, config);
     return;
   }
-  t.disable = !0, e(), t.disable = !1;
-}, S = {
-  SYMBOL_VALIDATOR(r) {
-    return !h.symbol.validator(r.symbol);
+  ob.disable = true;
+  fun();
+  ob.disable = false;
+};
+const DEFAULT_RULE = {
+  SYMBOL_VALIDATOR(input) {
+    return globalOption.symbol.validator(input.symbol);
   },
-  OPERATE_ADD({ operate: r, path: e, symbol: t, key: s, value: o }, n) {
-    return r === "add" && !e.length && t === s ? (n.add(o), !1) : !0;
+  OPERATE_ADD({ operate, path, symbol, key, value }, compiler) {
+    if (operate === "add" && !path.length && symbol === key) {
+      compiler.add(value);
+      return false;
+    } else {
+      return true;
+    }
   },
-  OPERATE_DELETE({ operate: r, path: e, value: t }, s) {
-    return r === "delete" && !e.length ? (s.remove(t), !1) : !0;
+  OPERATE_DELETE({ operate, path, value }, compiler) {
+    if (operate === "delete" && !path.length) {
+      compiler.remove(value);
+      return false;
+    } else {
+      return true;
+    }
   },
-  OPERATE_COVER({ operate: r, path: e, value: t, key: s, symbol: o }, n) {
-    return r === "set" && !e.length && s === o ? (n.cover(t), !1) : !0;
+  OPERATE_COVER({ operate, path, value, key, symbol }, compiler) {
+    if (operate === "set" && !path.length && key === symbol) {
+      compiler.cover(value);
+      return false;
+    } else {
+      return true;
+    }
   },
-  OPERATE_COMPILE(r, e) {
-    return e.compile(r.symbol, r), !1;
+  OPERATE_COMPILE(input, compiler) {
+    compiler.compile(input.symbol, input);
+    return false;
   }
 };
-class Ve {
-  constructor(e) {
-    this.rules = [], this.pointer = null, e ? this.rules = e : this.rules.push(
-      S.SYMBOL_VALIDATOR,
-      S.OPERATE_ADD,
-      S.OPERATE_DELETE,
-      S.OPERATE_COVER,
-      S.OPERATE_COMPILE
-    );
+class Ruler {
+  constructor(rules) {
+    this.rules = [];
+    this.pointer = null;
+    if (rules) {
+      this.rules = rules;
+    } else {
+      this.rules.push(
+        DEFAULT_RULE.SYMBOL_VALIDATOR,
+        DEFAULT_RULE.OPERATE_ADD,
+        DEFAULT_RULE.OPERATE_DELETE,
+        DEFAULT_RULE.OPERATE_COVER,
+        DEFAULT_RULE.OPERATE_COMPILE
+      );
+    }
   }
-  link(e) {
-    this.compiler = e;
+  link(compiler) {
+    this.compiler = compiler;
   }
-  execute(e) {
-    for (const t of this.rules)
-      if (!t(e, this.compiler))
+  execute(input) {
+    for (const rule of this.rules) {
+      if (!rule(input, this.compiler)) {
         break;
+      }
+    }
   }
-  remove(e) {
-    if (this.rules.includes(e)) {
-      const t = this.rules.indexOf(e);
-      this.rules.splice(t, 1);
-    } else
-      console.warn("Ruler: can not found rule", e, this.rules);
+  remove(rule) {
+    if (this.rules.includes(rule)) {
+      const index = this.rules.indexOf(rule);
+      this.rules.splice(index, 1);
+    } else {
+      console.warn(`Ruler: can not found rule`, rule, this.rules);
+    }
   }
-  add(e, t) {
-    return this.rules.includes(e) ? (console.warn("Ruler: rules has already exist this rule", this.rules), this) : t !== void 0 ? (this.rules.splice(t, 0, e), this) : this.pointer === null ? (console.error(
-      "Ruler:index is undefined, need a index or use before and after api to set a index"
-    ), this) : (this.rules.splice(this.pointer, 0, e), this);
+  add(rule, index) {
+    if (this.rules.includes(rule)) {
+      console.warn(`Ruler: rules has already exist this rule`, this.rules);
+      return this;
+    }
+    if (index !== void 0) {
+      this.rules.splice(index, 0, rule);
+      return this;
+    }
+    if (this.pointer === null) {
+      console.error(
+        `Ruler:index is undefined, need a index or use before and after api to set a index`
+      );
+      return this;
+    }
+    this.rules.splice(this.pointer, 0, rule);
+    return this;
   }
-  before(e) {
-    return this.rules.includes(e) ? (this.pointer = this.rules.indexOf(e), this) : (console.warn("Ruler: rules not found this rule", this.rules), this);
+  before(rule) {
+    if (!this.rules.includes(rule)) {
+      console.warn(`Ruler: rules not found this rule`, this.rules);
+      return this;
+    }
+    this.pointer = this.rules.indexOf(rule);
+    return this;
   }
-  after(e) {
-    return this.rules.includes(e) ? (this.pointer = this.rules.indexOf(e) + 1, this) : (console.warn("Ruler: rules not found this rule", this.rules), this);
+  after(rule) {
+    if (!this.rules.includes(rule)) {
+      console.warn(`Ruler: rules not found this rule`, this.rules);
+      return this;
+    }
+    this.pointer = this.rules.indexOf(rule) + 1;
+    return this;
   }
-  push(e) {
-    return this.rules.includes(e) ? (console.warn("Ruler: rules has already exist this rule", this.rules), this) : (this.rules.push(e), this);
+  push(rule) {
+    if (this.rules.includes(rule)) {
+      console.warn(`Ruler: rules has already exist this rule`, this.rules);
+      return this;
+    }
+    this.rules.push(rule);
+    return this;
   }
-  unshift(e) {
-    return this.rules.includes(e) ? (console.warn("Ruler: rules has already exist this rule", this.rules), this) : (this.rules.unshift(e), this);
+  unshift(rule) {
+    if (this.rules.includes(rule)) {
+      console.warn(`Ruler: rules has already exist this rule`, this.rules);
+      return this;
+    }
+    this.rules.unshift(rule);
+    return this;
   }
   pop() {
-    return this.rules.pop(), this;
+    this.rules.pop();
+    return this;
   }
   shift() {
-    return this.rules.shift(), this;
+    this.rules.shift();
+    return this;
   }
 }
-const wt = function(r) {
-  return r;
-}, He = function() {
+const defineRule = function(rules) {
+  return rules;
+};
+const getBasicConfig = function() {
   return {
     vid: "",
     type: "",
@@ -938,53 +1431,76 @@ const wt = function(r) {
     alias: "",
     meta: {}
   };
-}, At = He, Dt = function(r) {
-  return `DEFUALT-${r}`;
-}, We = function() {
-  return h.symbol.generator();
-}, Rt = function() {
 };
-class ze {
-  constructor(e) {
-    this.type = "", this.module = e, this.type = e.type, this.ruler = new Ve(e.rule), this.compiler = e.compiler ? new e.compiler({
-      module: e.type,
-      models: e.models
-    }) : new Ne({
-      module: e.type,
-      models: e.models
-    }), this.converter = new Be({
-      module: e.type,
+const getSymbolConfig = getBasicConfig;
+const uniqueSymbol = function(type) {
+  return `DEFUALT-${type}`;
+};
+const createSymbol = function() {
+  return globalOption.symbol.generator();
+};
+const emptyHandler = function() {
+};
+class Moduler {
+  constructor(module) {
+    this.type = "";
+    this.module = module;
+    this.type = module.type;
+    this.ruler = new Ruler(module.rule);
+    this.compiler = module.compiler ? new module.compiler({
+      module: module.type,
+      models: module.models
+    }) : new Compiler({
+      module: module.type,
+      models: module.models
+    });
+    this.converter = new Converter({
+      module: module.type,
       ruler: this.ruler
     }).addCompiler(this.compiler);
   }
 }
-const jt = function(r) {
-  return r;
+const defineModule = function(module) {
+  return module;
 };
-class qe extends j {
+class CompilerManager extends EventDispatcher {
   constructor() {
-    super(), this.compilerMap = /* @__PURE__ */ new Map();
+    super();
+    this.compilerMap = /* @__PURE__ */ new Map();
   }
   /**
    * 编译器扩展
    * @param compiler
    */
-  extend(e, t = !1) {
-    this.compilerMap.has(e.MODULE) ? (console.warn("compiler manager has exist this compiler", e), t && this.compilerMap.set(e.MODULE, e)) : this.compilerMap.set(e.MODULE, e);
+  extend(compiler, focus = false) {
+    if (this.compilerMap.has(compiler.MODULE)) {
+      console.warn("compiler manager has exist this compiler", compiler);
+      if (focus) {
+        this.compilerMap.set(compiler.MODULE, compiler);
+      }
+    } else {
+      this.compilerMap.set(compiler.MODULE, compiler);
+    }
   }
-  getCompiler(e) {
-    return this.compilerMap.has(e) ? this.compilerMap.get(e) : (console.warn(`can not found this type in compiler manager: ${e}`), null);
+  getCompiler(module) {
+    if (this.compilerMap.has(module)) {
+      return this.compilerMap.get(module);
+    } else {
+      console.warn(`can not found this type in compiler manager: ${module}`);
+      return null;
+    }
   }
   /**
    * 获取该three物体的vid标识
    * @param object three object
    * @returns vid or null
    */
-  getObjectSymbol(e) {
-    for (const t of this.compilerMap.values()) {
-      const s = t.getObjectSymbol(e);
-      if (s)
-        return s;
+  getObjectSymbol(object) {
+    for (const compiler of this.compilerMap.values()) {
+      const vid = compiler.getObjectSymbol(object);
+      if (vid) {
+        return vid;
+      }
     }
     return null;
   }
@@ -993,20 +1509,22 @@ class qe extends j {
    * @param vid vid标识
    * @returns three object || null
    */
-  getObjectBySymbol(e) {
-    for (const t of this.compilerMap.values()) {
-      const s = t.getObjectBySymbol(e);
-      if (s)
-        return s;
+  getObjectBySymbol(vid) {
+    for (const compiler of this.compilerMap.values()) {
+      const object = compiler.getObjectBySymbol(vid);
+      if (object) {
+        return object;
+      }
     }
     return null;
   }
   // TODO: getModelBySymbol
-  getModelBySymbol(e) {
-    for (const t of this.compilerMap.values()) {
-      const s = t.getModelBySymbol(e);
-      if (s)
-        return s;
+  getModelBySymbol(vid) {
+    for (const compiler of this.compilerMap.values()) {
+      const model = compiler.getModelBySymbol(vid);
+      if (model) {
+        return model;
+      }
     }
     return null;
   }
@@ -1016,12 +1534,17 @@ class qe extends j {
    * @param vid
    * @returns
    */
-  getObjectfromModule(e, t) {
-    return this.getObjectFromModule(e, t);
+  getObjectfromModule(module, vid) {
+    return this.getObjectFromModule(module, vid);
   }
-  getObjectFromModule(e, t) {
-    var o;
-    return this.compilerMap.has(e) ? ((o = this.compilerMap.get(e).map.get(t)) == null ? void 0 : o.puppet) || null : (console.warn(`compiler manager can not found this module: ${e}`), null);
+  getObjectFromModule(module, vid) {
+    var _a;
+    if (!this.compilerMap.has(module)) {
+      console.warn(`compiler manager can not found this module: ${module}`);
+      return null;
+    }
+    const compiler = this.compilerMap.get(module);
+    return ((_a = compiler.map.get(vid)) == null ? void 0 : _a.puppet) || null;
   }
   /**
    * @deprecated use getObjectFromModules
@@ -1029,84 +1552,123 @@ class qe extends j {
    * @param vid
    * @returns
    */
-  getObjectfromModules(e, t) {
-    return this.getObjectFromModules(e, t);
+  getObjectfromModules(modules, vid) {
+    return this.getObjectFromModules(modules, vid);
   }
-  getObjectFromModules(e, t) {
-    var s;
-    Array.isArray(e) || (e = Object.keys(e));
-    for (const o of e) {
-      if (!this.compilerMap.has(o)) {
-        console.warn(`compiler manager can not found this module: ${o}`);
+  getObjectFromModules(modules, vid) {
+    var _a;
+    if (!Array.isArray(modules)) {
+      modules = Object.keys(modules);
+    }
+    for (const module of modules) {
+      if (!this.compilerMap.has(module)) {
+        console.warn(`compiler manager can not found this module: ${module}`);
         continue;
       }
-      const n = this.compilerMap.get(o);
-      if (n.map.has(t))
-        return (s = n.map.get(t)) == null ? void 0 : s.puppet;
+      const compiler = this.compilerMap.get(module);
+      if (compiler.map.has(vid)) {
+        return (_a = compiler.map.get(vid)) == null ? void 0 : _a.puppet;
+      }
     }
     return null;
   }
   dispose() {
-    for (const e of this.compilerMap.values())
-      e.dispose();
-    return this.compilerMap.clear(), this;
+    for (const compiler of this.compilerMap.values()) {
+      compiler.dispose();
+    }
+    this.compilerMap.clear();
+    return this;
   }
 }
-const z = "CompilerManagerPlugin", Ze = function() {
+const COMPILER_MANAGER_PLUGIN = "CompilerManagerPlugin";
+const CompilerManagerPlugin = function() {
   return {
-    name: z,
-    install(r) {
-      const e = new qe();
-      r.compilerManager = e, r.getObjectSymbol = function(t) {
-        return e.getObjectSymbol(t);
-      }, r.getObjectBySymbol = function(t) {
-        return e.getObjectBySymbol(t);
-      }, r.getObjectfromModule = function(t, s) {
-        return e.getObjectfromModule(t, s);
-      }, r.getObjectfromModules = function(t, s) {
-        return e.getObjectfromModules(t, s);
-      }, r.getObject3D = function(t) {
-        return e.getObjectfromModules(we, t);
+    name: COMPILER_MANAGER_PLUGIN,
+    install(engine) {
+      const compilerManager = new CompilerManager();
+      engine.compilerManager = compilerManager;
+      engine.getObjectSymbol = function(object) {
+        return compilerManager.getObjectSymbol(object);
+      };
+      engine.getObjectBySymbol = function(vid) {
+        return compilerManager.getObjectBySymbol(vid);
+      };
+      engine.getObjectfromModule = function(module, vid) {
+        return compilerManager.getObjectfromModule(module, vid);
+      };
+      engine.getObjectfromModules = function(modules, vid) {
+        return compilerManager.getObjectfromModules(modules, vid);
+      };
+      engine.getObjectFromModule = function(module, vid) {
+        return compilerManager.getObjectFromModule(module, vid);
+      };
+      engine.getObjectFromModules = function(modules, vid) {
+        return compilerManager.getObjectFromModules(modules, vid);
+      };
+      engine.getObject3D = function(vid) {
+        return compilerManager.getObjectFromModules(OBJECT_MODULE, vid);
       };
     },
-    dispose(r) {
-      r.compilerManager.dispose(), delete r.compilerManager, delete r.getObjectSymbol, delete r.getObjectBySymbol, delete r.getObjectfromModule, delete r.getObjectfromModules, delete r.getObject3D;
+    dispose(engine) {
+      engine.compilerManager.dispose();
+      delete engine.compilerManager;
+      delete engine.getObjectSymbol;
+      delete engine.getObjectBySymbol;
+      delete engine.getObjectfromModule;
+      delete engine.getObjectfromModules;
+      delete engine.getObjectFromModule;
+      delete engine.getObjectFromModules;
+      delete engine.getObject3D;
     }
   };
 };
-class Xe extends j {
+class DataSupportManager extends EventDispatcher {
   constructor() {
-    super(), this.dataSupportMap = /* @__PURE__ */ new Map();
+    super();
+    this.dataSupportMap = /* @__PURE__ */ new Map();
   }
   /**
    * 编译器扩展
    * @param compiler
    */
-  extend(e, t = !1) {
-    this.dataSupportMap.has(e.MODULE) ? (console.warn(
-      "dataSupport manager has exist this dataSupport",
-      e
-    ), t && this.dataSupportMap.set(e.MODULE, e)) : this.dataSupportMap.set(e.MODULE, e);
+  extend(dataSupport, focus = false) {
+    if (this.dataSupportMap.has(dataSupport.MODULE)) {
+      console.warn(
+        "dataSupport manager has exist this dataSupport",
+        dataSupport
+      );
+      if (focus) {
+        this.dataSupportMap.set(dataSupport.MODULE, dataSupport);
+      }
+    } else {
+      this.dataSupportMap.set(dataSupport.MODULE, dataSupport);
+    }
   }
   /**
    * 获取该模块下的支持插件
    * @param type MODULETYPE
    * @returns Converter
    */
-  getDataSupport(e) {
-    return this.dataSupportMap.has(e) ? this.dataSupportMap.get(e) : (console.warn(`can not found this type in dataSupportManager: ${e}`), null);
+  getDataSupport(type) {
+    if (this.dataSupportMap.has(type)) {
+      return this.dataSupportMap.get(type);
+    } else {
+      console.warn(`can not found this type in dataSupportManager: ${type}`);
+      return null;
+    }
   }
   /**
    * 通过vid标识获取相应配置对象
    * @param vid vid标识
    * @returns config || null
    */
-  getConfigBySymbol(e) {
-    const t = this.dataSupportMap.values();
-    for (const s of t) {
-      const o = s.getConfig(e);
-      if (o)
-        return o;
+  getConfigBySymbol(vid) {
+    const dataSupportList = this.dataSupportMap.values();
+    for (const dataSupport of dataSupportList) {
+      const config = dataSupport.getConfig(vid);
+      if (config) {
+        return config;
+      }
     }
     return null;
   }
@@ -1116,11 +1678,16 @@ class Xe extends j {
    * @param vid
    * @returns
    */
-  getConfigfromModule(e, t) {
-    return this.getConfigFromModule(e, t);
+  getConfigfromModule(module, vid) {
+    return this.getConfigFromModule(module, vid);
   }
-  getConfigFromModule(e, t) {
-    return this.dataSupportMap.has(e) ? this.dataSupportMap.get(e).getConfig(t) || null : (console.warn(`data support manager can not found this module: ${e}`), null);
+  getConfigFromModule(module, vid) {
+    if (!this.dataSupportMap.has(module)) {
+      console.warn(`data support manager can not found this module: ${module}`);
+      return null;
+    }
+    const dataSupport = this.dataSupportMap.get(module);
+    return dataSupport.getConfig(vid) || null;
   }
   /**
    * @deprecated use getConfigFromModules
@@ -1128,21 +1695,25 @@ class Xe extends j {
    * @param vid
    * @returns
    */
-  getConfigfromModules(e, t) {
-    return this.getConfigFromModules(e, t);
+  getConfigfromModules(modules, vid) {
+    return this.getConfigFromModules(modules, vid);
   }
-  getConfigFromModules(e, t) {
-    Array.isArray(e) || (e = Object.keys(e));
-    for (const s of e) {
-      if (!this.dataSupportMap.has(s)) {
+  getConfigFromModules(modules, vid) {
+    if (!Array.isArray(modules)) {
+      modules = Object.keys(modules);
+    }
+    for (const module of modules) {
+      if (!this.dataSupportMap.has(module)) {
         console.warn(
-          `data support manager can not found this module: ${s}`
+          `data support manager can not found this module: ${module}`
         );
         continue;
       }
-      const n = this.dataSupportMap.get(s).getConfig(t);
-      if (n)
-        return n;
+      const dataSupport = this.dataSupportMap.get(module);
+      const config = dataSupport.getConfig(vid);
+      if (config) {
+        return config;
+      }
     }
     return null;
   }
@@ -1151,13 +1722,15 @@ class Xe extends j {
    * @param vid ...vid标识
    * @returns this
    */
-  removeConfigBySymbol(...e) {
-    for (const t of e)
-      for (const s of this.dataSupportMap.values())
-        if (s.existSymbol(t)) {
-          s.removeConfig(t);
+  removeConfigBySymbol(...vids) {
+    for (const vid of vids) {
+      for (const dataSupport of this.dataSupportMap.values()) {
+        if (dataSupport.existSymbol(vid)) {
+          dataSupport.removeConfig(vid);
           break;
         }
+      }
+    }
     return this;
   }
   /**
@@ -1165,11 +1738,13 @@ class Xe extends j {
    * @param vid vid标识
    * @returns MODULETYPE || null
    */
-  getModuleBySymbol(e) {
-    const t = this.dataSupportMap.values();
-    for (const s of t)
-      if (s.existSymbol(e))
-        return s.MODULE;
+  getModuleBySymbol(vid) {
+    const dataSupportList = this.dataSupportMap.values();
+    for (const dataSupport of dataSupportList) {
+      if (dataSupport.existSymbol(vid)) {
+        return dataSupport.MODULE;
+      }
+    }
     return null;
   }
   /**
@@ -1177,12 +1752,16 @@ class Xe extends j {
    * @param config vis相关配置对象
    * @returns this
    */
-  applyConfig(...e) {
-    for (const t of e) {
-      const s = U(t.type);
-      s ? this.dataSupportMap.get(s).addConfig(t) : console.warn(
-        `dataSupportManager can not found this config module: ${t.type}`
-      );
+  applyConfig(...configs) {
+    for (const config of configs) {
+      const module = getModule(config.type);
+      if (module) {
+        this.dataSupportMap.get(module).addConfig(config);
+      } else {
+        console.warn(
+          `dataSupportManager can not found this config module: ${config.type}`
+        );
+      }
     }
     return this;
   }
@@ -1191,10 +1770,12 @@ class Xe extends j {
    * @param config 符合vis配置选项的配置单对象
    * @returns this
    */
-  load(e) {
-    return this.dataSupportMap.forEach((s, o) => {
-      e[o] && s.load(e[o]);
-    }), this;
+  load(config) {
+    const dataSupportMap = this.dataSupportMap;
+    dataSupportMap.forEach((dataSupport, module) => {
+      config[module] && dataSupport.load(config[module]);
+    });
+    return this;
   }
   /**
    * 根据模块加载配置
@@ -1202,19 +1783,26 @@ class Xe extends j {
    * @param module
    * @returns
    */
-  loadByModule(e, t) {
-    const s = this.dataSupportMap.get(t);
-    return s ? (s.load(e), this) : (console.warn(`DataSupportManager can not support this module: ${t}`), this);
+  loadByModule(config, module) {
+    const dataSupport = this.dataSupportMap.get(module);
+    if (!dataSupport) {
+      console.warn(`DataSupportManager can not support this module: ${module}`);
+      return this;
+    }
+    dataSupport.load(config);
+    return this;
   }
   /**
    * 根据配置单移除相关对象
    * @param config  符合vis配置选项的配置单对象
    * @returns this
    */
-  remove(e) {
-    return this.dataSupportMap.forEach((s, o) => {
-      e[o] && s.remove(e[o]);
-    }), this;
+  remove(config) {
+    const dataSupportMap = this.dataSupportMap;
+    dataSupportMap.forEach((dataSupport, module) => {
+      config[module] && dataSupport.remove(config[module]);
+    });
+    return this;
   }
   /**
    * 获取JSON化的配置单
@@ -1222,10 +1810,10 @@ class Xe extends j {
    * @param compress 是否压缩配置单 default true
    * @returns JSON string
    */
-  toJSON(e = {}, t = !0) {
+  toJSON(extendsConfig = {}, compress = true) {
     return JSON.stringify(
-      this.exportConfig(e, t),
-      O
+      this.exportConfig(extendsConfig, compress),
+      stringify
     );
   }
   /**
@@ -1234,66 +1822,101 @@ class Xe extends j {
    * @param compress 是否压缩配置单 default true
    * @returns LoadOptions
    */
-  exportConfig(e = {}, t = !0) {
-    return this.dataSupportMap.forEach((o, n) => {
-      e[n] = o.exportConfig(t);
-    }), e;
+  exportConfig(extendsConfig = {}, compress = true) {
+    const dataSupportMap = this.dataSupportMap;
+    dataSupportMap.forEach((dataSupport, module) => {
+      extendsConfig[module] = dataSupport.exportConfig(compress);
+    });
+    return extendsConfig;
   }
 }
-const T = "DataSupportManagerPlugin", Ke = function() {
+const DATA_SUPPORT_MANAGER_PLUGIN = "DataSupportManagerPlugin";
+const DataSupportManagerPlugin = function() {
   return {
-    name: T,
-    install(r) {
-      const e = new Xe();
-      r.dataSupportManager = e, r.applyConfig = function(...t) {
-        return e.applyConfig(...t), r;
-      }, r.getConfigBySymbol = function(t) {
-        return e.getConfigBySymbol(t);
-      }, r.getConfigfromModule = function(t, s) {
-        return e.getConfigfromModule(t, s);
-      }, r.getConfigfromModules = function(t, s) {
-        return e.getConfigfromModules(t, s);
-      }, r.removeConfigBySymbol = function(...t) {
-        return e.removeConfigBySymbol(...t), r;
-      }, r.toJSON = function() {
-        return e.toJSON();
-      }, r.exportConfig = function() {
-        return e.exportConfig();
+    name: DATA_SUPPORT_MANAGER_PLUGIN,
+    install(engine) {
+      const dataSupportManager = new DataSupportManager();
+      engine.dataSupportManager = dataSupportManager;
+      engine.applyConfig = function(...config) {
+        dataSupportManager.applyConfig(...config);
+        return engine;
+      };
+      engine.getConfigBySymbol = function(vid) {
+        return dataSupportManager.getConfigBySymbol(vid);
+      };
+      engine.getConfigfromModule = function(module, vid) {
+        return dataSupportManager.getConfigfromModule(module, vid);
+      };
+      engine.getConfigfromModules = function(modules, vid) {
+        return dataSupportManager.getConfigfromModules(modules, vid);
+      };
+      engine.removeConfigBySymbol = function(...vids) {
+        dataSupportManager.removeConfigBySymbol(...vids);
+        return engine;
+      };
+      engine.toJSON = function() {
+        return dataSupportManager.toJSON();
+      };
+      engine.exportConfig = function() {
+        return dataSupportManager.exportConfig();
       };
     },
-    dispose(r) {
-      delete r.dataSupportManager, delete r.applyConfig, delete r.getConfigBySymbol, delete r.removeConfigBySymbol, delete r.toJSON, delete r.exportConfig;
+    dispose(engine) {
+      delete engine.dataSupportManager;
+      delete engine.applyConfig;
+      delete engine.getConfigBySymbol;
+      delete engine.removeConfigBySymbol;
+      delete engine.toJSON;
+      delete engine.exportConfig;
     }
   };
 };
-class Qe {
+class Parser {
 }
-class q extends Qe {
+class DefaultParser extends Parser {
   constructor() {
-    super(...arguments), this.selector = (e, t, s) => s.get(q) || null;
+    super(...arguments);
+    this.selector = (url, resource, parseMap) => {
+      return parseMap.get(DefaultParser) || null;
+    };
   }
-  parse({ url: e, resource: t, configMap: s, resourceMap: o }) {
-    o.set(e, t);
+  parse({ url, resource, configMap, resourceMap }) {
+    resourceMap.set(url, resource);
   }
 }
-var Z = /* @__PURE__ */ ((r) => (r.MAPPED = "mapped", r))(Z || {});
-class Ye extends j {
-  constructor(e = {}) {
-    super(), this.configMap = /* @__PURE__ */ new Map(), this.resourceMap = /* @__PURE__ */ new Map(), this.paserMap = /* @__PURE__ */ new Map(), this.defalutParser = new q();
-    const t = /* @__PURE__ */ new Map();
-    for (const s in e)
-      t.has(s) && console.warn(
-        `resourceManager construct params rescource already exist: ${s}, that will be cover.`
-      ), t.set(s, e[s]);
-    this.mappingResource(t);
+var RESOURCE_EVENT = /* @__PURE__ */ ((RESOURCE_EVENT2) => {
+  RESOURCE_EVENT2["MAPPED"] = "mapped";
+  return RESOURCE_EVENT2;
+})(RESOURCE_EVENT || {});
+class ResourceManager extends EventDispatcher {
+  constructor(resources = {}) {
+    super();
+    this.configMap = /* @__PURE__ */ new Map();
+    this.resourceMap = /* @__PURE__ */ new Map();
+    this.paserMap = /* @__PURE__ */ new Map();
+    this.defalutParser = new DefaultParser();
+    const map = /* @__PURE__ */ new Map();
+    for (const key in resources) {
+      if (map.has(key)) {
+        console.warn(
+          `resourceManager construct params rescource already exist: ${key}, that will be cover.`
+        );
+      }
+      map.set(key, resources[key]);
+    }
+    this.mappingResource(map);
   }
   /**
    * 添加解析器
    * @param parser  extends VIS.Parser
    * @returns this
    */
-  addParser(e) {
-    return this.paserMap.has(e.constructor) ? this : (this.paserMap.set(e.constructor, e), this);
+  addParser(parser) {
+    if (this.paserMap.has(parser.constructor)) {
+      return this;
+    }
+    this.paserMap.set(parser.constructor, parser);
+    return this;
   }
   /**
    *  根据加载好的资源拆解映射为最小资源单位与形成相应的配置与结构
@@ -1301,325 +1924,490 @@ class Ye extends j {
    * @param options options.handler: {url, hanlder}可以根据特定的url指定特定的解析器
    * @returns this
    */
-  mappingResource(e, t) {
-    const s = this.configMap, o = this.resourceMap, n = [...this.paserMap.values()], i = {};
-    for (const [a, c] of e.entries()) {
-      if (t != null && t.parser && t.parser[a]) {
-        t.parser[a].parse({
-          url: a,
-          resource: c,
-          configMap: s,
-          resourceMap: o
+  mappingResource(loadResourceMap, options) {
+    const configMap = this.configMap;
+    const resourceMap = this.resourceMap;
+    const parserList = [...this.paserMap.values()];
+    const resourceConfig = {};
+    for (const [url, resource] of loadResourceMap.entries()) {
+      if ((options == null ? void 0 : options.parser) && options.parser[url]) {
+        options.parser[url].parse({
+          url,
+          resource,
+          configMap,
+          resourceMap
         });
         continue;
       }
-      if (t != null && t.selector && t.selector[a]) {
-        const f = t.selector[a](a, c, this.paserMap);
-        if (!f) {
+      if ((options == null ? void 0 : options.selector) && options.selector[url]) {
+        const parser2 = options.selector[url](url, resource, this.paserMap);
+        if (!parser2) {
           console.warn(
-            "resource manager hanlder can not found this resource parser: ",
-            c,
-            t.selector[a]
+            `resource manager hanlder can not found this resource parser: `,
+            resource,
+            options.selector[url]
           );
           continue;
         }
-        f.parse({
-          url: a,
-          resource: c,
-          configMap: s,
-          resourceMap: o
-        }), i[a] = this.getResourceConfig(a);
+        parser2.parse({
+          url,
+          resource,
+          configMap,
+          resourceMap
+        });
+        resourceConfig[url] = this.getResourceConfig(url);
         continue;
       }
-      let l = null;
-      for (const f of n)
-        if (l = f.selector(a, c, this.paserMap), l)
+      let parser = null;
+      for (const TParser of parserList) {
+        parser = TParser.selector(url, resource, this.paserMap);
+        if (parser) {
           break;
-      if (!l) {
+        }
+      }
+      if (!parser) {
         console.warn(
-          "resouce manager can not found some handler to parser this resource, that will use default parser do it:",
-          c
-        ), this.defalutParser.parse({
-          url: a,
-          resource: c,
-          configMap: s,
-          resourceMap: o
+          `resouce manager can not found some handler to parser this resource, that will use default parser do it:`,
+          resource
+        );
+        this.defalutParser.parse({
+          url,
+          resource,
+          configMap,
+          resourceMap
         });
         continue;
       }
-      l.parse({
-        url: a,
-        resource: c,
-        configMap: s,
-        resourceMap: o
-      }), i[a] = this.getResourceConfig(a);
+      parser.parse({
+        url,
+        resource,
+        configMap,
+        resourceMap
+      });
+      resourceConfig[url] = this.getResourceConfig(url);
     }
-    return this.dispatchEvent({
+    this.dispatchEvent({
       type: "mapped",
-      configMap: s,
-      resourceMap: o,
-      resourceConfig: i
-    }), this;
+      configMap,
+      resourceMap,
+      resourceConfig
+    });
+    return this;
   }
   /**
    * 获取资源的配置单，该配置单根据资源结构生成
    * @param url 资源url
    * @returns LoadOptions
    */
-  getResourceConfig(e) {
-    const t = this.configMap, s = {};
-    return [...t.keys()].filter((o) => o.startsWith(e)).forEach((o) => {
-      const n = t.get(o);
-      if (!n)
-        console.error(`unknow error: can not found config by url: ${o}`);
-      else {
-        const i = U(n.type);
-        i ? (!s[i] && (s[i] = []), s[i].push(n)) : console.error(
-          `unknow error: can not found module by type: ${n.type}`,
-          n
-        );
+  getResourceConfig(url) {
+    const configMap = this.configMap;
+    const loadOptions = {};
+    [...configMap.keys()].filter((key) => key.startsWith(url)).forEach((url2) => {
+      const config = configMap.get(url2);
+      if (!config) {
+        console.error(`unknow error: can not found config by url: ${url2}`);
+      } else {
+        const module = getModule(config.type);
+        if (!module) {
+          console.error(
+            `unknow error: can not found module by type: ${config.type}`,
+            config
+          );
+        } else {
+          !loadOptions[module] && (loadOptions[module] = []);
+          loadOptions[module].push(config);
+        }
       }
-    }), s;
+    });
+    return loadOptions;
   }
   /**
    * 是否有此资源
    * @param url 资源 url
    * @returns boolean
    */
-  hasResource(e) {
-    return this.resourceMap.has(e);
+  hasResource(url) {
+    return this.resourceMap.has(url);
   }
   /**
    * 移除url下的所有资源
    * @param url url
    * @returns this
    */
-  remove(e) {
-    const t = this.configMap, s = this.resourceMap;
-    return [...t.keys()].filter((o) => o.startsWith(e)).forEach((o) => {
-      t.delete(o);
-      const n = s.get(o);
-      n.dispose && n.dispose(), s.delete(o);
-    }), this;
+  remove(url) {
+    const configMap = this.configMap;
+    const resourceMap = this.resourceMap;
+    [...configMap.keys()].filter((key) => key.startsWith(url)).forEach((url2) => {
+      configMap.delete(url2);
+      const resource = resourceMap.get(url2);
+      resource.dispose && resource.dispose();
+      resourceMap.delete(url2);
+    });
+    return this;
   }
   /**
    * 清空所有资源
    */
   dispose() {
-    this.resourceMap.forEach((e, t) => {
-      e.dispose && e.dispose();
-    }), this.resourceMap.clear(), this.configMap.clear();
+    this.resourceMap.forEach((object, url) => {
+      object.dispose && object.dispose();
+    });
+    this.resourceMap.clear();
+    this.configMap.clear();
   }
 }
-const de = "ResourceManagerPlugin", _e = function(r = {}) {
+const RESOURCE_MANAGER_PLUGIN = "ResourceManagerPlugin";
+const ResourceManagerPlugin = function(params = {}) {
   return {
-    name: de,
-    install(e) {
-      const t = new Ye(r.resources);
-      e.resourceManager = t, e.registerResources = (s) => {
-        const o = /* @__PURE__ */ new Map();
-        return Object.keys(s).forEach((n) => {
-          o.set(n, s[n]);
-        }), t.mappingResource(o), e;
+    name: RESOURCE_MANAGER_PLUGIN,
+    install(engine) {
+      const resourceManager = new ResourceManager(params.resources);
+      engine.resourceManager = resourceManager;
+      engine.registerResources = (resourceMap) => {
+        const map = /* @__PURE__ */ new Map();
+        Object.keys(resourceMap).forEach((key) => {
+          map.set(key, resourceMap[key]);
+        });
+        resourceManager.mappingResource(map);
+        return engine;
       };
     },
-    dispose(e) {
-      e.addEventListener(ye.DISPOSE, () => {
-        e.resourceManager.dispose();
+    dispose(engine) {
+      engine.addEventListener(ENGINE_EVENT.DISPOSE, () => {
+        engine.resourceManager.dispose();
       });
     }
   };
-}, et = "LoaderDataSupportStrategy", tt = function() {
-  let r, e;
+};
+const LOADER_DATA_SUPPORT_STRATEGY = "LoaderDataSupportStrategy";
+const LoaderDataSupportStrategy = function() {
+  let cacheToJSON;
+  let cacheExportConfig;
   return {
-    name: et,
-    condition: [T, ne],
-    exec(t) {
-      r = t.toJSON, t.toJSON = function() {
-        const s = {
-          assets: JSON.parse(t.loaderManager.toJSON())
+    name: LOADER_DATA_SUPPORT_STRATEGY,
+    condition: [DATA_SUPPORT_MANAGER_PLUGIN, LOADER_MANAGER_PLUGIN],
+    exec(engine) {
+      cacheToJSON = engine.toJSON;
+      engine.toJSON = function() {
+        const assets = {
+          assets: JSON.parse(engine.loaderManager.toJSON())
         };
-        return t.dataSupportManager.toJSON(s);
-      }, e = t.exportConfig, t.exportConfig = function() {
-        let s = {};
-        return s = {
-          assets: t.loaderManager.exportConfig()
-        }, t.dataSupportManager.exportConfig(s);
+        return engine.dataSupportManager.toJSON(assets);
+      };
+      cacheExportConfig = engine.exportConfig;
+      engine.exportConfig = function() {
+        let extendConfig = {};
+        extendConfig = {
+          assets: engine.loaderManager.exportConfig()
+        };
+        return engine.dataSupportManager.exportConfig(extendConfig);
       };
     },
-    rollback(t) {
-      t.toJSON = r, t.exportConfig = e;
+    rollback(engine) {
+      engine.toJSON = cacheToJSON;
+      engine.exportConfig = cacheExportConfig;
     }
   };
-}, rt = "LoaderMappingStrategy", st = function() {
-  let r, e;
+};
+const LOADER_MAPPING_STRATEGY = "LoaderMappingStrategy";
+const LoaderMappingStrategy = function() {
+  let cacheLoadResources;
+  let cacheAsync;
   return {
-    name: rt,
-    condition: [de, ne],
-    exec(t) {
-      r = t.loadResources, t.loadResources = (s, o) => {
-        const n = (i) => {
-          o(void 0, i), t.resourceManager.removeEventListener(
-            L.LOADED,
-            n
+    name: LOADER_MAPPING_STRATEGY,
+    condition: [RESOURCE_MANAGER_PLUGIN, LOADER_MANAGER_PLUGIN],
+    exec(engine) {
+      cacheLoadResources = engine.loadResources;
+      engine.loadResources = (urlList, callback) => {
+        const lodedFun = (event) => {
+          callback(void 0, event);
+          engine.resourceManager.removeEventListener(
+            LOADER_EVENT.LOADED,
+            lodedFun
           );
         };
         try {
-          t.resourceManager.addEventListener(
-            L.LOADED,
-            n
+          engine.resourceManager.addEventListener(
+            LOADER_EVENT.LOADED,
+            lodedFun
           );
-        } catch (i) {
-          o(i);
+        } catch (error) {
+          callback(error);
         }
-        return t.loaderManager.reset().load(s), t;
-      }, e = t.loadResourcesAsync, t.loadResourcesAsync = (s) => new Promise((o, n) => {
-        try {
-          t.loaderManager.once(
-            L.LOADED,
-            (i) => {
-              t.resourceManager.once(
-                Z.MAPPED,
-                (c) => {
-                  o(c);
-                }
-              );
-              const a = /* @__PURE__ */ new Map();
-              s.forEach((c) => {
-                typeof c == "string" ? a.set(c, i.resourceMap.get(c)) : a.set(c.url, i.resourceMap.get(c.url));
-              }), t.resourceManager.mappingResource(a);
-            }
-          );
-        } catch (i) {
-          n(i);
-        }
-        t.loaderManager.reset().load(s);
-      });
+        engine.loaderManager.reset().load(urlList);
+        return engine;
+      };
+      cacheAsync = engine.loadResourcesAsync;
+      engine.loadResourcesAsync = (urlList) => {
+        return new Promise((resolve, reject) => {
+          try {
+            engine.loaderManager.once(
+              LOADER_EVENT.LOADED,
+              (e) => {
+                engine.resourceManager.once(
+                  RESOURCE_EVENT.MAPPED,
+                  (event) => {
+                    resolve(event);
+                  }
+                );
+                const map = /* @__PURE__ */ new Map();
+                urlList.forEach((unit) => {
+                  if (typeof unit === "string") {
+                    map.set(unit, e.resourceMap.get(unit));
+                  } else {
+                    map.set(unit.url, e.resourceMap.get(unit.url));
+                  }
+                });
+                engine.resourceManager.mappingResource(map);
+              }
+            );
+          } catch (error) {
+            reject(error);
+          }
+          engine.loaderManager.reset().load(urlList);
+        });
+      };
     },
-    rollback(t) {
-      t.loadResources = r, t.loadResourcesAsync = e;
+    rollback(engine) {
+      engine.loadResources = cacheLoadResources;
+      engine.loadResourcesAsync = cacheAsync;
     }
   };
-}, ot = "CompilerSupportStrategy", nt = function() {
+};
+const COMPILER_SUPPORT_STRATEGY = "CompilerSupportStrategy";
+const CompilerSupportStrategy = function() {
   return {
-    name: ot,
-    condition: [z, T],
-    exec(r) {
-      r.compilerManager.compilerMap.forEach((e, t) => {
-        var s;
-        e.useEngine(r), (s = r.dataSupportManager.dataSupportMap.get(t)) == null || s.addCompiler(e);
+    name: COMPILER_SUPPORT_STRATEGY,
+    condition: [COMPILER_MANAGER_PLUGIN, DATA_SUPPORT_MANAGER_PLUGIN],
+    exec(engine) {
+      engine.compilerManager.compilerMap.forEach((compiler, module) => {
+        var _a;
+        compiler.useEngine(engine);
+        (_a = engine.dataSupportManager.dataSupportMap.get(module)) == null ? void 0 : _a.addCompiler(compiler);
       });
     },
     rollback() {
     }
   };
 };
-class it {
-  constructor(e) {
-    this.condition = {}, this.list = [], this.validator = () => !0, e && (this.validator = e);
+class Trigger {
+  constructor(validator) {
+    this.condition = {};
+    this.list = [];
+    this.validator = () => true;
+    if (validator) {
+      this.validator = validator;
+    }
   }
-  add(e) {
-    return this.validator(e) && (this.condition[e] = !1), this;
+  add(module) {
+    if (this.validator(module)) {
+      this.condition[module] = false;
+    }
+    return this;
   }
-  reach(e) {
-    return this.condition[e] === void 0 ? (console.warn(`ModuleTrigger: can not set module condition: ${e}.`), this) : (this.condition[e] = !0, this.check() && this.trig(), this);
+  reach(module) {
+    if (this.condition[module] === void 0) {
+      console.warn(`ModuleTrigger: can not set module condition: ${module}.`);
+      return this;
+    }
+    this.condition[module] = true;
+    if (this.check()) {
+      this.trig();
+    }
+    return this;
   }
-  register(e) {
-    e(!0) || this.list.push(e);
+  register(fun) {
+    if (!fun(true)) {
+      this.list.push(fun);
+    }
   }
   trig() {
-    const e = this.list;
-    for (const t of e)
-      t(!1);
+    const list = this.list;
+    for (const fun of list) {
+      fun(false);
+    }
     this.reset();
   }
   reset() {
-    this.list = [], Object.keys(this.condition).forEach((e) => {
-      this.condition[e] = !1;
+    this.list = [];
+    Object.keys(this.condition).forEach((key) => {
+      this.condition[key] = false;
     });
   }
   check() {
-    return !Object.values(this.condition).includes(!1);
+    return !Object.values(this.condition).includes(false);
   }
 }
-const at = new it((r) => !!P[r]);
-var ct = /* @__PURE__ */ ((r) => (r[r.ZERO = 0] = "ZERO", r[r.ONE = 100] = "ONE", r[r.TWO = 200] = "TWO", r[r.THREE = 300] = "THREE", r[r.FOUR = 400] = "FOUR", r[r.FIVE = 500] = "FIVE", r[r.SIX = 600] = "SIX", r[r.SEVEN = 700] = "SEVEN", r[r.EIGHT = 800] = "EIGHT", r[r.NINE = 900] = "NINE", r))(ct || {});
-class lt extends Me {
-  constructor(e = {}) {
-    super(), this.moduleLifeCycle = [], this.triggers = { object: at }, this.install(be(e.LoaderManagerPlugin)).install(Se(e.PointerManagerPlugin)).install(xe(e.EventManagerPlugin)).install(Ee(e.RenderManagerPlugin)).install(_e(e.ResourceManagerPlugin)).install(Ke(e.DataSupportManagerPlugin)).install(Ze(e.CompilerManagerPlugin)), this.exec(tt()).exec(st()).exec(nt());
+const ObjectTrigger = new Trigger((module) => {
+  return Boolean(OBJECT_MODULE[module]);
+});
+var SUPPORT_LIFE_CYCLE = /* @__PURE__ */ ((SUPPORT_LIFE_CYCLE2) => {
+  SUPPORT_LIFE_CYCLE2[SUPPORT_LIFE_CYCLE2["ZERO"] = 0] = "ZERO";
+  SUPPORT_LIFE_CYCLE2[SUPPORT_LIFE_CYCLE2["ONE"] = 100] = "ONE";
+  SUPPORT_LIFE_CYCLE2[SUPPORT_LIFE_CYCLE2["TWO"] = 200] = "TWO";
+  SUPPORT_LIFE_CYCLE2[SUPPORT_LIFE_CYCLE2["THREE"] = 300] = "THREE";
+  SUPPORT_LIFE_CYCLE2[SUPPORT_LIFE_CYCLE2["FOUR"] = 400] = "FOUR";
+  SUPPORT_LIFE_CYCLE2[SUPPORT_LIFE_CYCLE2["FIVE"] = 500] = "FIVE";
+  SUPPORT_LIFE_CYCLE2[SUPPORT_LIFE_CYCLE2["SIX"] = 600] = "SIX";
+  SUPPORT_LIFE_CYCLE2[SUPPORT_LIFE_CYCLE2["SEVEN"] = 700] = "SEVEN";
+  SUPPORT_LIFE_CYCLE2[SUPPORT_LIFE_CYCLE2["EIGHT"] = 800] = "EIGHT";
+  SUPPORT_LIFE_CYCLE2[SUPPORT_LIFE_CYCLE2["NINE"] = 900] = "NINE";
+  return SUPPORT_LIFE_CYCLE2;
+})(SUPPORT_LIFE_CYCLE || {});
+class EngineSupport extends Engine {
+  constructor(params = {}) {
+    super();
+    this.moduleLifeCycle = [];
+    this.triggers = { object: ObjectTrigger };
+    this.install(LoaderManagerPlugin(params.LoaderManagerPlugin)).install(PointerManagerPlugin(params.PointerManagerPlugin)).install(EventManagerPlugin(params.EventManagerPlugin)).install(RenderManagerPlugin(params.RenderManagerPlugin)).install(ResourceManagerPlugin(params.ResourceManagerPlugin)).install(DataSupportManagerPlugin(params.DataSupportManagerPlugin)).install(CompilerManagerPlugin(params.CompilerManagerPlugin));
+    this.exec(LoaderDataSupportStrategy()).exec(LoaderMappingStrategy()).exec(CompilerSupportStrategy());
   }
-  loadLifeCycle(e) {
-    const t = this.dataSupportManager, s = this.triggers, o = this.moduleLifeCycle.sort((n, i) => n.order - i.order);
-    for (const { module: n } of o) {
-      e[n] && t.loadByModule(e[n], n);
-      for (const i in s)
-        s[i].reach(n);
+  loadLifeCycle(config) {
+    const dataSupportManager = this.dataSupportManager;
+    const triggers = this.triggers;
+    const loadCycle = this.moduleLifeCycle.sort((a, b) => a.order - b.order);
+    for (const { module } of loadCycle) {
+      config[module] && dataSupportManager.loadByModule(config[module], module);
+      for (const key in triggers) {
+        triggers[key].reach(module);
+      }
     }
   }
-  removeLifeCycle(e) {
-    const t = this.dataSupportManager, s = this.moduleLifeCycle.sort((a, c) => c.order - a.order);
-    for (const { module: a } of s)
-      e[a] && t.remove({ [a]: e[a] });
-    const o = e.assets || [], n = this.resourceManager, i = this.loaderManager;
-    o.forEach((a) => {
-      n.remove(a), i.remove(a);
+  removeLifeCycle(config) {
+    const dataSupportManager = this.dataSupportManager;
+    const removeCycle = this.moduleLifeCycle.sort((a, b) => b.order - a.order);
+    for (const { module } of removeCycle) {
+      config[module] && dataSupportManager.remove({ [module]: config[module] });
+    }
+    const assets = config.assets || [];
+    const resourceManager = this.resourceManager;
+    const loaderManager = this.loaderManager;
+    assets.forEach((url) => {
+      resourceManager.remove(url);
+      loaderManager.remove(url);
     });
   }
-  loadConfig(e, t) {
-    const s = this.renderManager.hasRendering();
-    if (s && this.renderManager.stop(), e.assets && e.assets.length) {
-      const o = (n) => {
-        delete e.assets, this.loadLifeCycle(e), this.resourceManager.removeEventListener("mapped", o), t && t(n), s ? this.renderManager.play() : this.renderManager.render();
+  loadConfig(config, callback) {
+    const renderFlag = this.renderManager.hasRendering();
+    if (renderFlag) {
+      this.renderManager.stop();
+    }
+    if (config.assets && config.assets.length) {
+      const mappedFun = (event) => {
+        delete config.assets;
+        this.loadLifeCycle(config);
+        this.resourceManager.removeEventListener("mapped", mappedFun);
+        callback && callback(event);
+        if (renderFlag) {
+          this.renderManager.play();
+        } else {
+          this.renderManager.render();
+        }
       };
-      this.resourceManager.addEventListener("mapped", o), this.loaderManager.reset().load(e.assets);
-    } else
-      this.loadLifeCycle(e), t && t(), s ? this.renderManager.play() : this.renderManager.render();
+      this.resourceManager.addEventListener("mapped", mappedFun);
+      this.loaderManager.reset().load(config.assets);
+    } else {
+      this.loadLifeCycle(config);
+      callback && callback();
+      if (renderFlag) {
+        this.renderManager.play();
+      } else {
+        this.renderManager.render();
+      }
+    }
     return this;
   }
-  loadConfigAsync(e, t) {
-    return new Promise((s, o) => {
-      const n = this.renderManager.hasRendering();
-      n && this.renderManager.stop(), e.assets && e.assets.length ? this.loadResourcesAsync(e.assets).then((i) => {
-        delete e.assets, this.loadLifeCycle(e), n ? this.renderManager.play() : this.renderManager.render(), s(i);
-      }) : (this.loadLifeCycle(e), n ? this.renderManager.play() : this.renderManager.render(), s({
-        type: Z.MAPPED,
-        configMap: this.resourceManager.configMap,
-        resourceMap: this.resourceManager.resourceMap,
-        resourceConfig: {}
-      }));
+  loadConfigAsync(config, pretreat) {
+    return new Promise((resolve, reject) => {
+      const renderFlag = this.renderManager.hasRendering();
+      if (renderFlag) {
+        this.renderManager.stop();
+      }
+      if (config.assets && config.assets.length) {
+        this.loadResourcesAsync(config.assets).then((event) => {
+          delete config.assets;
+          this.loadLifeCycle(config);
+          if (renderFlag) {
+            this.renderManager.play();
+          } else {
+            this.renderManager.render();
+          }
+          resolve(event);
+        });
+      } else {
+        this.loadLifeCycle(config);
+        if (renderFlag) {
+          this.renderManager.play();
+        } else {
+          this.renderManager.render();
+        }
+        resolve({
+          type: RESOURCE_EVENT.MAPPED,
+          configMap: this.resourceManager.configMap,
+          resourceMap: this.resourceManager.resourceMap,
+          resourceConfig: {}
+        });
+      }
     });
   }
-  removeConfig(e) {
-    this.removeLifeCycle(e);
+  removeConfig(config) {
+    this.removeLifeCycle(config);
   }
-  getObjectConfig(e) {
-    const t = this.getObjectSymbol(e);
-    return t ? this.getConfigBySymbol(t) : null;
+  getObjectConfig(object) {
+    const symbol = this.getObjectSymbol(object);
+    if (symbol) {
+      return this.getConfigBySymbol(symbol);
+    } else {
+      return null;
+    }
   }
-  useModule(e) {
-    const t = ie(e.type);
-    if (B[t])
-      return console.warn(`Engine:module ${e.type} is already exist.`), this;
-    B[t] = e.type, e.object && (P[e.type] = !0);
-    const s = new ze(e);
-    return s.compiler.useEngine(this), this.dataSupportManager.extend(s.converter), this.compilerManager.extend(s.compiler), e.extend && e.extend(this), this.moduleLifeCycle.push({
-      module: e.type,
-      order: e.lifeOrder || 0
-    }), Object.values(this.triggers).forEach((o) => {
-      o.add(e.type);
-    }), this;
+  useModule(options) {
+    const typeName = emunDecamelize(options.type);
+    if (MODULE_TYPE[typeName]) {
+      console.warn(`Engine:module ${options.type} is already exist.`);
+      return this;
+    }
+    MODULE_TYPE[typeName] = options.type;
+    if (options.object) {
+      OBJECT_MODULE[options.type] = true;
+    }
+    const moduler = new Moduler(options);
+    moduler.compiler.useEngine(this);
+    this.dataSupportManager.extend(moduler.converter);
+    this.compilerManager.extend(moduler.compiler);
+    if (options.extend) {
+      options.extend(this);
+    }
+    this.moduleLifeCycle.push({
+      module: options.type,
+      order: options.lifeOrder || 0
+    });
+    Object.values(this.triggers).forEach((trigger) => {
+      trigger.add(options.type);
+    });
+    return this;
   }
-  addTrigger(e, t) {
-    return this.triggers[e] ? console.warn(
-      `EngineSupport: this trigger has already exist: ${e}.`,
-      this.triggers
-    ) : this.triggers[e] = t, this;
+  addTrigger(name, trigger) {
+    if (!this.triggers[name]) {
+      this.triggers[name] = trigger;
+    } else {
+      console.warn(
+        `EngineSupport: this trigger has already exist: ${name}.`,
+        this.triggers
+      );
+    }
+    return this;
   }
-  getTrigger(e) {
-    return this.triggers[e] ? this.triggers[e] : (console.warn(
-      `EngineSupport: not found this trigger: ${e}.`,
-      this.triggers
-    ), null);
+  getTrigger(name) {
+    if (!this.triggers[name]) {
+      console.warn(
+        `EngineSupport: not found this trigger: ${name}.`,
+        this.triggers
+      );
+      return null;
+    } else {
+      return this.triggers[name];
+    }
   }
   //TODO: module init
   init() {
@@ -1628,87 +2416,99 @@ class lt extends Me {
    * @deprecated
    * use useModule
    */
-  registModule(e) {
-    return this.useModule(e);
+  registModule(options) {
+    return this.useModule(options);
   }
 }
-const Pt = function(r, e = {}) {
-  const t = new lt(e);
-  return r.modules && r.modules.forEach((s) => {
-    t.useModule(s);
-  }), r.plugins && r.plugins.forEach((s) => {
-    t.install(s);
-  }), r.strategy && r.strategy.forEach((s) => {
-    t.exec(s);
-  }), t;
-}, Nt = (r) => {
-  w.exec(r);
-}, Tt = () => {
-}, Lt = [z, T];
+const defineEngineSupport = function(options, params = {}) {
+  const engine = new EngineSupport(params);
+  if (options.modules) {
+    options.modules.forEach((module) => {
+      engine.useModule(module);
+    });
+  }
+  if (options.plugins) {
+    options.plugins.forEach((plugin) => {
+      engine.install(plugin);
+    });
+  }
+  if (options.strategy) {
+    options.strategy.forEach((strategy) => {
+      engine.exec(strategy);
+    });
+  }
+  return engine;
+};
+const toAsync = (fun) => {
+  AsyncScheduler.exec(fun);
+};
+const toTrigger = () => {
+};
+const PLUGINS = [COMPILER_MANAGER_PLUGIN, DATA_SUPPORT_MANAGER_PLUGIN];
 export {
-  $e as AntiShake,
-  z as COMPILER_MANAGER_PLUGIN,
-  ot as COMPILER_SUPPORT_STRATEGY,
-  Y as CONFIGFACTORY,
-  Ot as CONFIGMODULE,
-  ce as CONFIGTYPE,
-  y as CONFIG_FACTORY,
-  g as CONFIG_MODEL,
-  J as CONFIG_MODULE,
-  ae as CONFIG_TYPE,
-  Ne as Compiler,
-  qe as CompilerManager,
-  Ze as CompilerManagerPlugin,
-  nt as CompilerSupportStrategy,
-  Te as Container,
-  Be as Converter,
-  T as DATA_SUPPORT_MANAGER_PLUGIN,
-  S as DEFAULT_RULE,
-  Xe as DataSupportManager,
-  Ke as DataSupportManagerPlugin,
-  q as DefaultParser,
-  lt as EngineSupport,
-  xt as JSONHandler,
-  et as LOADER_DATA_SUPPORT_STRATEGY,
-  rt as LOADER_MAPPING_STRATEGY,
-  tt as LoaderDataSupportStrategy,
-  st as LoaderMappingStrategy,
-  d as MODEL_EVENT,
-  Mt as MODULETYPE,
-  B as MODULE_TYPE,
-  _ as Model,
-  ze as Moduler,
-  we as OBJECTMODULE,
-  P as OBJECT_MODULE,
-  Lt as PLUGINS,
-  Qe as Parser,
-  Z as RESOURCE_EVENT,
-  de as RESOURCE_MANAGER_PLUGIN,
-  Ye as ResourceManager,
-  _e as ResourceManagerPlugin,
-  Ve as Ruler,
-  ct as SUPPORT_LIFE_CYCLE,
-  Et as Template,
-  We as createSymbol,
-  Pt as defineEngineSupport,
-  D as defineModel,
-  jt as defineModule,
-  St as defineOption,
-  bt as defineProcessor,
-  wt as defineRule,
-  Rt as emptyHandler,
-  p as generateConfig,
-  He as getBasicConfig,
-  U as getModule,
-  N as getObserver,
-  At as getSymbolConfig,
-  vt as globalAntiShake,
-  h as globalOption,
-  Ae as isObjectModule,
-  De as isObjectType,
-  Fe as observable,
-  Ct as slientSync,
-  Nt as toAsync,
-  Tt as toTrigger,
-  Dt as uniqueSymbol
+  AntiShake,
+  COMPILER_MANAGER_PLUGIN,
+  COMPILER_SUPPORT_STRATEGY,
+  CONFIGFACTORY,
+  CONFIGMODULE,
+  CONFIGTYPE,
+  CONFIG_FACTORY,
+  CONFIG_MODEL,
+  CONFIG_MODULE,
+  CONFIG_TYPE,
+  Compiler,
+  CompilerManager,
+  CompilerManagerPlugin,
+  CompilerSupportStrategy,
+  Container,
+  Converter,
+  DATA_SUPPORT_MANAGER_PLUGIN,
+  DEFAULT_RULE,
+  DataSupportManager,
+  DataSupportManagerPlugin,
+  DefaultParser,
+  EngineSupport,
+  JSONHandler$1 as JSONHandler,
+  LOADER_DATA_SUPPORT_STRATEGY,
+  LOADER_MAPPING_STRATEGY,
+  LoaderDataSupportStrategy,
+  LoaderMappingStrategy,
+  MODEL_EVENT,
+  MODULETYPE,
+  MODULE_TYPE,
+  Model,
+  Moduler,
+  OBJECTMODULE,
+  OBJECT_MODULE,
+  PLUGINS,
+  Parser,
+  RESOURCE_EVENT,
+  RESOURCE_MANAGER_PLUGIN,
+  ResourceManager,
+  ResourceManagerPlugin,
+  Ruler,
+  SUPPORT_LIFE_CYCLE,
+  template$1 as Template,
+  createSymbol,
+  defineEngineSupport,
+  defineModel,
+  defineModule,
+  defineOption,
+  defineProcessor,
+  defineRule,
+  emptyHandler,
+  generateConfig,
+  getBasicConfig,
+  getModule,
+  getObserver,
+  getSymbolConfig,
+  globalAntiShake,
+  globalOption,
+  isObjectModule,
+  isObjectType,
+  observable,
+  slientSync,
+  toAsync,
+  toTrigger,
+  uniqueSymbol
 };

@@ -1,13 +1,13 @@
 import { Engine, Plugin } from "@vis-three/core";
-import { SymbolConfig } from "../../module/common";
+import { BasicConfig } from "../../module/common";
 import { DataSupportManager, LoadOptions } from "./DataSupportManager";
 export interface DataSupportEngine extends Engine {
     dataSupportManager: DataSupportManager;
-    applyConfig: (...args: SymbolConfig[]) => DataSupportEngine;
-    getConfigBySymbol: <C extends SymbolConfig = any>(vid: string) => C | null;
+    applyConfig: (...args: BasicConfig[]) => DataSupportEngine;
+    getConfigBySymbol: <C extends BasicConfig = any>(vid: string) => C | null;
     removeConfigBySymbol: (...args: string[]) => DataSupportEngine;
-    getConfigfromModule: <C extends SymbolConfig = any>(module: string, vid: string) => C | null;
-    getConfigfromModules: <C extends SymbolConfig = any>(modules: string[] | Record<string, any>, vid: string) => C | null;
+    getConfigfromModule: <C extends BasicConfig = any>(module: string, vid: string) => C | null;
+    getConfigfromModules: <C extends BasicConfig = any>(modules: string[] | Record<string, any>, vid: string) => C | null;
     toJSON: () => string;
     exportConfig: () => LoadOptions;
 }

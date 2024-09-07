@@ -11,7 +11,7 @@ import ShaderMaterialModel from "./models/ShaderMaterialModel";
 import SpriteMaterialModel from "./models/SpriteMaterialModel";
 
 export * from "./MaterialConfig";
-export * from "./ShaderManager";
+export * from "./ShaderGeneratorManager";
 
 export default defineModule({
   type: "material",

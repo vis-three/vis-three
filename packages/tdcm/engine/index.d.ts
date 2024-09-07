@@ -86,7 +86,7 @@ export declare class EngineSupport extends Engine implements PointerManagerEngin
     loadConfigAsync(config: EngineSupportLoadOptions, pretreat?: (c: EngineSupportLoadOptions) => EngineSupportLoadOptions): Promise<MappedEvent>;
     removeConfig(config: EngineSupportLoadOptions): void;
     getObjectConfig<O, C extends BasicConfig>(object: O): C | null;
-    useModule(options: ModuleOptions): this;
+    useModule(options: ModuleOptions<any, any>): this;
     addTrigger(name: string, trigger: Trigger): this;
     getTrigger(name: string): Trigger | null;
     init(): void;

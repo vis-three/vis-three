@@ -1,9 +1,5 @@
-import {
-  BasicConfig,
-  getBasicConfig,
-  Vector3Config,
-} from "@vis-three/tdcm";
-import { BasicEventConfig } from "./EventManager";
+import { BasicConfig, getBasicConfig, Vector3Config } from "@vis-three/tdcm";
+import { BasicEventConfig } from "./EventGeneratorManager";
 
 export interface ObjectConfig extends BasicConfig {
   /**造成阴影 */

@@ -15,7 +15,7 @@
   },
   "devDependencies": {},
   "dependencies": {
-    "@vis-three/middleware": "workspace:^",
+    "@vis-three/tdcm": "workspace:^",
     "@vis-three/module-object": "workspace:^"
   },
   "files": [

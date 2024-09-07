@@ -217,7 +217,7 @@ export class Compiler<E extends EngineSupport = EngineSupport> {
     option: ModelOption<any, any, any, any, E>,
     callback?: (compiler: this) => void
   ) {
-    if (this.builders.has(option.type)) {
+    if (CONFIG_MODEL[option.type]) {
       console.warn(
         `${this.MODULE} Compiler: has already exist this model ${option.type}.`
       );
@@ -259,8 +259,9 @@ export class Compiler<E extends EngineSupport = EngineSupport> {
             CONFIG_MODEL
           );
         } else {
+          const targetConfig = target.config;
           target.config = function () {
-            return Object.assign(target.config(), merge.config());
+            return Object.assign(targetConfig(), merge.config());
           };
           !target.commands && (target.commands = {});
           target.commands = objectDeepMerge(target.commands, merge.commands, {
@@ -293,7 +294,7 @@ export class Compiler<E extends EngineSupport = EngineSupport> {
 
     Object.defineProperty(CONFIG_FACTORY, option.type, {
       get() {
-        return option.config;
+        return () => Object.assign(option.config(), { type: option.type });
       },
     });
 

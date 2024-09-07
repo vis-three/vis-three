@@ -12,7 +12,7 @@ export type AniScriptGenerator<C extends BasicAniScriptConfig> = (
   config: C
 ) => (event: RenderEvent) => void;
 
-export class AniScriptManager {
+export class AniScriptGeneratorManager {
   private static configLibrary = new Map<string, unknown>();
   private static generatorLibrary = new Map<string, AniScriptGenerator<any>>();
 
@@ -22,26 +22,26 @@ export class AniScriptManager {
   }: {
     config: C;
     generator: AniScriptGenerator<C>;
-  }): AniScriptManager {
-    if (AniScriptManager.configLibrary.has(config.name)) {
+  }): AniScriptGeneratorManager {
+    if (AniScriptGeneratorManager.configLibrary.has(config.name)) {
       console.warn(
         `EventLibrary has already exist this event generator: ${config.name}, that will be cover.`
       );
 
-      return AniScriptManager;
+      return AniScriptGeneratorManager;
     }
 
-    AniScriptManager.configLibrary.set(
+    AniScriptGeneratorManager.configLibrary.set(
       config.name,
       JSON.parse(JSON.stringify(config))
     );
 
-    AniScriptManager.generatorLibrary.set(config.name, generator);
-    return AniScriptManager;
+    AniScriptGeneratorManager.generatorLibrary.set(config.name, generator);
+    return AniScriptGeneratorManager;
   };
 
   static generateConfig(name: string, merge: object): BasicAniScriptConfig {
-    if (!AniScriptManager.configLibrary.has(name)) {
+    if (!AniScriptGeneratorManager.configLibrary.has(name)) {
       console.warn(`event library can not found config by name: ${name}`);
       return {
         name: "",
@@ -66,7 +66,7 @@ export class AniScriptManager {
     };
 
     const template = JSON.parse(
-      JSON.stringify(AniScriptManager.configLibrary.get(name)!)
+      JSON.stringify(AniScriptGeneratorManager.configLibrary.get(name)!)
     );
 
     recursion(template, merge);
@@ -80,14 +80,14 @@ export class AniScriptManager {
     attribute: string,
     config: BasicAniScriptConfig
   ): (event: RenderEvent) => void {
-    if (!AniScriptManager.generatorLibrary.has(config.name)) {
+    if (!AniScriptGeneratorManager.generatorLibrary.has(config.name)) {
       console.error(
         `event library can not found generator by name: ${config.name}`
       );
       return () => {};
     }
 
-    return AniScriptManager.generatorLibrary.get(config.name)!(
+    return AniScriptGeneratorManager.generatorLibrary.get(config.name)!(
       engine,
       target,
       attribute,
@@ -96,11 +96,6 @@ export class AniScriptManager {
   }
 
   static has(name: string): boolean {
-    return AniScriptManager.configLibrary.has(name);
+    return AniScriptGeneratorManager.configLibrary.has(name);
   }
 }
-
-/**
- * @deprecated use AniScriptManager
- */
-export class AniScriptGeneratorManager extends AniScriptManager {}

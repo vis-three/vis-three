@@ -12,7 +12,7 @@ export interface ShaderConfig {
   uniforms: Record<string, IUniform>;
 }
 
-export class ShaderManager {
+export class ShaderGeneratorManager {
   private static library = new Map<string, Shader>();
 
   /**
@@ -20,13 +20,13 @@ export class ShaderManager {
    * @param shader
    */
   static register = function (shader: Shader) {
-    if (ShaderManager.library.has(shader.name)) {
+    if (ShaderGeneratorManager.library.has(shader.name)) {
       console.warn(
         `shader library has exist shader: ${shader.name} that will be cover.`
       );
     }
 
-    ShaderManager.library.set(shader.name, shader);
+    ShaderGeneratorManager.library.set(shader.name, shader);
   };
 
   /**
@@ -35,12 +35,14 @@ export class ShaderManager {
    * @returns shader | null
    */
   static getShader(name: string): Shader | null {
-    if (!ShaderManager.library.has(name)) {
+    if (!ShaderGeneratorManager.library.has(name)) {
       console.warn(`con not found shader in shader library: ${name}`);
       return null;
     }
 
-    return ShaderManager.cloneShader(ShaderManager.library.get(name)!);
+    return ShaderGeneratorManager.cloneShader(
+      ShaderGeneratorManager.library.get(name)!
+    );
   }
 
   /**
@@ -52,12 +54,12 @@ export class ShaderManager {
     name: string,
     uniforms?: Record<string, IUniform>
   ): ShaderConfig {
-    if (!ShaderManager.library.has(name)) {
+    if (!ShaderGeneratorManager.library.has(name)) {
       console.warn(`con not found shader in shader library: ${name}`);
       return { shader: name, uniforms: {} };
     }
 
-    const shader = ShaderManager.library.get(name)!;
+    const shader = ShaderGeneratorManager.library.get(name)!;
 
     const config: ShaderConfig = {
       shader: name,
