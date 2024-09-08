@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/engine-modeling-support",
-  "version": "0.6.15",
+  "version": "0.7.0",
   "description": "",
   "main": "index.js",
   "module": "index.js",
@@ -12,22 +12,11 @@
     "build": "tsc",
     "lint": "npx eslint *.js src/**/*.ts --fix"
   },
-  "devDependencies": {
-    "@types/node": "^18.11.12",
-    "@types/three": "^0.141.0",
-    "@typescript-eslint/eslint-plugin": "^5.18.0",
-    "@typescript-eslint/parser": "^5.18.0",
-    "eslint": "^8.12.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "prettier": "^2.6.2",
-    "three": "^0.141.0",
-    "typescript": "^5.2.2"
-  },
+  "devDependencies": {},
   "dependencies": {
     "@vis-three/library-module": "workspace:^",
     "@vis-three/library-parser": "workspace:^",
-    "@vis-three/middleware": "workspace:^",
+    "@vis-three/tdcm": "workspace:^",
     "@vis-three/plugin-axes-helper": "workspace:^",
     "@vis-three/plugin-camera-adaptive": "workspace:^",
     "@vis-three/plugin-css2d-renderer": "workspace:^",

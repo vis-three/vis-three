@@ -1,8 +1,8 @@
-import { EngineSupport, EngineSupportParameters } from "@vis-three/middleware";
-import { AxesHelper, Event, GridHelper, Object3D, Vector3, WebGLRenderer, WebGLRendererParameters } from "three";
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
-import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { EngineSupport, EngineSupportParameters } from "@vis-three/tdcm";
+import { AxesHelper, GridHelper, Object3D, Object3DEventMap, Vector3, WebGLRenderer, WebGLRendererParameters } from "three";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
+import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 import { Screenshot, WebGLRendererEngine } from "@vis-three/plugin-webgl-renderer";
 import { EffectComposerEngine, EffectComposerParameters } from "@vis-three/plugin-effect-composer";
 import { OrbitControlsEngine } from "@vis-three/plugin-orbit-controls";
@@ -45,8 +45,8 @@ export declare class ModelingEngineSupport extends EngineSupport implements WebG
     axesHelper: AxesHelper;
     setAxesHelper: (params: AxesHelperOptions) => AxesHelperEngine;
     selectionDisable: boolean;
-    selectionBox: Set<Object3D<Event>>;
-    setSelectionBox: (objects: Object3D<Event>[]) => SelectionEngine;
+    selectionBox: Set<Object3D<Object3DEventMap>>;
+    setSelectionBox: (objects: Object3D<Object3DEventMap>[]) => SelectionEngine;
     setSelectionBoxBySymbol: (symbols: string[]) => SelectionSupportEngine;
     css2DRenderer: CSS2DRenderer;
     css3DRenderer: CSS3DRenderer;

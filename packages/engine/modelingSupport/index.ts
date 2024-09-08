@@ -1,21 +1,17 @@
-import {
-  EngineSupport,
-  EngineSupportParameters,
-  ModuleOptions,
-} from "@vis-three/middleware";
+import { EngineSupport, EngineSupportParameters } from "@vis-three/tdcm";
 import {
   AxesHelper,
   Color,
-  Event,
   GridHelper,
   Object3D,
+  Object3DEventMap,
   Vector3,
   WebGLRenderer,
   WebGLRendererParameters,
 } from "three";
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
-import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
+import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 import {
   Screenshot,
   WebGLRendererEngine,
@@ -87,7 +83,7 @@ import { TransformControlsSupportStrategy } from "@vis-three/strategy-transform-
 import { OrbitControlsSupportStrategy } from "@vis-three/strategy-orbit-controls-support";
 import { ComposerSupportStrategy } from "@vis-three/strategy-composer-support";
 
-import * as moduleLibrary from "@vis-three/library-module";
+import { modules } from "@vis-three/library-module";
 import * as parserLibrary from "@vis-three/library-parser";
 import {
   PathDrawingEngine,
@@ -149,8 +145,10 @@ export class ModelingEngineSupport
   declare axesHelper: AxesHelper;
   declare setAxesHelper: (params: AxesHelperOptions) => AxesHelperEngine;
   declare selectionDisable: boolean;
-  declare selectionBox: Set<Object3D<Event>>;
-  declare setSelectionBox: (objects: Object3D<Event>[]) => SelectionEngine;
+  declare selectionBox: Set<Object3D<Object3DEventMap>>;
+  declare setSelectionBox: (
+    objects: Object3D<Object3DEventMap>[]
+  ) => SelectionEngine;
   declare setSelectionBoxBySymbol: (
     symbols: string[]
   ) => SelectionSupportEngine;
@@ -168,13 +166,6 @@ export class ModelingEngineSupport
 
   constructor(params: Partial<ModelingEngineSupportParameters> = {}) {
     super(params);
-    for (const module of Object.values(moduleLibrary)) {
-      this.registModule(module as ModuleOptions<any>);
-    }
-
-    for (const parser of Object.values(parserLibrary)) {
-      this.resourceManager.addParser(new parser());
-    }
 
     this.install(
       WebGLRendererPlugin(
@@ -204,6 +195,14 @@ export class ModelingEngineSupport
       .install(StatsPlugin())
       .install(KeyboardManagerPlugin())
       .install(PathDrawingPlugin());
+
+    for (const parser of Object.values(parserLibrary)) {
+      this.resourceManager.addParser(new parser());
+    }
+
+    for (const module of modules) {
+      this.useModule(module);
+    }
 
     this.exec(CSS2DRenderStrategy())
       .exec(CSS3DRenderStrategy())

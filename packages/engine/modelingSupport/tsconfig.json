@@ -1,20 +1,19 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "useDefineForClassFields": true,
+    "useDefineForClassFields": false,
     "module": "ESNext",
     "lib": ["ESNext", "DOM"],
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "strict": true,
     "sourceMap": false,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "noEmit": false,
+    "emitDeclarationOnly": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noImplicitReturns": true,
     "noImplicitAny": false,
-    "declaration": true,
-    "jsx": "preserve"
+    "declaration": true
   }
 }

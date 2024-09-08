@@ -1,4 +1,4 @@
-import { EngineSupport, } from "@vis-three/middleware";
+import { EngineSupport } from "@vis-three/tdcm";
 import { Color, } from "three";
 import { WebGLRendererPlugin, } from "@vis-three/plugin-webgl-renderer";
 import { EffectComposerPlugin, } from "@vis-three/plugin-effect-composer";
@@ -28,7 +28,7 @@ import { WebGLRendererSupportStrategy } from "@vis-three/strategy-webgl-renderer
 import { TransformControlsSupportStrategy } from "@vis-three/strategy-transform-controls-support";
 import { OrbitControlsSupportStrategy } from "@vis-three/strategy-orbit-controls-support";
 import { ComposerSupportStrategy } from "@vis-three/strategy-composer-support";
-import * as moduleLibrary from "@vis-three/library-module";
+import { modules } from "@vis-three/library-module";
 import * as parserLibrary from "@vis-three/library-parser";
 import { PathDrawingPlugin, } from "@vis-three/plugin-path-drawing";
 import { MultiRendererEventStrategy } from "@vis-three/strategy-multi-renderer";
@@ -37,12 +37,6 @@ export { VIEWPOINT };
 export class ModelingEngineSupport extends EngineSupport {
     constructor(params = {}) {
         super(params);
-        for (const module of Object.values(moduleLibrary)) {
-            this.registModule(module);
-        }
-        for (const parser of Object.values(parserLibrary)) {
-            this.resourceManager.addParser(new parser());
-        }
         this.install(WebGLRendererPlugin(params.WebGLRendererPlugin || {
             antialias: true,
             alpha: true,
@@ -63,6 +57,12 @@ export class ModelingEngineSupport extends EngineSupport {
             .install(StatsPlugin())
             .install(KeyboardManagerPlugin())
             .install(PathDrawingPlugin());
+        for (const parser of Object.values(parserLibrary)) {
+            this.resourceManager.addParser(new parser());
+        }
+        for (const module of modules) {
+            this.useModule(module);
+        }
         this.exec(CSS2DRenderStrategy())
             .exec(CSS3DRenderStrategy())
             .exec(EffectRenderStrategy())
