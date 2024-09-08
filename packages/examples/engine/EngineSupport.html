@@ -24,10 +24,8 @@
         defineEngineSupport,
         generateConfig,
         CONFIGTYPE,
-        AniScriptGeneratorManager,
-        EventGeneratorManager,
         Template,
-      } from "@vis-three/middleware";
+      } from "@vis-three/tdcm";
       import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
       import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
       import { RenderManagerPlugin } from "@vis-three/plugin-render-manager";
@@ -45,6 +43,11 @@
         HTMLCanvasElementParser,
       } from "@vis-three/library-parser";
       import { CanvasGenerator } from "@vis-three/convenient";
+
+      import {
+        AniScriptGeneratorManager,
+        EventGeneratorManager,
+      } from "@vis-three/library-module";
 
       AniScriptGeneratorManager.register(linearTime);
       EventGeneratorManager.register(EventLibrary.moveSpacing);

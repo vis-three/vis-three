@@ -217,7 +217,7 @@ export class Model<
 
   private add(params: CtnNotice) {
     let target = this.puppet;
-    const path = params.path;
+    const path = params.path.split(".");
 
     for (const key of path) {
       if (typeof target[key] !== undefined) {
@@ -233,7 +233,7 @@ export class Model<
 
   private set(params: CtnNotice) {
     let target = this.puppet;
-    const path = params.path;
+    const path = params.path.split(".");
 
     for (const key of path) {
       if (typeof target[key] !== undefined) {
@@ -249,7 +249,7 @@ export class Model<
 
   private delete(params: CtnNotice) {
     let target = this.puppet;
-    const path = params.path;
+    const path = params.path.split(".");
 
     for (const key of path) {
       if (typeof target[key] !== undefined) {

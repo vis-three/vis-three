@@ -1,9 +1,9 @@
 import { getBasicConfig as I, defineModel as _, MODEL_EVENT as E, defineModule as k, SUPPORT_LIFE_CYCLE as Y } from "@vis-three/tdcm";
 import { EventDispatcher as q } from "@vis-three/core";
-import { LineBasicMaterial as A, LineSegments as c, BufferGeometry as p, Float32BufferAttribute as u, CameraHelper as J, Matrix4 as K, PerspectiveCamera as Q, OrthographicCamera as X, Color as b, PlaneGeometry as d, EdgesGeometry as l, Sphere as V, Vector3 as y, Mesh as Z, OctahedronGeometry as G, MeshBasicMaterial as L, Box3 as C, Points as R, BufferAttribute as U, PointsMaterial as v, AlwaysDepth as $, CanvasTexture as H, ShaderMaterial as T, Sprite as ee, SpriteMaterial as te, Vector2 as ie } from "three";
+import { LineBasicMaterial as A, LineSegments as l, BufferGeometry as p, Float32BufferAttribute as u, CameraHelper as J, Matrix4 as K, PerspectiveCamera as Q, OrthographicCamera as X, Color as b, PlaneGeometry as d, EdgesGeometry as c, Sphere as V, Vector3 as y, Mesh as Z, OctahedronGeometry as G, MeshBasicMaterial as L, Box3 as C, Points as R, BufferAttribute as U, PointsMaterial as v, AlwaysDepth as $, CanvasTexture as H, ShaderMaterial as T, Sprite as ee, SpriteMaterial as te, Vector2 as ie } from "three";
 import { CanvasGenerator as W } from "@vis-three/convenient";
 const m = () => new A({ color: "rgb(255, 255, 255)" });
-class N extends c {
+class N extends l {
   constructor(e) {
     super(), this.type = "CameraHelper";
     const t = new p(), i = [
@@ -190,7 +190,7 @@ class N extends c {
     this.geometry.dispose(), this.material.dispose(), this.shape.dispose();
   }
 }
-class se extends c {
+class se extends l {
   constructor(e) {
     super(), this.type = "VisDirectionalLightHelper", this.geometry = new p();
     const t = [
@@ -255,8 +255,8 @@ class se extends c {
     ), this.material = m(), this.geometry.boundingSphere;
     const i = new b().copy(e.color).multiplyScalar(e.intensity), s = new d(20, 20);
     s.dispose();
-    const r = new c(
-      new l(s),
+    const r = new l(
+      new c(s),
       new A({
         color: i
       })
@@ -279,7 +279,7 @@ class se extends c {
     this.shape.geometry.dispose(), this.shape.material.dispose(), this.geometry.dispose(), this.material.dispose();
   }
 }
-class oe extends c {
+class oe extends l {
   //TODO: 手动更新api，自动更新api，support更新
   constructor(e) {
     super(), this.type = "VisPointLightHelper", this.geometry = new p();
@@ -368,7 +368,7 @@ class oe extends c {
     this.shape.geometry.dispose(), this.shape.material.dispose(), this.geometry.dispose(), this.material.dispose();
   }
 }
-class re extends c {
+class re extends l {
   constructor(e) {
     super(), this.type = "VisRectAreaLightHelper", this.cacheBox = new C(), this.cacheVector3 = new y(), this.target = e, this.generateShape();
     const t = m();
@@ -397,7 +397,7 @@ class re extends c {
     this.geometry.dispose(), this.material.dispose();
   }
 }
-class ae extends c {
+class ae extends l {
   //TODO: 手动更新api，自动更新api，support更新
   constructor(e) {
     super(), this.type = "VisSpotLightHelper", this.geometry = new p();
@@ -502,7 +502,7 @@ class ae extends c {
       "position",
       new u(s, 3)
     );
-    const r = m(), a = new c(i, r);
+    const r = m(), a = new l(i, r);
     a.material.color.copy(e.color).multiplyScalar(e.intensity);
     const n = e.distance ? e.distance : 1e3, f = n * Math.tan(e.angle);
     a.scale.set(f, f, n), a.raycast = () => {
@@ -552,7 +552,7 @@ M.colorTexture = new H(
   }).get()
 );
 let D = M;
-class ne extends c {
+class ne extends l {
   constructor(e) {
     const t = new Uint16Array([
       0,
@@ -597,7 +597,7 @@ class ne extends c {
   dispose() {
   }
 }
-class he extends c {
+class he extends l {
   constructor(e) {
     let t = 5;
     if (e.geometry) {
@@ -658,7 +658,7 @@ class he extends c {
   dispose() {
   }
 }
-const ce = `
+const le = `
 
 #include <common>
 
@@ -685,7 +685,7 @@ void main() {
 
 }
 
-`, le = `
+`, ce = `
 
 uniform vec3 color;
 
@@ -695,14 +695,14 @@ void main() {
 `;
 let pe = class extends T {
   constructor() {
-    super(), this.vertexShader = ce, this.fragmentShader = le, this.uniforms = {
+    super(), this.vertexShader = le, this.fragmentShader = ce, this.uniforms = {
       color: { value: new b("white") }
     };
   }
 };
-class de extends c {
+class de extends l {
   constructor(e) {
-    super(), this.type = "VisCSS2DPlaneHelper", this.geometry = new l(new d(1, 1)), this.geometry.computeBoundingBox(), this.material = new pe(), this.scale.copy(e.matrixScale), this.position.set(e.position.x, e.position.y, e.position.z), this.target = e;
+    super(), this.type = "VisCSS2DPlaneHelper", this.geometry = new c(new d(1, 1)), this.geometry.computeBoundingBox(), this.material = new pe(), this.scale.copy(e.matrixScale), this.position.set(e.position.x, e.position.y, e.position.z), this.target = e;
     const t = new MutationObserver(() => {
       this.scale.copy(e.matrixScale);
     });
@@ -721,13 +721,13 @@ class de extends c {
     this.observer.disconnect();
   }
 }
-class me extends c {
+class me extends l {
   constructor(e) {
-    super(), this.type = "VisCSS3DPlaneHelper", this.geometry = new l(
+    super(), this.type = "VisCSS3DPlaneHelper", this.geometry = new c(
       new d(e.width, e.height)
     ), this.geometry.computeBoundingBox(), this.material = m(), this.matrixAutoUpdate = !1, this.matrix = e.matrix, this.matrixWorldNeedsUpdate = !1, this.matrixWorld = e.matrixWorld, this.target = e;
     const t = new MutationObserver(() => {
-      this.geometry.dispose(), this.geometry = new l(
+      this.geometry.dispose(), this.geometry = new c(
         new d(e.width, e.height)
       ), this.geometry.computeBoundingBox();
     });
@@ -781,11 +781,11 @@ class ue extends T {
     };
   }
 }
-class ye extends c {
+class ye extends l {
   constructor(e) {
-    super(), this.type = "VisCSS3DSpriteHelper", this.geometry = new l(new d(1, 1)), this.geometry.computeBoundingBox(), this.material = new ue(), this.matrixAutoUpdate = !1, this.matrix = e.matrix, this.matrixWorldNeedsUpdate = !1, this.matrixWorld = e.matrixWorld, this.target = e;
+    super(), this.type = "VisCSS3DSpriteHelper", this.geometry = new c(new d(1, 1)), this.geometry.computeBoundingBox(), this.material = new ue(), this.matrixAutoUpdate = !1, this.matrix = e.matrix, this.matrixWorldNeedsUpdate = !1, this.matrixWorld = e.matrixWorld, this.target = e;
     const t = new MutationObserver(() => {
-      this.geometry.dispose(), this.geometry = new l(
+      this.geometry.dispose(), this.geometry = new c(
         new d(e.width, e.height)
       ), this.geometry.computeBoundingBox();
     });
@@ -858,16 +858,16 @@ S.alphaTexture = new H(
   }).getDom()
 );
 let j = S;
-class fe extends c {
+class fe extends l {
   // 存uuid防止内存泄漏
   constructor(e) {
     super(), this.type = "VisMeshHelper";
     const t = 1;
-    this.target = e, this.geometry = new l(e.geometry, t), this.cachaGeometryUUid = e.geometry.uuid, this.material = m(), this.matrixAutoUpdate = !1, this.matrixWorldNeedsUpdate = !1, this.matrix = e.matrix, this.matrixWorld = e.matrixWorld, this.updateMatrixWorld = () => {
+    this.target = e, this.geometry = new c(e.geometry, t), this.cachaGeometryUUid = e.geometry.uuid, this.material = m(), this.matrixAutoUpdate = !1, this.matrixWorldNeedsUpdate = !1, this.matrix = e.matrix, this.matrixWorld = e.matrixWorld, this.updateMatrixWorld = () => {
     }, this.raycast = () => {
     }, this.onBeforeRender = () => {
       const i = this.target;
-      i.geometry.uuid !== this.cachaGeometryUUid && (this.geometry.dispose(), this.geometry = new l(i.geometry, t), this.cachaGeometryUUid = i.geometry.uuid);
+      i.geometry.uuid !== this.cachaGeometryUUid && (this.geometry.dispose(), this.geometry = new c(i.geometry, t), this.cachaGeometryUUid = i.geometry.uuid);
     };
   }
   dispose() {
@@ -952,9 +952,9 @@ class ve extends T {
     };
   }
 }
-class Me extends c {
+class Me extends l {
   constructor(e) {
-    super(), this.type = "VisSpriteHelper", this.geometry = new l(new d(1, 1)), this.geometry.computeBoundingBox(), this.material = new ve(), this.matrixAutoUpdate = !1, this.matrixWorldNeedsUpdate = !1, this.matrix = e.matrix, this.matrixWorld = e.matrixWorld, this.target = e, this.onBeforeRender = () => {
+    super(), this.type = "VisSpriteHelper", this.geometry = new c(new d(1, 1)), this.geometry.computeBoundingBox(), this.material = new ve(), this.matrixAutoUpdate = !1, this.matrixWorldNeedsUpdate = !1, this.matrix = e.matrix, this.matrixWorld = e.matrixWorld, this.target = e, this.onBeforeRender = () => {
       this.material.uniforms.rotation.value = this.target.material.rotation, this.material.uniforms.sizeAttenuation.value = this.target.material.sizeAttenuation;
     }, this.raycast = () => {
     };
@@ -1000,26 +1000,30 @@ class Be extends q {
         return;
       }
       const e = new this.shapeMap[this.target.type](this.target);
-      this.shape = e;
+      return this.shape = e, e;
     }
+    return null;
   }
   generateBoundingBox() {
     if (this.target) {
       const e = new ne(this.target);
-      this.boundingBox = e;
+      return this.boundingBox = e, e;
     }
+    return null;
   }
   generateGeometricOrigin() {
     if (this.target) {
       const e = new D(this.target);
-      this.geometricOrigin = e;
+      return this.geometricOrigin = e, e;
     }
+    return null;
   }
   generateLocalAxes() {
     if (this.target) {
       const e = new he(this.target);
-      this.localAxes = e;
+      return this.localAxes = e, e;
     }
+    return null;
   }
   dispose(e) {
     if (e && this[e]) {
@@ -1042,10 +1046,10 @@ const Ae = _({
   shared: {
     addHelper(o, e, t, i) {
       const s = {
-        shape: e.generateShape,
-        boundingBox: e.generateBoundingBox,
-        geometricOrigin: e.generateGeometricOrigin,
-        localAxes: e.generateLocalAxes
+        shape: e.generateShape.bind(e),
+        boundingBox: e.generateBoundingBox.bind(e),
+        geometricOrigin: e.generateGeometricOrigin.bind(e),
+        localAxes: e.generateLocalAxes.bind(e)
       };
       if (!s[o]) {
         console.warn(

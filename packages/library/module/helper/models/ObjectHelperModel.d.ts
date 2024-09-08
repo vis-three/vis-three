@@ -14,10 +14,10 @@ export declare class ObjectHelper extends EventDispatcher {
     localAxes?: LocalAxesHelper;
     private shapeMap;
     constructor();
-    generateShape(): void;
-    generateBoundingBox(): void;
-    generateGeometricOrigin(): void;
-    generateLocalAxes(): void;
+    generateShape(): any;
+    generateBoundingBox(): BoundingBoxHelper | null;
+    generateGeometricOrigin(): GeometricOriginHelper | null;
+    generateLocalAxes(): LocalAxesHelper | null;
     dispose(params?: string): void;
 }
 export interface ObjectHelperModelContext {

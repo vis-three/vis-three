@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FilmPass</title>
+    <title>BoxGeometry</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
@@ -22,41 +22,21 @@
     <script type="module">
       import * as THREE from "three";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
-
-      import {
-        generateConfig,
-        Template,
-        CONFIGTYPE,
-        createSymbol,
-      } from "@vis-three/middleware";
+      import { generateConfig, CONFIGTYPE } from "@vis-three/tdcm";
 
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
       const engine = new ModelingEngineSupport()
         .setDom(document.getElementById("app"))
-
+        .setSize()
         .setStats(true)
         .play();
 
       generateConfig.injectEngine = engine;
-      const renderer = generateConfig("WebGLRenderer");
 
       const scene = generateConfig("Scene");
 
-      const camera = generateConfig("PerspectiveCamera", {
-        near: 1,
-        far: 1000,
-        position: {
-          x: 100,
-          y: 100,
-          z: 100,
-        },
-      });
-
-      engine
-        .setSceneBySymbol(scene.vid)
-        .setCameraBySymbol(camera.vid)
-        .setSize();
+      engine.setSceneBySymbol(scene.vid);
 
       generateConfig.injectScene = true;
 
@@ -68,33 +48,24 @@
         distance: 100,
       });
 
-      const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
-        color: "red",
-      });
+      const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL);
 
-      const geometry = generateConfig(CONFIGTYPE.SPHEREGEOMETRY, {
-        radius: 10,
-        widthSegments: 64,
-        heightSegments: 64,
+      const geometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+        width: 10,
+        height: 10,
+        depth: 10,
       });
 
       const mesh = generateConfig(CONFIGTYPE.MESH, {
         material: material.vid,
         geometry: geometry.vid,
-        position: {
-          y: 10,
-        },
       });
 
-      const film = generateConfig(CONFIGTYPE.FILMPASS, {});
-
-      window.engine = engine;
-
       const gui = new GUI();
-      gui.add(film, "grayscale", 0, 1, 0.01);
-      gui.add(film, "noiseIntensity", 0, 10, 0.1);
-      gui.add(film, "scanlinesIntensity", 0, 2, 0.01);
-      gui.add(film, "scanlinesCount", 0, 10000, 2);
+
+      gui.add(geometry, "width", 1, 50, 1);
+      gui.add(geometry, "height", 1, 50, 1);
+      gui.add(geometry, "depth", 1, 50, 1);
     </script>
   </body>
 </html>

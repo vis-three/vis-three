@@ -39,7 +39,6 @@
     "@vis-three/library-module": "workspace:^",
     "@vis-three/library-parser": "workspace:^",
     "@vis-three/library-shader": "workspace:^",
-    "@vis-three/middleware": "workspace:^",
     "@vis-three/modifier-boolean": "workspace:^",
     "@vis-three/module-modifier": "workspace:^",
     "@vis-three/module-pass": "workspace:^",

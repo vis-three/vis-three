@@ -225,7 +225,7 @@
     }
     add(params) {
       let target = this.puppet;
-      const path = params.path;
+      const path = params.path.split(".");
       for (const key of path) {
         if (typeof target[key] !== void 0) {
           target = target[key];
@@ -238,7 +238,7 @@
     }
     set(params) {
       let target = this.puppet;
-      const path = params.path;
+      const path = params.path.split(".");
       for (const key of path) {
         if (typeof target[key] !== void 0) {
           target = target[key];
@@ -251,7 +251,7 @@
     }
     delete(params) {
       let target = this.puppet;
-      const path = params.path;
+      const path = params.path.split(".");
       for (const key of path) {
         if (typeof target[key] !== void 0) {
           target = target[key];

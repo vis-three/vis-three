@@ -22,11 +22,9 @@
     <script type="module">
       import * as THREE from "three";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
-      import {
-        generateConfig,
-        ShaderGeneratorManager,
-      } from "@vis-three/middleware";
+      import { generateConfig } from "@vis-three/tdcm";
 
+      import { ShaderGeneratorManager } from "@vis-three/library-module";
       import { fragCoordTestingShader } from "@vis-three/library-shader";
 
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";

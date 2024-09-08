@@ -1,5 +1,5 @@
 import { Plugin } from "@vis-three/core";
-import { EngineSupport } from "@vis-three/middleware";
+import { EngineSupport } from "@vis-three/tdcm";
 import { SelectedEvent, SelectionEngine } from "@vis-three/plugin-selection";
 export interface SelectionSupportEngine extends SelectionEngine, EngineSupport {
     /**通过vid标识设置场景的选中对象 */

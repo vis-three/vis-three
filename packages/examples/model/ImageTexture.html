@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LoadTextureSupport</title>
+    <title>ImageTextureSupport</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
@@ -26,7 +26,7 @@
 
       import * as THREE from "three";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
-      import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
+      import { generateConfig, CONFIGTYPE } from "@vis-three/tdcm";
 
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
@@ -48,28 +48,20 @@
 
       engine
         .loadResourcesAsync([
-          "/texture/hdr/livingRoom.hdr",
-          "/texture/dds/Tire_N02-dxt.dds",
+          "/texture/skyBox/snowVillage/nx.jpg",
+          "/texture/skyBox/snowVillage/ny.jpg",
+          "/texture/skyBox/snowVillage/nz.jpg",
+          "/texture/skyBox/snowVillage/px.jpg",
+          "/texture/skyBox/snowVillage/py.jpg",
+          "/texture/skyBox/snowVillage/pz.jpg",
         ])
-        .then((res) => {
-          console.log(res);
-
-          const texture = engine.generateLoadTextureConfig(
-            "/texture/hdr/livingRoom.hdr"
-          );
-
-          const texture2 = engine.generateLoadTextureConfig(
-            "/texture/dds/Tire_N02-dxt.dds"
-          );
-
-          console.log(engine.getObjectBySymbol(texture2.vid));
+        .then(() => {
+          const texture = generateConfig("ImageTexture", {
+            url: "/texture/skyBox/snowVillage/nx.jpg",
+          });
 
           const material = generateConfig("MeshBasicMaterial", {
             map: texture.vid,
-          });
-
-          const material2 = generateConfig("MeshBasicMaterial", {
-            map: texture2.vid,
           });
 
           const geometry = generateConfig("BoxGeometry", {
@@ -84,7 +76,7 @@
 
           const box = generateConfig("Mesh", {
             geometry: geometry.vid,
-            material: material2.vid,
+            material: material.vid,
             position: {
               x: -25,
             },
@@ -101,6 +93,15 @@
           scene.background = texture.vid;
 
           const gui = new GUI();
+
+          gui.add(texture, "url", [
+            "/texture/skyBox/snowVillage/nx.jpg",
+            "/texture/skyBox/snowVillage/ny.jpg",
+            "/texture/skyBox/snowVillage/nz.jpg",
+            "/texture/skyBox/snowVillage/px.jpg",
+            "/texture/skyBox/snowVillage/py.jpg",
+            "/texture/skyBox/snowVillage/pz.jpg",
+          ]);
 
           gui.add(texture, "mapping", {
             UVMapping: THREE.UVMapping,

@@ -22,11 +22,10 @@
 
       import { DisplayEngineSupport } from "@vis-three/engine-display-support";
 
-      import {
-        generateConfig,
-        CONFIGTYPE,
-        AniScriptGeneratorManager,
-      } from "@vis-three/middleware";
+      import { generateConfig, CONFIGTYPE } from "@vis-three/tdcm";
+
+      import { AniScriptGeneratorManager } from "@vis-three/library-module";
+
       import { linearTime } from "@vis-three/library-animate-script";
 
       AniScriptGeneratorManager.register(linearTime);

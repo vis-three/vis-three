@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ImageTextureSupport</title>
+    <title>LoadTextureSupport</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
@@ -26,7 +26,7 @@
 
       import * as THREE from "three";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
-      import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
+      import { generateConfig, CONFIGTYPE } from "@vis-three/tdcm";
 
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
@@ -47,14 +47,29 @@
       engine.loaderManager.setPath(import.meta.env.BASE_URL);
 
       engine
-        .loadResourcesAsync(["/video/1.mp4", "/video/Redia-HatsuneMiku.mp4"])
-        .then(() => {
-          const texture = generateConfig("VideoTexture", {
-            url: "/video/Redia-HatsuneMiku.mp4",
-          });
+        .loadResourcesAsync([
+          "/texture/hdr/livingRoom.hdr",
+          "/texture/dds/Tire_N02-dxt.dds",
+        ])
+        .then((res) => {
+          console.log(res);
+
+          const texture = engine.generateLoadTextureConfig(
+            "/texture/hdr/livingRoom.hdr"
+          );
+
+          const texture2 = engine.generateLoadTextureConfig(
+            "/texture/dds/Tire_N02-dxt.dds"
+          );
+
+          console.log(engine.getObjectBySymbol(texture2.vid));
 
           const material = generateConfig("MeshBasicMaterial", {
             map: texture.vid,
+          });
+
+          const material2 = generateConfig("MeshBasicMaterial", {
+            map: texture2.vid,
           });
 
           const geometry = generateConfig("BoxGeometry", {
@@ -63,19 +78,40 @@
             depth: 20,
           });
 
+          const sphereGeometry = generateConfig("SphereGeometry", {
+            radius: 10,
+          });
+
           const box = generateConfig("Mesh", {
             geometry: geometry.vid,
+            material: material2.vid,
+            position: {
+              x: -25,
+            },
+          });
+
+          const sphere = generateConfig("Mesh", {
+            geometry: sphereGeometry.vid,
             material: material.vid,
+            position: {
+              x: 25,
+            },
           });
 
           scene.background = texture.vid;
 
           const gui = new GUI();
 
-          gui.add(texture, "url", [
-            "/video/1.mp4",
-            "/video/Redia-HatsuneMiku.mp4",
-          ]);
+          gui.add(texture, "mapping", {
+            UVMapping: THREE.UVMapping,
+            CubeReflectionMapping: THREE.CubeReflectionMapping,
+            CubeRefractionMapping: THREE.CubeRefractionMapping,
+            EquirectangularReflectionMapping:
+              THREE.EquirectangularReflectionMapping,
+            EquirectangularRefractionMapping:
+              THREE.EquirectangularRefractionMapping,
+            CubeUVReflectionMapping: THREE.CubeUVReflectionMapping,
+          });
 
           gui.add(texture, "wrapS", {
             "THREE.RepeatWrapping": THREE.RepeatWrapping,

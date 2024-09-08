@@ -233,7 +233,7 @@ class Model extends EventDispatcher {
   }
   add(params) {
     let target = this.puppet;
-    const path = params.path;
+    const path = params.path.split(".");
     for (const key of path) {
       if (typeof target[key] !== void 0) {
         target = target[key];
@@ -246,7 +246,7 @@ class Model extends EventDispatcher {
   }
   set(params) {
     let target = this.puppet;
-    const path = params.path;
+    const path = params.path.split(".");
     for (const key of path) {
       if (typeof target[key] !== void 0) {
         target = target[key];
@@ -259,7 +259,7 @@ class Model extends EventDispatcher {
   }
   delete(params) {
     let target = this.puppet;
-    const path = params.path;
+    const path = params.path.split(".");
     for (const key of path) {
       if (typeof target[key] !== void 0) {
         target = target[key];

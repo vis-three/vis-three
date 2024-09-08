@@ -1,4 +1,4 @@
-import { COMPILER_MANAGER_PLUGIN, DATA_SUPPORT_MANAGER_PLUGIN, } from "@vis-three/middleware";
+import { COMPILER_MANAGER_PLUGIN, DATA_SUPPORT_MANAGER_PLUGIN, } from "@vis-three/tdcm";
 import { SELECTED, SELECTION_PLUGIN, } from "@vis-three/plugin-selection";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
@@ -13,6 +13,9 @@ export const SelectionSupportPlugin = function () {
         ],
         install(engine) {
             engine.setSelectionBoxBySymbol = function (symbols) {
+                if (engine.selectionDisable) {
+                    return this;
+                }
                 this.selectionBox.clear();
                 for (const vid of symbols) {
                     const object = engine.getObjectBySymbol(vid);

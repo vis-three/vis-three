@@ -68,11 +68,9 @@
       import { DoubleSide } from "three";
       import { CanvasGenerator } from "@vis-three/convenient";
       import { DisplayEngineSupport } from "@vis-three/engine-display-support";
-      import {
-        generateConfig,
-        EventGeneratorManager,
-        createSymbol,
-      } from "@vis-three/middleware";
+      import { generateConfig, createSymbol } from "@vis-three/tdcm";
+
+      import { EventGeneratorManager } from "@vis-three/library-module";
       import EventLibrary from "@vis-three/library-event";
       import { treeGraph } from "./AntdV-G6/tree.js";
       import { arcGraph } from "./AntdV-G6/arc.js";

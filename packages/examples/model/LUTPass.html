@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>water</title>
+    <title>LUTPass</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
@@ -28,19 +28,19 @@
         Template,
         CONFIGTYPE,
         createSymbol,
-      } from "@vis-three/middleware";
+      } from "@vis-three/tdcm";
 
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
       const engine = new ModelingEngineSupport()
         .setDom(document.getElementById("app"))
-        .setSize()
         .setStats(true)
         .play();
 
       engine.loaderManager.setPath(import.meta.env.BASE_URL);
 
       generateConfig.injectEngine = engine;
+      const renderer = generateConfig("WebGLRenderer");
 
       const scene = generateConfig("Scene");
 
@@ -49,8 +49,8 @@
         far: 1000,
         position: {
           x: 100,
-          y: 200,
-          z: 200,
+          y: 100,
+          z: 100,
         },
       });
 
@@ -61,78 +61,57 @@
 
       generateConfig.injectScene = true;
 
-      const directionalLight = generateConfig("DirectionalLight", {
+      const pointLight = generateConfig("PointLight", {
         position: {
           x: 30,
           y: 50,
         },
+        distance: 100,
       });
 
       const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
         color: "red",
       });
 
-      const boxGeometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
-        height: 40,
-        width: 20,
-        depth: 20,
+      const geometry = generateConfig(CONFIGTYPE.SPHEREGEOMETRY, {
+        radius: 10,
+        widthSegments: 64,
+        heightSegments: 64,
       });
 
       const mesh = generateConfig(CONFIGTYPE.MESH, {
         material: material.vid,
-        geometry: boxGeometry.vid,
+        geometry: geometry.vid,
         position: {
           y: 10,
         },
       });
 
       engine
-        .loadResourcesAsync(["/texture/water/Water_1_M_Normal.jpg"])
-        .then(() => {
-          const planeGeometry = generateConfig(CONFIGTYPE.PLANEGEOMETRY, {
-            width: 500,
-            height: 500,
+        .loadResourcesAsync([
+          "/luts/Bourbon 64.CUBE",
+          "/luts/Chemical 168.CUBE",
+          "/luts/Clayton 33.CUBE",
+          "/luts/Cubicle 99.CUBE",
+          "/luts/Remy 24.CUBE",
+        ])
+        .then((res) => {
+          const lut = generateConfig(CONFIGTYPE.LUTPASS, {
+            lut: "/luts/Bourbon 64.CUBE",
           });
 
-          const texture = generateConfig("ImageTexture", {
-            url: "/texture/water/Water_1_M_Normal.jpg",
-            wrapS: THREE.RepeatWrapping,
-            wrapT: THREE.RepeatWrapping,
-          });
-
-          const water = generateConfig("DeepWater", {
-            geometry: planeGeometry.vid,
-            waterNormals: texture.vid,
-            rotation: {
-              x: -Math.PI / 2,
-            },
-          });
-
-          engine.renderManager.on("render", (event) => {
-            water.time += event.delta;
-            mesh.position.y = Math.sin(event.total) * 15 + 10;
-            mesh.rotation.x += event.delta;
-          });
+          window.engine = engine;
 
           const gui = new GUI();
-
-          gui.add(water, "size", 0.01, 4, 0.01);
-          gui.add(water, "alpha", 0, 1, 0.1);
-          gui.add(water, "distortionScale", 0, 100, 1);
-          gui.addColor(water, "waterColor");
-          gui.addColor(water, "sunColor");
-          gui.add(water.sunDirection, "x", -10, 10, 0.1);
-          gui.add(water.sunDirection, "y", -10, 10, 0.1);
-          gui.add(water.sunDirection, "z", -10, 10, 0.1);
-
-          gui.add(water.eye, "x", -1, 50, 1);
-          gui.add(water.eye, "y", -1, 50, 1);
-          gui.add(water.eye, "z", -1, 50, 1);
+          gui.add(lut, "lut", [
+            "/luts/Bourbon 64.CUBE",
+            "/luts/Chemical 168.CUBE",
+            "/luts/Clayton 33.CUBE",
+            "/luts/Cubicle 99.CUBE",
+            "/luts/Remy 24.CUBE",
+          ]);
+          gui.add(lut, "intensity", 0, 1, 0.01);
         });
-
-      window.engine = engine;
-
-      engine.setSize();
     </script>
   </body>
 </html>

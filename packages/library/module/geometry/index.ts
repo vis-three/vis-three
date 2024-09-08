@@ -16,6 +16,7 @@ import RingGeometryModel from "./models/RingGeometryModel";
 import ShapeGeometryModel from "./models/ShapeGeometryModel";
 import SplineCurveGeometryModel from "./models/SplineCurveGeometryModel";
 import TorusGeometryModel from "./models/TorusGeometryModel";
+import SphereGeometryModel from "./models/SphereGeometryModel";
 
 export * from "./GeometryInterface";
 export * from "./extends";
@@ -38,6 +39,7 @@ export default defineModule({
     QuadraticBezierCurveGeometryModel,
     RingGeometryModel,
     ShapeGeometryModel,
+    SphereGeometryModel,
     SplineCurveGeometryModel,
     TorusGeometryModel,
   ],

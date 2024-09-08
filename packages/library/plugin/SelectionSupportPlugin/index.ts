@@ -3,7 +3,7 @@ import {
   COMPILER_MANAGER_PLUGIN,
   DATA_SUPPORT_MANAGER_PLUGIN,
   EngineSupport,
-} from "@vis-three/middleware";
+} from "@vis-three/tdcm";
 import {
   SELECTED,
   SelectedEvent,

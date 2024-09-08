@@ -67,28 +67,36 @@ export class ObjectHelper extends EventDispatcher {
       }
       const helper = new this.shapeMap[this.target.type](this.target);
       this.shape = helper;
+      return helper;
     }
+    return null;
   }
 
   generateBoundingBox() {
     if (this.target) {
       const boundingBox = new BoundingBoxHelper(this.target!);
       this.boundingBox = boundingBox;
+      return boundingBox;
     }
+    return null;
   }
 
   generateGeometricOrigin() {
     if (this.target) {
       const geometricOrigin = new GeometricOriginHelper(this.target!);
       this.geometricOrigin = geometricOrigin;
+      return geometricOrigin;
     }
+    return null;
   }
 
   generateLocalAxes() {
     if (this.target) {
       const localAxes = new LocalAxesHelper(this.target!);
       this.localAxes = localAxes;
+      return localAxes;
     }
+    return null;
   }
 
   dispose(params?: string) {
@@ -161,10 +169,10 @@ export default defineModel<
   shared: {
     addHelper(helper, target, config, model) {
       const helperGenerator = {
-        shape: target.generateShape,
-        boundingBox: target.generateBoundingBox,
-        geometricOrigin: target.generateGeometricOrigin,
-        localAxes: target.generateLocalAxes,
+        shape: target.generateShape.bind(target),
+        boundingBox: target.generateBoundingBox.bind(target),
+        geometricOrigin: target.generateGeometricOrigin.bind(target),
+        localAxes: target.generateLocalAxes.bind(target),
       };
 
       if (!helperGenerator[helper]) {

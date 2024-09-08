@@ -26,9 +26,9 @@
       import {
         generateConfig,
         Template,
-        CONFIGTYPE,
+        CONFIG_TYPE,
         createSymbol,
-      } from "@vis-three/middleware";
+      } from "@vis-three/tdcm";
 
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
@@ -46,38 +46,38 @@
 
       generateConfig.injectScene = true;
 
-      const material = generateConfig(CONFIGTYPE.MESHBASICMATERIAL, {
+      const material = generateConfig(CONFIG_TYPE.MESHBASICMATERIAL, {
         color: "red",
       });
 
-      const sphereGeometry = generateConfig(CONFIGTYPE.SPHEREGEOMETRY, {
+      const sphereGeometry = generateConfig(CONFIG_TYPE.SPHEREGEOMETRY, {
         radius: 10,
         widthSegments: 64,
         heightSegments: 64,
       });
 
-      const sphere = generateConfig(CONFIGTYPE.MESH, {
+      const sphere = generateConfig(CONFIG_TYPE.MESH, {
         material: material.vid,
         geometry: sphereGeometry.vid,
       });
 
-      const sphereHelper = generateConfig(CONFIGTYPE.OBJECTHELPER, {
+      const sphereHelper = generateConfig(CONFIG_TYPE.OBJECTHELPER, {
         target: sphere.vid,
         boundingBox: true,
       });
 
-      const boxGeometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+      const boxGeometry = generateConfig(CONFIG_TYPE.BOXGEOMETRY, {
         width: 20,
         height: 20,
         depth: 20,
       });
 
-      const box = generateConfig(CONFIGTYPE.MESH, {
+      const box = generateConfig(CONFIG_TYPE.MESH, {
         material: material.vid,
         geometry: boxGeometry.vid,
       });
 
-      const constraintor = generateConfig(CONFIGTYPE.BOUNDINGBOXCONSTRAINTOR, {
+      const constraintor = generateConfig(CONFIG_TYPE.BOUNDINGBOXCONSTRAINTOR, {
         target: box.vid,
         targetAttr: "position.x",
         ref: sphere.vid,
@@ -87,16 +87,16 @@
         },
       });
 
-      const gui = new GUI();
+      // const gui = new GUI();
 
-      gui.add(constraintor, "targetAttr", [
-        "position.x",
-        "position.y",
-        "position.z",
-      ]);
-      gui.add(constraintor.offset, "value", 0, 100, 1);
-      gui.add(constraintor.offset, "operate", ["+", "-", "*", "/"]);
-      gui.add(constraintor.offset.position, "axes", ["x", "y", "z"]);
+      // gui.add(constraintor, "targetAttr", [
+      //   "position.x",
+      //   "position.y",
+      //   "position.z",
+      // ]);
+      // gui.add(constraintor.offset, "value", 0, 100, 1);
+      // gui.add(constraintor.offset, "operate", ["+", "-", "*", "/"]);
+      // gui.add(constraintor.offset.position, "axes", ["x", "y", "z"]);
     </script>
   </body>
 </html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SSRPASS</title>
+    <title>reflector</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
@@ -28,18 +28,17 @@
         Template,
         CONFIGTYPE,
         createSymbol,
-      } from "@vis-three/middleware";
+      } from "@vis-three/tdcm";
 
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
       const engine = new ModelingEngineSupport()
         .setDom(document.getElementById("app"))
-
+        .setSize()
         .setStats(true)
         .play();
 
       generateConfig.injectEngine = engine;
-      const renderer = generateConfig("WebGLRenderer");
 
       const scene = generateConfig("Scene");
 
@@ -71,41 +70,71 @@
         color: "red",
       });
 
-      const geometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+      const boxGeometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
         height: 20,
         width: 10,
       });
 
-      const meshList = [];
+      const path = generateConfig(CONFIGTYPE.PATH, {
+        curves: [
+          {
+            curve: "line",
+            params: [-100, -100, 150, -100],
+          },
+          {
+            curve: "line",
+            params: [150, -100, 100, 0],
+          },
+          {
+            curve: "line",
+            params: [100, 0, 100, 100],
+          },
+        ],
+        autoClose: true,
+      });
+
+      const shape = generateConfig(CONFIGTYPE.SHAPE, {
+        shape: path.vid,
+      });
+
+      const shapeGeometry = generateConfig(CONFIGTYPE.EXTRUDEGEOMETRY, {
+        shapes: shape.vid,
+        options: {
+          bevelEnabled: false,
+        },
+      });
+
       for (let index = 0; index < 200; index += 1) {
         const mesh = generateConfig(CONFIGTYPE.MESH, {
           material: material.vid,
-          geometry: geometry.vid,
+          geometry: boxGeometry.vid,
           position: {
             y: 10,
             x: Math.random() * 100 * (Math.random() < 0.5 ? -1 : 1),
             z: Math.random() * 100 * (Math.random() < 0.5 ? -1 : 1),
           },
         });
-
-        meshList.push(mesh.vid);
       }
 
-      const ssr = generateConfig(CONFIGTYPE.SSRPASS, {
-        renderer: renderer.vid,
-        scene: scene.vid,
-        camera: camera.vid,
-        selects: meshList,
-        opacity: 0.8,
-        maxDistance: 20,
+      const planeGeometry = generateConfig(CONFIGTYPE.PLANEGEOMETRY, {
+        width: 500,
+        height: 500,
+      });
+
+      const reflector = generateConfig(CONFIGTYPE.REFLECTOR, {
+        geometry: planeGeometry.vid,
+        rotation: {
+          x: -Math.PI / 2,
+        },
       });
 
       window.engine = engine;
 
       const gui = new GUI();
-      gui.add(ssr, "opacity", 0, 1, 0.1);
-      gui.add(ssr, "maxDistance", 0, 30, 1);
-      gui.add(ssr, "output", [0, 1, 3, 4, 5, 7]);
+
+      gui.add(reflector, "geometry", [planeGeometry.vid, shapeGeometry.vid]);
+
+      engine.setSize();
     </script>
   </body>
 </html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ImageTextureSupport</title>
+    <title>CubeTextureSupport</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
@@ -26,7 +26,7 @@
 
       import * as THREE from "three";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
-      import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
+      import { generateConfig, CONFIGTYPE } from "@vis-three/tdcm";
 
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
@@ -56,37 +56,14 @@
           "/texture/skyBox/snowVillage/pz.jpg",
         ])
         .then(() => {
-          const texture = generateConfig("ImageTexture", {
-            url: "/texture/skyBox/snowVillage/nx.jpg",
-          });
-
-          const material = generateConfig("MeshBasicMaterial", {
-            map: texture.vid,
-          });
-
-          const geometry = generateConfig("BoxGeometry", {
-            width: 20,
-            height: 20,
-            depth: 20,
-          });
-
-          const sphereGeometry = generateConfig("SphereGeometry", {
-            radius: 10,
-          });
-
-          const box = generateConfig("Mesh", {
-            geometry: geometry.vid,
-            material: material.vid,
-            position: {
-              x: -25,
-            },
-          });
-
-          const sphere = generateConfig("Mesh", {
-            geometry: sphereGeometry.vid,
-            material: material.vid,
-            position: {
-              x: 25,
+          const texture = generateConfig("CubeTexture", {
+            cube: {
+              nx: "/texture/skyBox/snowVillage/nx.jpg",
+              ny: "/texture/skyBox/snowVillage/ny.jpg",
+              nz: "/texture/skyBox/snowVillage/nz.jpg",
+              px: "/texture/skyBox/snowVillage/px.jpg",
+              py: "/texture/skyBox/snowVillage/py.jpg",
+              pz: "/texture/skyBox/snowVillage/pz.jpg",
             },
           });
 
@@ -94,7 +71,9 @@
 
           const gui = new GUI();
 
-          gui.add(texture, "url", [
+          const cube = gui.addFolder("cube");
+
+          cube.add(texture.cube, "nx", [
             "/texture/skyBox/snowVillage/nx.jpg",
             "/texture/skyBox/snowVillage/ny.jpg",
             "/texture/skyBox/snowVillage/nz.jpg",
@@ -103,16 +82,50 @@
             "/texture/skyBox/snowVillage/pz.jpg",
           ]);
 
-          gui.add(texture, "mapping", {
-            UVMapping: THREE.UVMapping,
-            CubeReflectionMapping: THREE.CubeReflectionMapping,
-            CubeRefractionMapping: THREE.CubeRefractionMapping,
-            EquirectangularReflectionMapping:
-              THREE.EquirectangularReflectionMapping,
-            EquirectangularRefractionMapping:
-              THREE.EquirectangularRefractionMapping,
-            CubeUVReflectionMapping: THREE.CubeUVReflectionMapping,
-          });
+          cube.add(texture.cube, "ny", [
+            "/texture/skyBox/snowVillage/nx.jpg",
+            "/texture/skyBox/snowVillage/ny.jpg",
+            "/texture/skyBox/snowVillage/nz.jpg",
+            "/texture/skyBox/snowVillage/px.jpg",
+            "/texture/skyBox/snowVillage/py.jpg",
+            "/texture/skyBox/snowVillage/pz.jpg",
+          ]);
+
+          cube.add(texture.cube, "nz", [
+            "/texture/skyBox/snowVillage/nx.jpg",
+            "/texture/skyBox/snowVillage/ny.jpg",
+            "/texture/skyBox/snowVillage/nz.jpg",
+            "/texture/skyBox/snowVillage/px.jpg",
+            "/texture/skyBox/snowVillage/py.jpg",
+            "/texture/skyBox/snowVillage/pz.jpg",
+          ]);
+
+          cube.add(texture.cube, "px", [
+            "/texture/skyBox/snowVillage/nx.jpg",
+            "/texture/skyBox/snowVillage/ny.jpg",
+            "/texture/skyBox/snowVillage/nz.jpg",
+            "/texture/skyBox/snowVillage/px.jpg",
+            "/texture/skyBox/snowVillage/py.jpg",
+            "/texture/skyBox/snowVillage/pz.jpg",
+          ]);
+
+          cube.add(texture.cube, "py", [
+            "/texture/skyBox/snowVillage/nx.jpg",
+            "/texture/skyBox/snowVillage/ny.jpg",
+            "/texture/skyBox/snowVillage/nz.jpg",
+            "/texture/skyBox/snowVillage/px.jpg",
+            "/texture/skyBox/snowVillage/py.jpg",
+            "/texture/skyBox/snowVillage/pz.jpg",
+          ]);
+
+          cube.add(texture.cube, "pz", [
+            "/texture/skyBox/snowVillage/nx.jpg",
+            "/texture/skyBox/snowVillage/ny.jpg",
+            "/texture/skyBox/snowVillage/nz.jpg",
+            "/texture/skyBox/snowVillage/px.jpg",
+            "/texture/skyBox/snowVillage/py.jpg",
+            "/texture/skyBox/snowVillage/pz.jpg",
+          ]);
 
           gui.add(texture, "wrapS", {
             "THREE.RepeatWrapping": THREE.RepeatWrapping,

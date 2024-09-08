@@ -18,10 +18,11 @@
       import * as THREE from "three";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
       import {
-        generateConfig,
         AniScriptGeneratorManager,
         ShaderGeneratorManager,
-      } from "@vis-three/middleware";
+      } from "@vis-three/library-module";
+
+      import { generateConfig } from "@vis-three/tdcm";
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
       import { linearTime, sinWare } from "@vis-three/library-animate-script";
