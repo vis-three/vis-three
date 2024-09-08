@@ -2,7 +2,7 @@ export * from "./module";
 export * from "./utils";
 export * from "./engine";
 export * from "./option";
-export * from "./hooks";
+export * from "./generateConfig";
 export * from "./plugin/CompilerManagerPlugin";
 export * from "./plugin/DataSupportManagerPlugin";
 export * from "./plugin/ResourceManagerPlugin";

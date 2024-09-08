@@ -225,42 +225,48 @@
     }
     add(params) {
       let target = this.puppet;
-      const path = params.path.split(".");
-      for (const key of path) {
-        if (typeof target[key] !== void 0) {
-          target = target[key];
-        } else {
-          console.warn(`processor can not exec default add operate.`, params);
-          return;
+      if (params.path) {
+        const path = params.path.split(".");
+        for (const key of path) {
+          if (typeof target[key] !== void 0) {
+            target = target[key];
+          } else {
+            console.warn(`processor can not exec default add operate.`, params);
+            return;
+          }
         }
       }
       target[params.key] = params.value;
     }
     set(params) {
       let target = this.puppet;
-      const path = params.path.split(".");
-      for (const key of path) {
-        if (typeof target[key] !== void 0) {
-          target = target[key];
-        } else {
-          console.warn(`processor can not exec default set operate.`, params);
-          return;
+      if (params.path) {
+        const path = params.path.split(".");
+        for (const key of path) {
+          if (typeof target[key] !== void 0) {
+            target = target[key];
+          } else {
+            console.warn(`processor can not exec default add operate.`, params);
+            return;
+          }
         }
       }
       target[params.key] = params.value;
     }
     delete(params) {
       let target = this.puppet;
-      const path = params.path.split(".");
-      for (const key of path) {
-        if (typeof target[key] !== void 0) {
-          target = target[key];
-        } else {
-          console.warn(`processor can not exec default delete operate.`, params);
-          return;
+      if (params.path) {
+        const path = params.path.split(".");
+        for (const key of path) {
+          if (typeof target[key] !== void 0) {
+            target = target[key];
+          } else {
+            console.warn(`processor can not exec default add operate.`, params);
+            return;
+          }
         }
       }
-      delete target[params.key];
+      target[params.key] = params.value;
     }
     create() {
       this.config[Symbol.for(SYMBOL_MODEL)] = this;
@@ -792,6 +798,9 @@
   generateConfig.autoInject = true;
   generateConfig.injectScene = false;
   generateConfig.injectEngine = null;
+  const toSymbol = function(config) {
+    return config.vid;
+  };
   const clone = (object, options = {}) => {
     let jsonObject = JSON.stringify(object, JSONHandler.stringify);
     const detail = {};
@@ -2431,11 +2440,6 @@
     }
     return engine;
   };
-  const toAsync = (fun) => {
-    AsyncScheduler.exec(fun);
-  };
-  const toTrigger = () => {
-  };
   const PLUGINS = [COMPILER_MANAGER_PLUGIN, DATA_SUPPORT_MANAGER_PLUGIN];
   exports2.AntiShake = AntiShake;
   exports2.COMPILER_MANAGER_PLUGIN = COMPILER_MANAGER_PLUGIN;
@@ -2499,8 +2503,7 @@
   exports2.isObjectType = isObjectType;
   exports2.observable = observable;
   exports2.slientSync = slientSync;
-  exports2.toAsync = toAsync;
-  exports2.toTrigger = toTrigger;
+  exports2.toSymbol = toSymbol;
   exports2.uniqueSymbol = uniqueSymbol;
   Object.keys(pluginLoaderManager).forEach((k) => {
     if (k !== "default" && !Object.prototype.hasOwnProperty.call(exports2, k)) Object.defineProperty(exports2, k, {

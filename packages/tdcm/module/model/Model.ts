@@ -217,14 +217,17 @@ export class Model<
 
   private add(params: CtnNotice) {
     let target = this.puppet;
-    const path = params.path.split(".");
 
-    for (const key of path) {
-      if (typeof target[key] !== undefined) {
-        target = target[key];
-      } else {
-        console.warn(`processor can not exec default add operate.`, params);
-        return;
+    if (params.path) {
+      const path = params.path.split(".");
+
+      for (const key of path) {
+        if (typeof target[key] !== undefined) {
+          target = target[key];
+        } else {
+          console.warn(`processor can not exec default add operate.`, params);
+          return;
+        }
       }
     }
 
@@ -233,14 +236,17 @@ export class Model<
 
   private set(params: CtnNotice) {
     let target = this.puppet;
-    const path = params.path.split(".");
 
-    for (const key of path) {
-      if (typeof target[key] !== undefined) {
-        target = target[key];
-      } else {
-        console.warn(`processor can not exec default set operate.`, params);
-        return;
+    if (params.path) {
+      const path = params.path.split(".");
+
+      for (const key of path) {
+        if (typeof target[key] !== undefined) {
+          target = target[key];
+        } else {
+          console.warn(`processor can not exec default add operate.`, params);
+          return;
+        }
       }
     }
 
@@ -249,18 +255,21 @@ export class Model<
 
   private delete(params: CtnNotice) {
     let target = this.puppet;
-    const path = params.path.split(".");
 
-    for (const key of path) {
-      if (typeof target[key] !== undefined) {
-        target = target[key];
-      } else {
-        console.warn(`processor can not exec default delete operate.`, params);
-        return;
+    if (params.path) {
+      const path = params.path.split(".");
+
+      for (const key of path) {
+        if (typeof target[key] !== undefined) {
+          target = target[key];
+        } else {
+          console.warn(`processor can not exec default add operate.`, params);
+          return;
+        }
       }
     }
 
-    delete target[params.key];
+    target[params.key] = params.value;
   }
 
   create() {

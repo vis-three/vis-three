@@ -1,10 +1,10 @@
 import { getBasicConfig as c, defineModel as u, MODEL_EVENT as a, JSONHandler as A, defineModule as E, SUPPORT_LIFE_CYCLE as M } from "@vis-three/tdcm";
-import { NumberConstraintor as y, BoundingBoxConstraintor as P } from "@vis-three/library-constraintor";
+import { NumberConstraintor as l, BoundingBoxConstraintor as y } from "@vis-three/library-constraintor";
 const C = function() {
   return Object.assign(c(), {
     target: ""
   });
-}, b = function() {
+}, P = function() {
   return Object.assign(C(), {
     target: "",
     targetAttr: "",
@@ -12,7 +12,7 @@ const C = function() {
     refAttr: "",
     offset: null
   });
-}, l = function() {
+}, b = function() {
   return Object.assign(C(), {
     targetAttr: "",
     ref: "",
@@ -29,11 +29,11 @@ const C = function() {
 }, g = {
   reg: new RegExp(".*"),
   handler(r) {
-    r.processor.set(r), r.target.constrain();
+    r.model.set(r), r.target.constrain();
   }
-}, D = u({
+}, d = u({
   type: "NumberConstraintor",
-  config: b,
+  config: P,
   context({ model: r }) {
     return {
       constrainFun: () => {
@@ -74,7 +74,7 @@ const C = function() {
   },
   create({ model: r, config: t, engine: e }) {
     var o;
-    const n = new y(
+    const n = new l(
       e.getConfigBySymbol(t.target),
       t.targetAttr,
       e.getConfigBySymbol(t.ref),
@@ -87,9 +87,9 @@ const C = function() {
     var e;
     (e = r.toModel(t.ref)) == null || e.off(a.COMPILED_UPDATE, r.constrainFun);
   }
-}), O = u({
+}), D = u({
   type: "BoundingBoxConstraintor",
-  config: l,
+  config: b,
   context({ model: r }) {
     return {
       constrainFun: () => {
@@ -129,7 +129,7 @@ const C = function() {
   },
   create({ model: r, config: t, engine: e }) {
     var s;
-    const n = r.toObject(t.ref), o = new P(
+    const n = r.toObject(t.ref), o = new y(
       r.toConfig(t.target),
       t.targetAttr,
       t.space,
@@ -144,7 +144,7 @@ const C = function() {
   }
 }), p = E({
   type: "constraintor",
-  models: [D, O],
+  models: [d, D],
   lifeOrder: M.NINE
 });
 export {

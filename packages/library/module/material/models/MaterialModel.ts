@@ -142,6 +142,7 @@ export const defineMaterialModel = defineModel.extend<
     for (const key of Object.keys(config)) {
       if (key.toLocaleLowerCase().endsWith("map") && config[key]) {
         mapHandler.call(model, {
+          model,
           target,
           key,
           value: config[key],

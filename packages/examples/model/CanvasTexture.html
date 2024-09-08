@@ -24,7 +24,7 @@
     <script type="module">
       import * as THREE from "three";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
-      import { generateConfig, CONFIGTYPE } from "@vis-three/tdcm";
+      import { generateConfig, CONFIG_TYPE, toSymbol } from "@vis-three/tdcm";
 
       import { CanvasGenerator } from "@vis-three/convenient";
 
@@ -60,7 +60,7 @@
 
       const scene = generateConfig("Scene");
 
-      engine.setSceneBySymbol(scene.vid).play();
+      engine.setSceneBySymbol(toSymbol(scene)).play();
 
       generateConfig.injectScene = true;
 
@@ -70,7 +70,7 @@
         url: "example.canvas",
       });
       const material = generateConfig("MeshBasicMaterial", {
-        map: texture.vid,
+        map: toSymbol(texture),
       });
 
       const geometry = generateConfig("BoxGeometry", {
@@ -80,11 +80,11 @@
       });
 
       const box = generateConfig("Mesh", {
-        geometry: geometry.vid,
-        material: material.vid,
+        geometry: toSymbol(geometry),
+        material: toSymbol(material),
       });
 
-      scene.background = texture.vid;
+      scene.background = toSymbol(texture);
 
       const gui = new GUI();
 

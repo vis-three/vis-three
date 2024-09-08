@@ -1,12 +1,12 @@
 import { DeepPartial } from "@vis-three/utils";
-import { BasicConfig } from "../module/common";
-import { EngineSupport } from "../engine";
 import {
+  BasicConfig,
   CONFIG_FACTORY,
   CONFIG_TYPE,
   isObjectType,
   observable,
 } from "../module";
+import { EngineSupport } from "../engine";
 import { globalOption } from "../option";
 
 /**
@@ -171,3 +171,9 @@ export const generateConfig = <GenerateConfig>function <C extends BasicConfig>(
 generateConfig.autoInject = true;
 generateConfig.injectScene = false;
 generateConfig.injectEngine = null;
+
+export const toSymbol = function <C extends BasicConfig = BasicConfig>(
+  config: C
+) {
+  return config.vid;
+};

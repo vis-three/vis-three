@@ -1,5 +1,5 @@
 import { DeepPartial } from "@vis-three/utils";
-import { BasicConfig } from "../module/common";
+import { BasicConfig } from "../module";
 import { EngineSupport } from "../engine";
 /**
  * 配置单生成的附加选项
@@ -30,3 +30,4 @@ export interface GenerateConfig {
  * @returns config object
  */
 export declare const generateConfig: GenerateConfig;
+export declare const toSymbol: <C extends BasicConfig = BasicConfig>(config: C) => string;
