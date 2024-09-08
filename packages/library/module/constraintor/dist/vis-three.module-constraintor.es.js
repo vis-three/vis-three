@@ -81,7 +81,7 @@ const C = function() {
       t.refAttr,
       t.offset ? { ...t.offset } : null
     );
-    return (o = r.toModel(t.ref)) == null || o.on(a.COMPILED_UPDATE, r.constrainFun), n;
+    return (o = r.toModel(t.ref)) == null || o.on(a.COMPILED_UPDATE, r.constrainFun), n.constrain(), n;
   },
   dispose({ model: r, config: t }) {
     var e;

@@ -23,7 +23,8 @@
         generateConfig,
         Template,
         globalAntiShake,
-        CONFIGTYPE,
+        CONFIG_TYPE,
+        toSymbol,
       } from "@vis-three/tdcm";
 
       const engine = new ModelingEngineSupport()
@@ -36,7 +37,7 @@
 
       const scene = generateConfig("Scene");
 
-      engine.setSceneBySymbol(scene.vid);
+      engine.setSceneBySymbol(toSymbol(scene));
 
       generateConfig.injectScene = true;
 
@@ -61,25 +62,25 @@
 
         const rootTemplate = res.configMap.get("model/glb/Soldier.glb.scene");
 
-        const root = engine.getConfigBySymbol(rootTemplate.vid);
+        const root = engine.getConfigBySymbol(toSymbol(rootTemplate));
 
         root.scale.x = 20;
         root.scale.y = 20;
         root.scale.z = 20;
 
-        scene.children.push(root.vid);
+        scene.children.push(toSymbol(root));
 
         const skinndMesh = engine.getObjectBySymbol(
-          template["skinnedMesh"][0].vid
+          toSymbol(template["skinnedMesh"][0])
         );
 
-        const mixer = generateConfig(CONFIGTYPE.MIXERANIMATION, {
-          target: root.vid,
+        const mixer = generateConfig(CONFIG_TYPE.MIXERANIMATION, {
+          target: toSymbol(root),
         });
 
-        const action = generateConfig(CONFIGTYPE.ANIMATIONACTION, {
-          mixer: mixer.vid,
-          clip: template["animationClip"][1].vid,
+        const action = generateConfig(CONFIG_TYPE.ANIMATIONACTION, {
+          mixer: toSymbol(mixer),
+          clip: toSymbol(template["animationClip"][1]),
         });
 
         engine.applyConfig(mixer, action);

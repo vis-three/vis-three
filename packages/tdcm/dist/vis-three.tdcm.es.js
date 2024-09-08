@@ -2216,7 +2216,6 @@ class Trigger {
   }
   reach(module) {
     if (this.condition[module] === void 0) {
-      console.warn(`ModuleTrigger: can not set module condition: ${module}.`);
       return this;
     }
     this.condition[module] = true;

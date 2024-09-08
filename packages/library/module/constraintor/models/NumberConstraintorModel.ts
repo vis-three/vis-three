@@ -93,6 +93,8 @@ export default defineModel<
       .toModel(config.ref)
       ?.on(MODEL_EVENT.COMPILED_UPDATE, model.constrainFun);
 
+    constraintor.constrain();
+
     return constraintor;
   },
   dispose({ model, config }) {

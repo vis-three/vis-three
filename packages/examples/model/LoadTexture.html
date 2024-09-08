@@ -26,7 +26,7 @@
 
       import * as THREE from "three";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
-      import { generateConfig, CONFIGTYPE } from "@vis-three/tdcm";
+      import { generateConfig, CONFIG_TYPE, toSymbol } from "@vis-three/tdcm";
 
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
@@ -40,7 +40,7 @@
 
       const scene = generateConfig("Scene");
 
-      engine.setSceneBySymbol(scene.vid);
+      engine.setSceneBySymbol(toSymbol(scene));
 
       generateConfig.injectScene = true;
 
@@ -62,14 +62,14 @@
             "/texture/dds/Tire_N02-dxt.dds"
           );
 
-          console.log(engine.getObjectBySymbol(texture2.vid));
+          console.log(engine.getObjectBySymbol(toSymbol(texture2)));
 
           const material = generateConfig("MeshBasicMaterial", {
-            map: texture.vid,
+            map: toSymbol(texture),
           });
 
           const material2 = generateConfig("MeshBasicMaterial", {
-            map: texture2.vid,
+            map: toSymbol(texture2),
           });
 
           const geometry = generateConfig("BoxGeometry", {
@@ -83,22 +83,22 @@
           });
 
           const box = generateConfig("Mesh", {
-            geometry: geometry.vid,
-            material: material2.vid,
+            geometry: toSymbol(geometry),
+            material: toSymbol(material2),
             position: {
               x: -25,
             },
           });
 
           const sphere = generateConfig("Mesh", {
-            geometry: sphereGeometry.vid,
-            material: material.vid,
+            geometry: toSymbol(sphereGeometry),
+            material: toSymbol(material),
             position: {
               x: 25,
             },
           });
 
-          scene.background = texture.vid;
+          scene.background = toSymbol(texture);
 
           const gui = new GUI();
 
