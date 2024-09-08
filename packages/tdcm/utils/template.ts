@@ -2,7 +2,7 @@ import JSONHandler from "./JSONHandler";
 import { BasicConfig, createSymbol } from "../module";
 import { EngineSupportLoadOptions } from "../engine";
 import { LoadOptions } from "../plugin/DataSupportManagerPlugin";
-import { generateConfig } from "./generateConfig";
+import { generateConfig } from "../generateConfig";
 
 export interface CloneResult {
   config: EngineSupportLoadOptions;

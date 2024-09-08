@@ -17,6 +17,7 @@ import ShapeGeometryModel from "./models/ShapeGeometryModel";
 import SplineCurveGeometryModel from "./models/SplineCurveGeometryModel";
 import TorusGeometryModel from "./models/TorusGeometryModel";
 import SphereGeometryModel from "./models/SphereGeometryModel";
+import DecalGeometryModel from "./models/DecalGeometryModel";
 
 export * from "./GeometryInterface";
 export * from "./extends";
@@ -28,6 +29,7 @@ export default defineModule({
     CircleGeometryModel,
     CubicBezierCurveGeometryModel,
     CustomGeometryModel,
+    DecalGeometryModel,
     EdgesGeometryModel,
     ExtrudeGeometryModel,
     LatheGeometryModel,

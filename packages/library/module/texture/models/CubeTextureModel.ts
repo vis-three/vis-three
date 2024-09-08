@@ -8,14 +8,14 @@ export default defineTextureModel<
   CubeTexture,
   {},
   TextureModelShared & {
-    imageHanlder: ({ model, target, index, value }) => void;
+    imageHanlder: ({ model, target, index, value, engine }) => void;
   }
 >(() => ({
   type: "CubeTexture",
   config: getCubeTextureConfig,
   shared: {
-    imageHanlder({ model, target, index, value }) {
-      target.images[index] = model.getResource(value, [
+    imageHanlder({ model, target, index, value, engine }) {
+      target.images[index] = model.getResource(value, engine, [
         HTMLImageElement,
         HTMLVideoElement,
         HTMLCanvasElement,
@@ -28,52 +28,58 @@ export default defineTextureModel<
   commands: {
     set: {
       cube: {
-        px({ model, target, value }) {
+        px({ model, target, value, engine }) {
           model.imageHanlder({
             model,
             target,
             value,
             index: 0,
+            engine,
           });
         },
-        nx({ model, target, value }) {
+        nx({ model, target, value, engine }) {
           model.imageHanlder({
             model,
             target,
             value,
             index: 1,
+            engine,
           });
         },
-        py({ model, target, value }) {
+        py({ model, target, value, engine }) {
           model.imageHanlder({
             model,
             target,
             value,
             index: 2,
+            engine,
           });
         },
-        ny({ model, target, value }) {
+        ny({ model, target, value, engine }) {
           model.imageHanlder({
             model,
             target,
             value,
             index: 3,
+            engine,
           });
         },
-        pz({ model, target, value }) {
+        pz({ model, target, value, engine }) {
           model.imageHanlder({
             model,
             target,
             value,
             index: 4,
+            engine,
           });
         },
-        nz({ model, target, value }) {
+        nz({ model, target, value, engine }) {
           model.imageHanlder({
             model,
             target,
             value,
             index: 5,
+            engine,
           });
         },
       },

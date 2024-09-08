@@ -26,8 +26,9 @@
       import {
         generateConfig,
         Template,
-        CONFIGTYPE,
+        CONFIG_TYPE,
         createSymbol,
+        toSymbol,
       } from "@vis-three/tdcm";
 
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
@@ -54,8 +55,8 @@
       });
 
       engine
-        .setSceneBySymbol(scene.vid)
-        .setCameraBySymbol(camera.vid)
+        .setSceneBySymbol(toSymbol(scene))
+        .setCameraBySymbol(toSymbol(camera))
         .setSize();
 
       generateConfig.injectScene = true;
@@ -68,33 +69,31 @@
         distance: 100,
       });
 
-      const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
+      const material = generateConfig(CONFIG_TYPE.MESHSTANDARDMATERIAL, {
         color: "red",
       });
 
-      const geometry = generateConfig(CONFIGTYPE.SPHEREGEOMETRY, {
+      const geometry = generateConfig(CONFIG_TYPE.SPHEREGEOMETRY, {
         radius: 10,
         widthSegments: 64,
         heightSegments: 64,
       });
 
-      const mesh = generateConfig(CONFIGTYPE.MESH, {
-        material: material.vid,
-        geometry: geometry.vid,
+      const mesh = generateConfig(CONFIG_TYPE.MESH, {
+        material: toSymbol(material),
+        geometry: toSymbol(geometry),
         position: {
           y: 10,
         },
       });
 
-      const film = generateConfig(CONFIGTYPE.FILMPASS, {});
+      const film = generateConfig(CONFIG_TYPE.FILMPASS, {});
 
       window.engine = engine;
 
       const gui = new GUI();
       gui.add(film, "grayscale", 0, 1, 0.01);
-      gui.add(film, "noiseIntensity", 0, 10, 0.1);
-      gui.add(film, "scanlinesIntensity", 0, 2, 0.01);
-      gui.add(film, "scanlinesCount", 0, 10000, 2);
+      gui.add(film, "intensity", 0, 10, 0.1);
     </script>
   </body>
 </html>

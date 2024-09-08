@@ -26,8 +26,9 @@
       import {
         generateConfig,
         Template,
-        CONFIGTYPE,
+        CONFIG_TYPE,
         createSymbol,
+        toSymbol,
       } from "@vis-three/tdcm";
 
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
@@ -55,8 +56,8 @@
       });
 
       engine
-        .setSceneBySymbol(scene.vid)
-        .setCameraBySymbol(camera.vid)
+        .setSceneBySymbol(toSymbol(scene))
+        .setCameraBySymbol(toSymbol(camera))
         .setSize();
 
       generateConfig.injectScene = true;
@@ -80,7 +81,7 @@
 
           const particle = generateConfig("FloatParticle", {
             amount: 1000,
-            alphaMap: texture2.vid,
+            alphaMap: toSymbol(texture2),
             size: 10,
             flicker: true,
           });
