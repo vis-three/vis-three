@@ -17,7 +17,7 @@
     <script type="module">
       import * as THREE from "three";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
-      import { generateConfig as G } from "@vis-three/tdcm";
+      import { generateConfig as G, toSymbol } from "@vis-three/tdcm";
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
       const engine = new ModelingEngineSupport()
@@ -30,9 +30,9 @@
 
       const scene = G("Scene");
 
-      engine.setSceneBySymbol(scene.vid);
+      engine.setSceneBySymbol(toSymbol(scene));
 
-      G.injectScene = scene.vid;
+      G.injectScene = toSymbol(scene);
 
       const pointLight = G("PointLight", {
         position: {
@@ -51,8 +51,8 @@
       });
 
       const mesh = G("Mesh", {
-        material: material.vid,
-        geometry: geometry.vid,
+        material: toSymbol(material),
+        geometry: toSymbol(geometry),
       });
 
       const orbitControls = G("OrbitControls");

@@ -4,7 +4,10 @@ import { EngineSupport } from "../../engine";
 import { CtnNotice } from "../container";
 import { DeepIntersection, DeepPartial, DeepRecord, DeepUnion } from "@vis-three/utils";
 import { Compiler } from "../compiler";
-export interface CommandParameters<C extends BasicConfig = BasicConfig, P extends object = object, E extends EngineSupport = EngineSupport, O extends Compiler<E> = Compiler<E>, M extends Model<C, P, E, O> = Model<C, P, E, O>> extends CtnNotice {
+export interface ModelNotice extends Omit<CtnNotice, "path"> {
+    path: string[];
+}
+export interface CommandParameters<C extends BasicConfig = BasicConfig, P extends object = object, E extends EngineSupport = EngineSupport, O extends Compiler<E> = Compiler<E>, M extends Model<C, P, E, O> = Model<C, P, E, O>> extends ModelNotice {
     model: M;
     ctx: M;
     puppet: P;

@@ -12,13 +12,17 @@ import { SYMBOL_MODEL } from "../../utils/obTool";
 import { Compiler } from "../compiler";
 import { AsyncScheduler } from "../../scheduler";
 
+export interface ModelNotice extends Omit<CtnNotice, "path"> {
+  path: string[];
+}
+
 export interface CommandParameters<
   C extends BasicConfig = BasicConfig,
   P extends object = object,
   E extends EngineSupport = EngineSupport,
   O extends Compiler<E> = Compiler<E>,
   M extends Model<C, P, E, O> = Model<C, P, E, O>
-> extends CtnNotice {
+> extends ModelNotice {
   model: M;
   ctx: M;
   puppet: P;
@@ -163,19 +167,22 @@ export class Model<
   }
 
   process(params: CtnNotice) {
+    const modelParams = {
+      ...params,
+      path: params.path ? params.path.split(".") : ([] as string[]),
+    };
+
     if (!this.commands || !this.commands[params.operate]) {
-      this[params.operate](params);
+      this[params.operate](modelParams);
       return;
     }
     let commands = this.commands[params.operate]!;
 
-    const keyPath = params.path
-      ? params.path.split(".").concat(params.key)
-      : [params.key];
+    const keyPath = (<string[]>[]).concat(modelParams.path, params.key);
 
     for (const key of keyPath) {
       if (!commands[key] && !commands.$reg) {
-        this[params.operate](params);
+        this[params.operate](modelParams);
         return;
       } else if (commands[key]) {
         if (typeof commands[key] === "function") {
@@ -187,7 +194,7 @@ export class Model<
             puppet: this.puppet,
             engine: this.engine,
             compiler: this.compiler,
-            ...params,
+            ...modelParams,
           });
           return;
         } else {
@@ -204,7 +211,7 @@ export class Model<
               puppet: this.puppet,
               engine: this.engine,
               compiler: this.compiler,
-              ...params,
+              ...modelParams,
             });
             return;
           }
@@ -212,60 +219,48 @@ export class Model<
       }
     }
 
-    this[params.operate](params);
+    this[params.operate](modelParams);
   }
 
-  private add(params: CtnNotice) {
+  private add(params: ModelNotice) {
     let target = this.puppet;
 
-    if (params.path) {
-      const path = params.path.split(".");
-
-      for (const key of path) {
-        if (typeof target[key] !== undefined) {
-          target = target[key];
-        } else {
-          console.warn(`processor can not exec default add operate.`, params);
-          return;
-        }
+    for (const key of params.path) {
+      if (typeof target[key] !== undefined) {
+        target = target[key];
+      } else {
+        console.warn(`processor can not exec default add operate.`, params);
+        return;
       }
     }
 
     target[params.key] = params.value;
   }
 
-  private set(params: CtnNotice) {
+  private set(params: ModelNotice) {
     let target = this.puppet;
 
-    if (params.path) {
-      const path = params.path.split(".");
-
-      for (const key of path) {
-        if (typeof target[key] !== undefined) {
-          target = target[key];
-        } else {
-          console.warn(`processor can not exec default add operate.`, params);
-          return;
-        }
+    for (const key of params.path) {
+      if (typeof target[key] !== undefined) {
+        target = target[key];
+      } else {
+        console.warn(`processor can not exec default add operate.`, params);
+        return;
       }
     }
 
     target[params.key] = params.value;
   }
 
-  private delete(params: CtnNotice) {
+  private delete(params: ModelNotice) {
     let target = this.puppet;
 
-    if (params.path) {
-      const path = params.path.split(".");
-
-      for (const key of path) {
-        if (typeof target[key] !== undefined) {
-          target = target[key];
-        } else {
-          console.warn(`processor can not exec default add operate.`, params);
-          return;
-        }
+    for (const key of params.path) {
+      if (typeof target[key] !== undefined) {
+        target = target[key];
+      } else {
+        console.warn(`processor can not exec default add operate.`, params);
+        return;
       }
     }
 

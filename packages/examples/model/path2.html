@@ -22,7 +22,7 @@
     <div id="app"></div>
     <script type="module">
       import * as THREE from "three";
-      import { generateConfig, CONFIGTYPE } from "@vis-three/tdcm";
+      import { generateConfig, CONFIG_TYPE, toSymbol } from "@vis-three/tdcm";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
@@ -36,26 +36,26 @@
 
       const scene = generateConfig("Scene");
 
-      engine.setSceneBySymbol(scene.vid).setViewpoint("front");
+      engine.setSceneBySymbol(toSymbol(scene)).setViewpoint("front");
 
       generateConfig.injectScene = true;
 
-      const path = generateConfig(CONFIGTYPE.PATH, {
+      const path = generateConfig(CONFIG_TYPE.PATH, {
         autoClose: false,
       });
 
       window.drawPath = path;
 
-      const geometry = generateConfig(CONFIGTYPE.PATHGEOMETRY, {
-        path: path.vid,
+      const geometry = generateConfig(CONFIG_TYPE.PATHGEOMETRY, {
+        path: toSymbol(path),
         space: false,
       });
 
-      const material = generateConfig(CONFIGTYPE.LINEBASICMATERIAL, {});
+      const material = generateConfig(CONFIG_TYPE.LINEBASICMATERIAL, {});
 
-      const line = generateConfig(CONFIGTYPE.LINE, {
-        material: material.vid,
-        geometry: geometry.vid,
+      const line = generateConfig(CONFIG_TYPE.LINE, {
+        material: toSymbol(material),
+        geometry: toSymbol(geometry),
       });
 
       const point = new THREE.Vector3();
@@ -81,7 +81,9 @@
 
       sketcher.addEventListener("write", (event) => {
         path.curves.push(getCurve(event));
-        gui.add(path.curves[path.curves.length - 1].params, "0", 1, 130);
+        if (path.curves.length - 2 >= 0) {
+          gui.add(path.curves[path.curves.length - 2].params, "0", -130, 130);
+        }
       });
 
       sketcher.addEventListener("move", (event) => {

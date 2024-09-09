@@ -1,5 +1,5 @@
-import { getBasicConfig as R, defineModel as Q, MODULE_TYPE as d, MODEL_EVENT as m, defineModule as V, SUPPORT_LIFE_CYCLE as H } from "@vis-three/tdcm";
-import { Quaternion as D, Euler as S, BoxGeometry as b, CircleGeometry as $, Vector2 as l, BufferGeometry as g, CurvePath as C, CubicBezierCurve3 as Y, LineCurve3 as _, QuadraticBezierCurve3 as N, CatmullRomCurve3 as f, ShapeGeometry as j, Shape as W, TubeGeometry as x, Path as A, Vector3 as y, Float32BufferAttribute as G, EdgesGeometry as T, ExtrudeGeometry as k, LatheGeometry as q, PlaneGeometry as X, RingGeometry as Z, TorusGeometry as J, SphereGeometry as K, Mesh as ee } from "three";
+import { getBasicConfig as R, defineModel as Q, MODULE_TYPE as d, MODEL_EVENT as y, defineModule as V, SUPPORT_LIFE_CYCLE as H } from "@vis-three/tdcm";
+import { Quaternion as D, Euler as S, BoxGeometry as b, CircleGeometry as $, Vector2 as l, BufferGeometry as g, CurvePath as E, CubicBezierCurve3 as Y, LineCurve3 as f, QuadraticBezierCurve3 as N, CatmullRomCurve3 as _, ShapeGeometry as j, Shape as W, TubeGeometry as x, Path as A, Vector3 as m, Float32BufferAttribute as G, EdgesGeometry as T, ExtrudeGeometry as k, LatheGeometry as q, PlaneGeometry as X, RingGeometry as Z, TorusGeometry as J, SphereGeometry as K, Mesh as ee } from "three";
 import { DecalGeometry as te } from "three/examples/jsm/geometries/DecalGeometry.js";
 const h = function() {
   return Object.assign(R(), {
@@ -105,9 +105,9 @@ const h = function() {
   return Object.assign(L(), { center: !1 });
 }, le = function() {
   return Object.assign(L(), { center: !1 });
-}, me = function() {
-  return Object.assign(L(), { center: !1 });
 }, ye = function() {
+  return Object.assign(L(), { center: !1 });
+}, me = function() {
   return Object.assign(h(), {
     center: !1,
     path: [],
@@ -117,7 +117,7 @@ const h = function() {
     closed: !1
   });
 }, de = function() {
-  return Object.assign(ye(), { center: !1 });
+  return Object.assign(me(), { center: !1 });
 }, ge = function() {
   return Object.assign(h(), {
     center: !1,
@@ -157,7 +157,7 @@ const h = function() {
     space: !1,
     divisions: 36
   });
-}, Ce = function() {
+}, Ee = function() {
   return Object.assign(h(), {
     path: "",
     divisions: 32,
@@ -165,7 +165,7 @@ const h = function() {
     phiStart: 0,
     phiLength: Math.PI * 2
   });
-}, Ee = function() {
+}, ve = function() {
   return Object.assign(h(), {
     center: !1,
     target: {
@@ -178,7 +178,7 @@ const h = function() {
     orientation: { x: 0, y: 0, z: 0 },
     size: { x: 0, y: 0, z: 0 }
   });
-}, ve = function(r, e) {
+}, Ce = function(r, e) {
   e.center && r.center(), r.computeBoundingBox();
   const t = r.boundingBox, s = e.position, n = e.rotation, o = e.scale, a = new D().setFromEuler(
     new S(n.x, n.y, n.z, "XYZ")
@@ -188,7 +188,7 @@ const h = function() {
     (t.max.y - t.min.y) / 2 * s.y,
     (t.max.z - t.min.z) / 2 * s.z
   ), r;
-}, v = {
+}, C = {
   reg: new RegExp(".*"),
   handler({
     config: r,
@@ -218,7 +218,7 @@ const h = function() {
       groups({ target: r, value: e }) {
         r.addGroup(e.start, e.count, e.materialIndex);
       },
-      $reg: [v]
+      $reg: [C]
     },
     set: {
       groups(r) {
@@ -230,20 +230,20 @@ const h = function() {
         } else
           console.warn("geometry processor can not set group", r);
       },
-      $reg: [v]
+      $reg: [C]
     },
     delete: {
       groups({ target: r, key: e }) {
         r.groups.splice(Number(e), 1);
       },
-      $reg: [v]
+      $reg: [C]
     }
   },
   create(r, e) {
     r.clearGroups();
     for (const t of e.groups)
       r.addGroup(t.start, t.count, t.materialIndex);
-    return ve(r, e);
+    return Ce(r, e);
   },
   dispose(r) {
     r.dispose();
@@ -319,7 +319,7 @@ class Me extends g {
     super(), this.type = "LoadBufferGeometry", e && this.copy(e);
   }
 }
-class E extends g {
+class v extends g {
   constructor(e = [], t = 36, s = !0) {
     super(), this.type = "CurveGeometry", this.parameters = {
       path: e.map((n) => n.clone()),
@@ -328,10 +328,10 @@ class E extends g {
     };
   }
 }
-class Oe extends E {
+class Oe extends v {
   constructor(e = [], t = 36, s = !0) {
     super(e, t, s), this.type = "CubicBezierCurveGeometry";
-    const n = new C();
+    const n = new E();
     if (e.length < 4) {
       console.warn("CubicBezierCurveGeometry path length at least 4.");
       return;
@@ -355,15 +355,15 @@ class Oe extends E {
     );
   }
 }
-class et extends E {
+class et extends v {
   constructor(e = [], t = 36, s = !0) {
     if (super(e, t, s), this.type = "LineCurveGeometry", !e.length) {
       console.warn("LineCurveGeometry path length at least 1.");
       return;
     }
-    const n = new C();
+    const n = new E();
     for (let a = 1; a < e.length; a += 1)
-      n.add(new _(e[a - 1], e[a]));
+      n.add(new f(e[a - 1], e[a]));
     const o = n.curves.reduce((a, u) => a += u.arcLengthDivisions, 0);
     if (t > o) {
       const a = Math.ceil(
@@ -378,10 +378,10 @@ class et extends E {
     );
   }
 }
-class ze extends E {
+class ze extends v {
   constructor(e = [], t = 36, s = !0) {
     super(e, t, s), this.type = "QuadraticBezierCurveGeometry";
-    const n = new C();
+    const n = new E();
     if (e.length < 3) {
       console.warn("QuadraticBezierCurveGeometry path length at least 3.");
       return;
@@ -405,13 +405,13 @@ class ze extends E {
     );
   }
 }
-class Te extends E {
+class Te extends v {
   constructor(e = [], t = 36, s = !0) {
     if (super(e, t, s), this.type = "SplineCurveGeometry", !e.length) {
       console.warn("SplineCurveGeometry path length at least 1.");
       return;
     }
-    const n = new f(e);
+    const n = new _(e);
     this.setFromPoints(
       s ? n.getSpacedPoints(t) : n.getPoints(t)
     );
@@ -434,9 +434,9 @@ class De extends x {
       console.warn("LineTubeGeometry path length at least 1.");
       return;
     }
-    const a = new C();
+    const a = new E();
     for (let u = 1; u < e.length; u += 1)
-      a.add(new _(e[u - 1], e[u]));
+      a.add(new f(e[u - 1], e[u]));
     super(a, t, s, n, o), this.type = "LineTubeGeometry";
   }
 }
@@ -446,16 +446,16 @@ class rt extends x {
       console.warn("SplineTubeGeometry path length at least 1.");
       return;
     }
-    const a = new f(e);
+    const a = new _(e);
     super(a, t, s, n, o), this.type = "SplineTubeGeometry";
   }
 }
-class _e extends x {
+class fe extends x {
   constructor(e = new A(), t = 64, s = 1, n = 8, o = !1) {
     super(e, t, s, n, o), this.type = "PathTubeGeometry";
   }
 }
-class fe extends g {
+class _e extends g {
   constructor(e = new A(), t = 36, s = !0) {
     super(), this.type = "PathGeometry", this.parameters = {
       path: e,
@@ -473,7 +473,7 @@ const je = p((r) => ({
     return r.create(
       new Oe(
         e.path.map(
-          (t) => new y(t.x, t.y, t.z)
+          (t) => new m(t.x, t.y, t.z)
         ),
         e.divisions,
         e.space
@@ -562,17 +562,17 @@ const je = p((r) => ({
     );
     return n && (e.shapeEvent = () => {
       t.shapes = t.shapes;
-    }, (u = e.toModel(t.shapes)) == null || u.on(m.COMPILED_UPDATE, e.shapeEvent)), o && (e.pathEvent = () => {
+    }, (u = e.toModel(t.shapes)) == null || u.on(y.COMPILED_UPDATE, e.shapeEvent)), o && (e.pathEvent = () => {
       t.options.extrudePath = t.options.extrudePath;
-    }, (c = e.toModel(t.options.extrudePath)) == null || c.on(m.COMPILED_UPDATE, e.pathEvent)), r.create(a, t);
+    }, (c = e.toModel(t.options.extrudePath)) == null || c.on(y.COMPILED_UPDATE, e.pathEvent)), r.create(a, t);
   },
   dispose({ model: e, config: t, target: s }) {
     var n, o;
-    e.shapeEvent && ((n = e.toModel(t.shapes)) == null || n.off(m.COMPILED_UPDATE, e.shapeEvent)), e.pathEvent && ((o = e.toModel(t.options.extrudePath)) == null || o.off(m.COMPILED_UPDATE, e.pathEvent)), r.dispose(s);
+    e.shapeEvent && ((n = e.toModel(t.shapes)) == null || n.off(y.COMPILED_UPDATE, e.shapeEvent)), e.pathEvent && ((o = e.toModel(t.options.extrudePath)) == null || o.off(y.COMPILED_UPDATE, e.pathEvent)), r.dispose(s);
   }
 })), Ue = p((r) => ({
   type: "LatheGeometry",
-  config: Ce,
+  config: Ee,
   context({ model: e }) {
     return {
       pathEvent: void 0
@@ -591,11 +591,11 @@ const je = p((r) => ({
     );
     return n && (e.pathEvent = () => {
       t.path = t.path;
-    }, (a = e.toModel(t.path)) == null || a.on(m.COMPILED_UPDATE, e.pathEvent)), r.create(o, t);
+    }, (a = e.toModel(t.path)) == null || a.on(y.COMPILED_UPDATE, e.pathEvent)), r.create(o, t);
   },
   dispose({ model: e, config: t, target: s }) {
     var n;
-    e.pathEvent && ((n = e.toModel(t.path)) == null || n.off(m.COMPILED_UPDATE, e.pathEvent)), r.dispose(s);
+    e.pathEvent && ((n = e.toModel(t.path)) == null || n.off(y.COMPILED_UPDATE, e.pathEvent)), r.dispose(s);
   }
 })), Fe = p(
   (r) => ({
@@ -605,7 +605,7 @@ const je = p((r) => ({
       return r.create(
         new De(
           e.path.map(
-            (t) => new y(t.x, t.y, t.z)
+            (t) => new m(t.x, t.y, t.z)
           ),
           e.tubularSegments,
           e.radius,
@@ -644,14 +644,14 @@ const je = p((r) => ({
     const n = s.compilerManager.getObjectFromModule(
       d.PATH,
       t.path
-    ) || void 0, o = new fe(n, t.divisions, t.space);
-    return n && (e.pathEvent = () => {
+    ) || void 0, o = new _e(n, t.divisions, t.space);
+    return n && (e.pathEvent && (e.cachePathEvent = e.pathEvent), e.pathEvent = () => {
       t.path = t.path;
-    }, (a = e.toModel(t.path)) == null || a.on(m.COMPILED_UPDATE, e.pathEvent)), r.create(o, t);
+    }, (a = e.toModel(t.path)) == null || a.on(y.COMPILED_UPDATE, e.pathEvent)), r.create(o, t);
   },
   dispose({ model: e, config: t, target: s }) {
     var n;
-    e.pathEvent && ((n = e.toModel(t.path)) == null || n.off(m.COMPILED_UPDATE, e.pathEvent)), r.dispose(s);
+    e.pathEvent && ((n = e.toModel(t.path)) == null || n.off(y.COMPILED_UPDATE, e.pathEvent), e.cachePathEvent && (e.pathEvent = e.cachePathEvent, e.cachePathEvent = void 0)), r.dispose(s);
   }
 })), Ve = p((r) => ({
   type: "PathTubeGeometry",
@@ -667,7 +667,7 @@ const je = p((r) => ({
     const n = s.compilerManager.getObjectFromModule(
       d.PATH,
       t.path
-    ) || void 0, o = new _e(
+    ) || void 0, o = new fe(
       n,
       t.tubularSegments,
       t.radius,
@@ -678,11 +678,11 @@ const je = p((r) => ({
       e.restrictor || (e.restrictor = window.setTimeout(() => {
         t.path = t.path, e.restrictor = 0;
       }, 1e3 / 30));
-    }, (a = e.toModel(t.path)) == null || a.on(m.COMPILED_UPDATE, e.pathEvent)), r.create(o, t);
+    }, (a = e.toModel(t.path)) == null || a.on(y.COMPILED_UPDATE, e.pathEvent)), r.create(o, t);
   },
   dispose({ model: e, config: t, target: s }) {
     var n;
-    window.clearTimeout(e.restrictor), e.pathEvent && ((n = e.toModel(t.path)) == null || n.off(m.COMPILED_UPDATE, e.pathEvent)), r.dispose(s);
+    window.clearTimeout(e.restrictor), e.pathEvent && ((n = e.toModel(t.path)) == null || n.off(y.COMPILED_UPDATE, e.pathEvent)), r.dispose(s);
   }
 })), He = p(
   (r) => ({
@@ -705,12 +705,12 @@ const je = p((r) => ({
   })
 ), $e = p((r) => ({
   type: "QuadraticBezierCurveGeometry",
-  config: me,
+  config: ye,
   create({ config: e }) {
     return r.create(
       new ze(
         e.path.map(
-          (t) => new y(t.x, t.y, t.z)
+          (t) => new m(t.x, t.y, t.z)
         ),
         e.divisions,
         e.space
@@ -753,11 +753,11 @@ const je = p((r) => ({
     ) || void 0, o = new j(n, t.curveSegments);
     return n && (e.shapeEvent = () => {
       t.shape = t.shape;
-    }, (a = e.toModel(t.shape)) == null || a.on(m.COMPILED_UPDATE, e.shapeEvent)), r.create(o, t);
+    }, (a = e.toModel(t.shape)) == null || a.on(y.COMPILED_UPDATE, e.shapeEvent)), r.create(o, t);
   },
   dispose({ model: e, config: t, target: s }) {
     var n;
-    e.shapeEvent && ((n = e.toModel(t.shape)) == null || n.on(m.COMPILED_UPDATE, e.shapeEvent)), r.dispose(s);
+    e.shapeEvent && ((n = e.toModel(t.shape)) == null || n.on(y.COMPILED_UPDATE, e.shapeEvent)), r.dispose(s);
   }
 })), We = p((r) => ({
   type: "SplineCurveGeometry",
@@ -766,7 +766,7 @@ const je = p((r) => ({
     return r.create(
       new Te(
         e.path.map(
-          (t) => new y(t.x, t.y, t.z)
+          (t) => new m(t.x, t.y, t.z)
         ),
         e.divisions,
         e.space
@@ -821,7 +821,7 @@ const je = p((r) => ({
   })
 ), Xe = p((r) => ({
   type: "DecalGeometry",
-  config: Ee,
+  config: ve,
   shared: {
     tempGeometry: new g(),
     tempMesh: new ee()
@@ -829,7 +829,7 @@ const je = p((r) => ({
   create({ model: e, config: t, engine: s }) {
     const n = t.target.geometry && s.getObjectBySymbol(t.target.geometry) || e.tempGeometry;
     return e.tempMesh.geometry = n, e.tempMesh.matrixWorld.compose(
-      new y(
+      new m(
         t.target.position.x,
         t.target.position.y,
         t.target.position.z
@@ -841,7 +841,7 @@ const je = p((r) => ({
           t.target.rotation.z
         )
       ),
-      new y(
+      new m(
         t.target.scale.x,
         t.target.scale.y,
         t.target.scale.z
@@ -849,13 +849,13 @@ const je = p((r) => ({
     ), r.create(
       new te(
         e.tempMesh,
-        new y(t.point.x, t.point.y, t.point.z),
+        new m(t.point.x, t.point.y, t.point.z),
         new S(
           t.orientation.x,
           t.orientation.y,
           t.orientation.z
         ),
-        new y(t.size.x, t.size.y, t.size.z)
+        new m(t.size.x, t.size.y, t.size.z)
       ),
       t
     );
@@ -890,14 +890,14 @@ const je = p((r) => ({
 });
 export {
   Oe as CubicBezierCurveGeometry,
-  E as CurveGeometry,
+  v as CurveGeometry,
   Le as ExtrudeUVGenerator,
   et as LineCurveGeometry,
   tt as LineShapeGeometry,
   De as LineTubeGeometry,
   Me as LoadGeometry,
-  fe as PathGeometry,
-  _e as PathTubeGeometry,
+  _e as PathGeometry,
+  fe as PathTubeGeometry,
   ze as QuadraticBezierCurveGeometry,
   Te as SplineCurveGeometry,
   rt as SplineTubeGeometry,

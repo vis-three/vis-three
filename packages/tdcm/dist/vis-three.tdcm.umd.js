@@ -177,15 +177,19 @@
       }
     }
     process(params) {
+      const modelParams = {
+        ...params,
+        path: params.path ? params.path.split(".") : []
+      };
       if (!this.commands || !this.commands[params.operate]) {
-        this[params.operate](params);
+        this[params.operate](modelParams);
         return;
       }
       let commands = this.commands[params.operate];
-      const keyPath = params.path ? params.path.split(".").concat(params.key) : [params.key];
+      const keyPath = [].concat(modelParams.path, params.key);
       for (const key of keyPath) {
         if (!commands[key] && !commands.$reg) {
-          this[params.operate](params);
+          this[params.operate](modelParams);
           return;
         } else if (commands[key]) {
           if (typeof commands[key] === "function") {
@@ -197,7 +201,7 @@
               puppet: this.puppet,
               engine: this.engine,
               compiler: this.compiler,
-              ...params
+              ...modelParams
             });
             return;
           } else {
@@ -214,56 +218,47 @@
                 puppet: this.puppet,
                 engine: this.engine,
                 compiler: this.compiler,
-                ...params
+                ...modelParams
               });
               return;
             }
           }
         }
       }
-      this[params.operate](params);
+      this[params.operate](modelParams);
     }
     add(params) {
       let target = this.puppet;
-      if (params.path) {
-        const path = params.path.split(".");
-        for (const key of path) {
-          if (typeof target[key] !== void 0) {
-            target = target[key];
-          } else {
-            console.warn(`processor can not exec default add operate.`, params);
-            return;
-          }
+      for (const key of params.path) {
+        if (typeof target[key] !== void 0) {
+          target = target[key];
+        } else {
+          console.warn(`processor can not exec default add operate.`, params);
+          return;
         }
       }
       target[params.key] = params.value;
     }
     set(params) {
       let target = this.puppet;
-      if (params.path) {
-        const path = params.path.split(".");
-        for (const key of path) {
-          if (typeof target[key] !== void 0) {
-            target = target[key];
-          } else {
-            console.warn(`processor can not exec default add operate.`, params);
-            return;
-          }
+      for (const key of params.path) {
+        if (typeof target[key] !== void 0) {
+          target = target[key];
+        } else {
+          console.warn(`processor can not exec default add operate.`, params);
+          return;
         }
       }
       target[params.key] = params.value;
     }
     delete(params) {
       let target = this.puppet;
-      if (params.path) {
-        const path = params.path.split(".");
-        for (const key of path) {
-          if (typeof target[key] !== void 0) {
-            target = target[key];
-          } else {
-            console.warn(`processor can not exec default add operate.`, params);
-            return;
-          }
+      for (const key of params.path) {
+        if (typeof target[key] !== void 0) {
+          target = target[key];
+        } else {
+          console.warn(`processor can not exec default add operate.`, params);
+          return;
         }
       }
       target[params.key] = params.value;

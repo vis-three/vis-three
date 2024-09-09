@@ -10,6 +10,8 @@ export default defineGeometryModel<
   PathGeometry,
   {
     pathEvent?: () => void;
+    // 由于 geometryModel的更新是靠调用create和dispose进行，避免事件丢失，需要进行储存
+    cachePathEvent?: () => void;
   }
 >((geometryModel) => ({
   type: "PathGeometry",
@@ -24,6 +26,9 @@ export default defineGeometryModel<
     const geometry = new PathGeometry(path, config.divisions, config.space);
 
     if (path) {
+      if (model.pathEvent) {
+        model.cachePathEvent = model.pathEvent;
+      }
       model.pathEvent = () => {
         config.path = config.path;
       };
@@ -35,11 +40,16 @@ export default defineGeometryModel<
     return geometryModel.create!(geometry, config);
   },
   dispose({ model, config, target }) {
-    model.pathEvent &&
+    if (model.pathEvent) {
       model
         .toModel(config.path)
         ?.off(MODEL_EVENT.COMPILED_UPDATE, model.pathEvent);
 
+      if (model.cachePathEvent) {
+        model.pathEvent = model.cachePathEvent;
+        model.cachePathEvent = undefined;
+      }
+    }
     geometryModel.dispose!(target);
   },
 }));
