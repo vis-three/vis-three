@@ -1,4 +1,8 @@
-import { AniScriptGenerator, BasicAniScriptConfig, EngineSupport, RenderEvent } from "@vis-three/middleware";
+import {
+  AniScriptGenerator,
+  BasicAniScriptConfig,
+} from "@vis-three/module-animation";
+import { EngineSupport, RenderEvent } from "@vis-three/tdcm";
 
 export interface LinearTime extends BasicAniScriptConfig {
   multiply: number;

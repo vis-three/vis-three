@@ -26,8 +26,9 @@
       import {
         generateConfig,
         Template,
-        CONFIGTYPE,
+        CONFIG_TYPE,
         createSymbol,
+        toSymbol,
       } from "@vis-three/tdcm";
 
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
@@ -42,7 +43,7 @@
 
       const scene = generateConfig("Scene");
 
-      engine.setSceneBySymbol(scene.vid);
+      engine.setSceneBySymbol(toSymbol(scene));
 
       generateConfig.injectScene = true;
 
@@ -54,22 +55,22 @@
         distance: 100,
       });
 
-      const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
+      const material = generateConfig(CONFIG_TYPE.MESHSTANDARDMATERIAL, {
         color: "red",
       });
 
-      const geometry = generateConfig(CONFIGTYPE.SPHEREGEOMETRY, {
+      const geometry = generateConfig(CONFIG_TYPE.SPHEREGEOMETRY, {
         radius: 10,
         widthSegments: 64,
         heightSegments: 64,
       });
 
-      const mesh = generateConfig(CONFIGTYPE.MESH, {
-        material: material.vid,
-        geometry: geometry.vid,
+      const mesh = generateConfig(CONFIG_TYPE.MESH, {
+        material: toSymbol(material),
+        geometry: toSymbol(geometry),
       });
 
-      const unrealBloom = generateConfig(CONFIGTYPE.UNREALBLOOMPASS, {
+      const unrealBloom = generateConfig(CONFIG_TYPE.UNREALBLOOMPASS, {
         strength: 1,
       });
 

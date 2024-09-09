@@ -25,8 +25,9 @@
       import {
         generateConfig,
         Template,
-        CONFIGTYPE,
+        CONFIG_TYPE,
         createSymbol,
+        toSymbol,
       } from "@vis-three/tdcm";
 
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
@@ -43,7 +44,7 @@
         vid: createSymbol(),
       });
 
-      engine.setSceneBySymbol(scene.vid);
+      engine.setSceneBySymbol(toSymbol(scene));
 
       generateConfig.injectScene = true;
 
@@ -57,7 +58,7 @@
         far: 1000,
         adaptiveWindow: true,
       });
-      engine.setCameraBySymbol(camera.vid).setSize();
+      engine.setCameraBySymbol(toSymbol(camera)).setSize();
 
       const pointLight = generateConfig("PointLight", {
         position: {
@@ -67,35 +68,35 @@
         distance: 200,
       });
 
-      const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
+      const material = generateConfig(CONFIG_TYPE.MESHSTANDARDMATERIAL, {
         color: "red",
       });
 
-      const lineMaterial = generateConfig(CONFIGTYPE.LINEBASICMATERIAL, {
+      const lineMaterial = generateConfig(CONFIG_TYPE.LINEBASICMATERIAL, {
         color: "yellow",
       });
 
-      const pointsMaterial = generateConfig(CONFIGTYPE.POINTSMATERIAL, {
+      const pointsMaterial = generateConfig(CONFIG_TYPE.POINTSMATERIAL, {
         color: "blue",
       });
 
-      const circleMaterial = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
+      const circleMaterial = generateConfig(CONFIG_TYPE.MESHSTANDARDMATERIAL, {
         roughness: 0.2,
       });
 
-      const circleGeometry = generateConfig(CONFIGTYPE.CIRCLEGEOMETRY, {
+      const circleGeometry = generateConfig(CONFIG_TYPE.CIRCLEGEOMETRY, {
         radius: 40,
       });
 
-      const geometry = generateConfig(CONFIGTYPE.SPHEREGEOMETRY, {
+      const geometry = generateConfig(CONFIG_TYPE.SPHEREGEOMETRY, {
         radius: 10,
         widthSegments: 12,
         heightSegments: 12,
       });
 
-      const circle = generateConfig(CONFIGTYPE.MESH, {
-        material: circleMaterial.vid,
-        geometry: circleGeometry.vid,
+      const circle = generateConfig(CONFIG_TYPE.MESH, {
+        material: toSymbol(circleMaterial),
+        geometry: toSymbol(circleGeometry),
         position: {
           y: -10,
         },
@@ -104,31 +105,31 @@
         },
       });
 
-      const mesh = generateConfig(CONFIGTYPE.MESH, {
-        material: material.vid,
-        geometry: geometry.vid,
+      const mesh = generateConfig(CONFIG_TYPE.MESH, {
+        material: toSymbol(material),
+        geometry: toSymbol(geometry),
         position: {
           x: -20,
         },
       });
 
-      const line = generateConfig(CONFIGTYPE.LINE, {
-        material: lineMaterial.vid,
-        geometry: geometry.vid,
+      const line = generateConfig(CONFIG_TYPE.LINE, {
+        material: toSymbol(lineMaterial),
+        geometry: toSymbol(geometry),
         position: {
           x: 20,
         },
       });
 
-      const points = generateConfig(CONFIGTYPE.POINTS, {
-        material: pointsMaterial.vid,
-        geometry: geometry.vid,
+      const points = generateConfig(CONFIG_TYPE.POINTS, {
+        material: toSymbol(pointsMaterial),
+        geometry: toSymbol(geometry),
         position: {
           z: 20,
         },
       });
 
-      const sprite = generateConfig(CONFIGTYPE.SPRITE, {
+      const sprite = generateConfig(CONFIG_TYPE.SPRITE, {
         scale: {
           x: 10,
           y: 10,
@@ -139,11 +140,11 @@
         },
       });
 
-      const selectiveBloom = generateConfig(CONFIGTYPE.SELECTIVEBLOOMPASS, {
+      const selectiveBloom = generateConfig(CONFIG_TYPE.SELECTIVEBLOOMPASS, {
         strength: 1,
-        renderScene: scene.vid,
-        renderCamera: camera.vid,
-        selectedObjects: [mesh.vid],
+        renderScene: toSymbol(scene),
+        renderCamera: toSymbol(camera),
+        selectedObjects: [toSymbol(mesh)],
       });
 
       const gui = new GUI();

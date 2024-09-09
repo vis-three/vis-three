@@ -26,8 +26,9 @@
       import {
         generateConfig,
         Template,
-        CONFIGTYPE,
+        CONFIG_TYPE,
         createSymbol,
+        toSymbol,
       } from "@vis-three/tdcm";
 
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
@@ -54,8 +55,8 @@
       });
 
       engine
-        .setSceneBySymbol(scene.vid)
-        .setCameraBySymbol(camera.vid)
+        .setSceneBySymbol(toSymbol(scene))
+        .setCameraBySymbol(toSymbol(camera))
         .setSize();
 
       generateConfig.injectScene = true;
@@ -67,20 +68,20 @@
         },
       });
 
-      const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
+      const material = generateConfig(CONFIG_TYPE.MESHSTANDARDMATERIAL, {
         color: "red",
       });
 
-      const geometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+      const geometry = generateConfig(CONFIG_TYPE.BOXGEOMETRY, {
         height: 20,
         width: 10,
       });
 
       const meshList = [];
       for (let index = 0; index < 200; index += 1) {
-        const mesh = generateConfig(CONFIGTYPE.MESH, {
-          material: material.vid,
-          geometry: geometry.vid,
+        const mesh = generateConfig(CONFIG_TYPE.MESH, {
+          material: toSymbol(material),
+          geometry: toSymbol(geometry),
           position: {
             y: 10,
             x: Math.random() * 100 * (Math.random() < 0.5 ? -1 : 1),
@@ -88,13 +89,13 @@
           },
         });
 
-        meshList.push(mesh.vid);
+        meshList.push(toSymbol(mesh));
       }
 
-      const ssr = generateConfig(CONFIGTYPE.SSRPASS, {
-        renderer: renderer.vid,
-        scene: scene.vid,
-        camera: camera.vid,
+      const ssr = generateConfig(CONFIG_TYPE.SSRPASS, {
+        renderer: toSymbol(renderer),
+        scene: toSymbol(scene),
+        camera: toSymbol(camera),
         selects: meshList,
         opacity: 0.8,
         maxDistance: 20,

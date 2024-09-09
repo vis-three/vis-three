@@ -28,7 +28,7 @@
     <script type="module">
       import * as THREE from "three";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
-      import { generateConfig, CONFIGTYPE } from "@vis-three/tdcm";
+      import { generateConfig, CONFIG_TYPE, toSymbol } from "@vis-three/tdcm";
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
       const engine = new ModelingEngineSupport()
@@ -41,7 +41,7 @@
 
       const scene = generateConfig("Scene");
 
-      engine.setSceneBySymbol(scene.vid);
+      engine.setSceneBySymbol(toSymbol(scene));
 
       generateConfig.injectScene = true;
 
@@ -53,9 +53,9 @@
         distance: 100,
       });
 
-      const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL);
+      const material = generateConfig(CONFIG_TYPE.MESHSTANDARDMATERIAL);
 
-      const geometry = generateConfig(CONFIGTYPE.SPLINETUBEGEOMETRY, {
+      const geometry = generateConfig(CONFIG_TYPE.SPLINETUBEGEOMETRY, {
         path: [
           { x: 0, y: 0, z: -5 },
           { x: 0, y: 0, z: 5 },
@@ -65,9 +65,9 @@
         ],
       });
 
-      const mesh = generateConfig(CONFIGTYPE.MESH, {
-        material: material.vid,
-        geometry: geometry.vid,
+      const mesh = generateConfig(CONFIG_TYPE.MESH, {
+        material: toSymbol(material),
+        geometry: toSymbol(geometry),
       });
 
       const gui = new GUI();

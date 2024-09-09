@@ -26,8 +26,9 @@
       import {
         generateConfig,
         Template,
-        CONFIGTYPE,
+        CONFIG_TYPE,
         createSymbol,
+        toSymbol,
       } from "@vis-three/tdcm";
 
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
@@ -55,8 +56,8 @@
       });
 
       engine
-        .setSceneBySymbol(scene.vid)
-        .setCameraBySymbol(camera.vid)
+        .setSceneBySymbol(toSymbol(scene))
+        .setCameraBySymbol(toSymbol(camera))
         .setSize();
 
       generateConfig.injectScene = true;
@@ -68,19 +69,19 @@
         },
       });
 
-      const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
+      const material = generateConfig(CONFIG_TYPE.MESHSTANDARDMATERIAL, {
         color: "red",
       });
 
-      const boxGeometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+      const boxGeometry = generateConfig(CONFIG_TYPE.BOXGEOMETRY, {
         height: 40,
         width: 20,
         depth: 20,
       });
 
-      const mesh = generateConfig(CONFIGTYPE.MESH, {
-        material: material.vid,
-        geometry: boxGeometry.vid,
+      const mesh = generateConfig(CONFIG_TYPE.MESH, {
+        material: toSymbol(material),
+        geometry: toSymbol(boxGeometry),
         position: {
           y: 10,
         },
@@ -89,7 +90,7 @@
       engine
         .loadResourcesAsync(["/texture/water/Water_1_M_Normal.jpg"])
         .then(() => {
-          const planeGeometry = generateConfig(CONFIGTYPE.PLANEGEOMETRY, {
+          const planeGeometry = generateConfig(CONFIG_TYPE.PLANEGEOMETRY, {
             width: 500,
             height: 500,
           });
@@ -101,8 +102,8 @@
           });
 
           const water = generateConfig("DeepWater", {
-            geometry: planeGeometry.vid,
-            waterNormals: texture.vid,
+            geometry: toSymbol(planeGeometry),
+            waterNormals: toSymbol(texture),
             rotation: {
               x: -Math.PI / 2,
             },

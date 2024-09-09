@@ -1,4 +1,4 @@
-import { AniScriptGenerator, BasicAniScriptConfig } from "@vis-three/middleware";
+import { AniScriptGenerator, BasicAniScriptConfig } from "@vis-three/module-animation";
 export interface LinearTime extends BasicAniScriptConfig {
     multiply: number;
 }

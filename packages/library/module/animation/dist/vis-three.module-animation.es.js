@@ -1,6 +1,6 @@
 import { defineRule as y, DEFAULT_RULE as l, getBasicConfig as E, defineModel as b, defineModule as p, SUPPORT_LIFE_CYCLE as f } from "@vis-three/tdcm";
 import { ENGINE_EVENT as u } from "@vis-three/core";
-import { AnimationObjectGroup as L, Object3D as R, AnimationMixer as g } from "three";
+import { AnimationObjectGroup as L, Object3D as R, AnimationMixer as v } from "three";
 const A = y([
   function(r) {
     return !(r.key === "name" && r.path.length === 1);
@@ -14,7 +14,7 @@ const A = y([
   return Object.assign(E(), {
     play: !0
   });
-}, v = function() {
+}, g = function() {
   return Object.assign(d(), {
     target: "",
     time: 0,
@@ -103,7 +103,7 @@ const O = b({
         return this;
       let t = e.getObjectBySymbol(r.target), n = e.getConfigBySymbol(r.target);
       (!t || !n) && console.warn(
-        "AnimationCompiler: can not found object target or config in engine",
+        "scrpit animation model: can not found object target or config in engine",
         r.vid
       );
       const i = r.attribute.split(".");
@@ -114,7 +114,7 @@ const O = b({
           t = t[o], n = n[o];
         else
           return console.warn(
-            "AnimationCompiler: object and config attribute are not sync"
+            "scrpit animation model: object and config attribute are not sync"
           ), this;
       return t[a] = n[a], this;
     }
@@ -137,7 +137,7 @@ const O = b({
             n.renderManager.removeEventListener(
               u.RENDER,
               e
-            ), i.symbolMap.delete(e);
+            ), i.symbolMap.delete(e), r.restoreAttribute(t, n);
             const a = r.createFunction(t, n);
             t.play && n.renderManager.addEventListener(
               u.RENDER,
@@ -163,7 +163,7 @@ const O = b({
   }
 }), M = b({
   type: "MixerAnimation",
-  config: v,
+  config: g,
   context() {
     return {
       mixerAni: void 0
@@ -179,7 +179,7 @@ const O = b({
     })) : (i = t.getObjectBySymbol(e.target), i || (console.warn(
       `mixer animation processor can not found vid in engine: ${e.target}`
     ), i = new R()));
-    const a = new g(i);
+    const a = new v(i);
     if (a.time = e.time, a.timeScale = e.timeScale, e.play) {
       const o = (c) => {
         a.update(c.delta);
@@ -209,6 +209,6 @@ const O = b({
 export {
   m as AniScriptGeneratorManager,
   w as default,
-  v as getMixerAnimationConfig,
+  g as getMixerAnimationConfig,
   h as getScriptAnimationConfig
 };

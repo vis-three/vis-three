@@ -18,6 +18,7 @@ import SplineCurveGeometryModel from "./models/SplineCurveGeometryModel";
 import TorusGeometryModel from "./models/TorusGeometryModel";
 import SphereGeometryModel from "./models/SphereGeometryModel";
 import DecalGeometryModel from "./models/DecalGeometryModel";
+import SplineTubeGeometryModel from "./models/SplineTubeGeometryModel";
 
 export * from "./GeometryInterface";
 export * from "./extends";
@@ -43,6 +44,7 @@ export default defineModule({
     ShapeGeometryModel,
     SphereGeometryModel,
     SplineCurveGeometryModel,
+    SplineTubeGeometryModel,
     TorusGeometryModel,
   ],
   lifeOrder: SUPPORT_LIFE_CYCLE.TWO,

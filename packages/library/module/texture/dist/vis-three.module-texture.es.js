@@ -1,16 +1,16 @@
-import { UVMapping as y, ClampToEdgeWrapping as m, LinearFilter as d, LinearMipmapLinearFilter as L, RGBAFormat as E, CubeReflectionMapping as C, CanvasTexture as H, CubeTexture as h, Texture as i, VideoTexture as I } from "three";
-import { getBasicConfig as w, defineModel as R, generateConfig as b, CONFIG_TYPE as U, defineModule as v } from "@vis-three/tdcm";
-import { CanvasGenerator as F } from "@vis-three/convenient";
-import { syncObject as u } from "@vis-three/utils";
-const o = function() {
-  return Object.assign(w(), {
+import { UVMapping as y, ClampToEdgeWrapping as x, LinearFilter as l, LinearMipmapLinearFilter as h, RGBAFormat as C, CubeReflectionMapping as E, CanvasTexture as L, CubeTexture as H, Texture as u, RGBFormat as R } from "three";
+import { getBasicConfig as U, defineModel as b, generateConfig as w, CONFIG_TYPE as I, defineModule as v } from "@vis-three/tdcm";
+import { CanvasGenerator as V } from "@vis-three/convenient";
+import { syncObject as c } from "@vis-three/utils";
+const p = function() {
+  return Object.assign(U(), {
     mapping: y,
-    wrapS: m,
-    wrapT: m,
-    magFilter: d,
-    minFilter: L,
+    wrapS: x,
+    wrapT: x,
+    magFilter: l,
+    minFilter: h,
     anisotropy: 1,
-    format: E,
+    format: C,
     flipY: !0,
     offset: {
       x: 0,
@@ -28,17 +28,17 @@ const o = function() {
     matrixAutoUpdate: !0,
     needsUpdate: !1
   });
-}, V = function() {
-  return Object.assign(o(), {
+}, A = function() {
+  return Object.assign(p(), {
     url: ""
   });
-}, A = function() {
-  return Object.assign(o(), {
+}, F = function() {
+  return Object.assign(p(), {
     url: "",
-    minFilter: d
+    minFilter: l
   });
 }, O = function() {
-  return Object.assign(o(), {
+  return Object.assign(p(), {
     cube: {
       nx: "",
       ny: "",
@@ -47,45 +47,45 @@ const o = function() {
       py: "",
       pz: ""
     },
-    mapping: C,
+    mapping: E,
     flipY: !1
   });
 }, j = function() {
-  return Object.assign(o(), {
+  return Object.assign(p(), {
     url: "",
     needsUpdate: !1
   });
 }, z = function() {
-  return Object.assign(o(), {
+  return Object.assign(p(), {
     url: ""
   });
-}, p = new F({
+}, g = new V({
   width: 512,
   height: 512
 }).draw((e) => {
   e.translate(256, 256), e.font = "72px", e.fillStyle = "white", e.fillText("暂无图片", 0, 0);
-}).getDom(), f = function(e, t, n) {
+}).getDom(), M = function(e, t, n) {
   const r = t.resourceManager.resourceMap;
   if (!r.has(e))
-    return console.warn(`engine resourceManager can not found this url: ${e}`), p;
-  const a = r.get(e);
+    return console.warn(`engine resourceManager can not found this url: ${e}`), g;
+  const s = r.get(e);
   if (Array.isArray(n)) {
-    for (const s of n)
-      if (a instanceof s)
-        return a;
+    for (const a of n)
+      if (s instanceof a)
+        return s;
     return console.warn(
       `this url mapping resource is not a texture image class: ${e}`,
-      a
-    ), p;
+      s
+    ), g;
   } else
-    return a instanceof n ? a : (console.warn(
+    return s instanceof n ? s : (console.warn(
       `this url mapping resource is not a texture image class: ${e}`,
-      a
-    ), p);
-}, c = R.extend({
+      s
+    ), g);
+}, d = b.extend({
   shared: {
-    replaceImage: p,
-    getResource: f
+    replaceImage: g,
+    getResource: M
   },
   commands: {
     set: {
@@ -101,13 +101,13 @@ const o = function() {
       ]
     }
   }
-}), Y = c(() => ({
+}), Y = d(() => ({
   type: "CanvasTexture",
   config: j,
   commands: {
     set: {
       url({ model: e, target: t, value: n, engine: r }) {
-        e.toAsync((a) => (t.image = e.getResource(n, r, [
+        e.toAsync((s) => (t.image = e.getResource(n, r, [
           HTMLImageElement,
           HTMLVideoElement,
           HTMLCanvasElement
@@ -116,12 +116,12 @@ const o = function() {
     }
   },
   create({ model: e, config: t, engine: n }) {
-    const r = new H(e.replaceImage);
-    return e.toAsync((a) => (r.image = e.getResource(t.url, n, [
+    const r = new L(e.replaceImage);
+    return e.toAsync((s) => (r.image = e.getResource(t.url, n, [
       HTMLImageElement,
       HTMLVideoElement,
       HTMLCanvasElement
-    ]), r.needsUpdate = !0, r.image !== e.replaceImage)), u(t, r, {
+    ]), r.needsUpdate = !0, r.image !== e.replaceImage)), c(t, r, {
       type: !0,
       url: !0
     }), r.needsUpdate = !0, r;
@@ -129,12 +129,12 @@ const o = function() {
   dispose({ target: e }) {
     e.dispose();
   }
-})), $ = c(() => ({
+})), G = d(() => ({
   type: "CubeTexture",
   config: O,
   shared: {
-    imageHanlder({ model: e, target: t, index: n, value: r, engine: a }) {
-      t.images[n] = e.getResource(r, a, [
+    imageHanlder({ model: e, target: t, index: n, value: r, engine: s }) {
+      t.images[n] = e.getResource(r, s, [
         HTMLImageElement,
         HTMLVideoElement,
         HTMLCanvasElement
@@ -202,19 +202,19 @@ const o = function() {
     }
   },
   create({ model: e, config: t, engine: n }) {
-    const r = new h(), a = t.cube, s = [
+    const r = new H(), s = t.cube, a = [
       HTMLImageElement,
       HTMLVideoElement,
       HTMLCanvasElement
-    ], g = [
-      e.getResource(a.px, n, s),
-      e.getResource(a.nx, n, s),
-      e.getResource(a.py, n, s),
-      e.getResource(a.ny, n, s),
-      e.getResource(a.pz, n, s),
-      e.getResource(a.nz, n, s)
+    ], i = [
+      e.getResource(s.px, n, a),
+      e.getResource(s.nx, n, a),
+      e.getResource(s.py, n, a),
+      e.getResource(s.ny, n, a),
+      e.getResource(s.pz, n, a),
+      e.getResource(s.nz, n, a)
     ];
-    return r.image = g, u(t, r, {
+    return r.image = i, c(t, r, {
       type: !0,
       cube: !0
     }), r.needsUpdate = !0, r;
@@ -223,28 +223,28 @@ const o = function() {
     e.dispose();
   }
 }));
-class G extends i {
-  constructor(t, n, r, a, s, g, x, T, M) {
+class S extends u {
+  constructor(t, n, r, s, a, i, o, m, f) {
     super(
       t,
       n,
       r,
-      a,
       s,
-      g,
-      x,
-      T,
-      M
+      a,
+      i,
+      o,
+      m,
+      f
     );
   }
 }
-const S = c(() => ({
+const $ = d(() => ({
   type: "ImageTexture",
-  config: V,
+  config: A,
   commands: {
     set: {
       url({ model: e, target: t, value: n, engine: r }) {
-        e.toAsync((a) => (t.image = e.getResource(n, r, [
+        e.toAsync((s) => (t.image = e.getResource(n, r, [
           HTMLImageElement,
           HTMLVideoElement,
           HTMLCanvasElement
@@ -253,12 +253,12 @@ const S = c(() => ({
     }
   },
   create({ model: e, config: t, engine: n }) {
-    const r = new G(e.replaceImage);
-    return t.url && e.toAsync((a) => (r.image = e.getResource(t.url, n, [
+    const r = new S(e.replaceImage);
+    return t.url && e.toAsync((s) => (r.image = e.getResource(t.url, n, [
       HTMLImageElement,
       HTMLVideoElement,
       HTMLCanvasElement
-    ]), r.needsUpdate = !0, r.image !== e.replaceImage)), u(t, r, {
+    ]), r.needsUpdate = !0, r.image !== e.replaceImage)), c(t, r, {
       type: !0,
       url: !0
     }), r.needsUpdate = !0, r;
@@ -267,14 +267,14 @@ const S = c(() => ({
     e.dispose();
   }
 }));
-class l extends i {
+class T extends u {
   constructor(t) {
     super(), Object.keys(t).forEach((n) => {
       this[n] = t[n];
     }), this.copy(t);
   }
 }
-const B = c(() => ({
+const B = d(() => ({
   type: "LoadTexture",
   config: z,
   commands: {
@@ -285,36 +285,14 @@ const B = c(() => ({
   },
   create({ model: e, config: t, engine: n }) {
     let r;
-    const a = e.getResource(t.url, n, i);
-    if (a instanceof i)
-      r = new l(a);
+    const s = e.getResource(t.url, n, u);
+    if (s instanceof u)
+      r = new T(s);
     else {
-      const s = new i(a);
-      r = new l(s);
+      const a = new u(s);
+      r = new T(a);
     }
-    return u(t, r, {
-      type: !0,
-      url: !0
-    }), r.needsUpdate = !0, r;
-  },
-  dispose({ target: e }) {
-    e.dispose();
-  }
-})), D = c(() => ({
-  type: "VideoTexture",
-  config: A,
-  commands: {
-    set: {
-      url({ model: e, target: t, value: n, engine: r }) {
-        e.toAsync((a) => (t.image = e.getResource(n, r, [HTMLVideoElement]), t.needsUpdate = !0, t.image !== e.replaceImage));
-      }
-    }
-  },
-  create({ model: e, config: t, engine: n }) {
-    const r = new I(document.createElement("video"));
-    return t.url && e.toAsync((a) => (r.image = e.getResource(t.url, n, [
-      HTMLVideoElement
-    ]), r.needsUpdate = !0, r.image !== e.replaceImage)), u(t, r, {
+    return c(t, r, {
       type: !0,
       url: !0
     }), r.needsUpdate = !0, r;
@@ -323,10 +301,55 @@ const B = c(() => ({
     e.dispose();
   }
 }));
-function N(e) {
+class D extends u {
+  constructor(t, n, r, s, a, i, o, m, f) {
+    super(
+      t,
+      n,
+      r,
+      s,
+      a,
+      i,
+      o,
+      m,
+      f
+    ), this.isVideoTexture = !0, this.format = o !== void 0 ? o : R, this.minFilter = i !== void 0 ? i : l, this.magFilter = a !== void 0 ? a : l, this.generateMipmaps = !1;
+  }
+  clone() {
+    return new this.constructor(this.image).copy(this);
+  }
+  update() {
+    const t = this.image, n = "requestVideoFrameCallback" in t;
+    n ? this.needsUpdate = !0 : n === !1 && t.readyState >= t.HAVE_CURRENT_DATA && (this.needsUpdate = !0);
+  }
+}
+const _ = d(() => ({
+  type: "VideoTexture",
+  config: F,
+  commands: {
+    set: {
+      url({ model: e, target: t, value: n, engine: r }) {
+        e.toAsync((s) => (t.image = e.getResource(n, r, [HTMLVideoElement]), t.needsUpdate = !0, t.image !== e.replaceImage));
+      }
+    }
+  },
+  create({ model: e, config: t, engine: n }) {
+    const r = new D(document.createElement("video"));
+    return t.url && e.toAsync((s) => (r.image = e.getResource(t.url, n, [
+      HTMLVideoElement
+    ]), r.needsUpdate = !0, r.image !== e.replaceImage)), c(t, r, {
+      type: !0,
+      url: !0
+    }), r.needsUpdate = !0, r;
+  },
+  dispose({ target: e }) {
+    e.dispose();
+  }
+}));
+function k(e) {
   e.generateLoadTextureConfig = function(t) {
-    const n = f(t, this, i);
-    return n instanceof HTMLCanvasElement ? null : b(U.LOADTEXTURE, {
+    const n = M(t, this, u);
+    return n instanceof HTMLCanvasElement ? null : w(I.LOADTEXTURE, {
       url: t,
       flipY: n.flipY,
       format: n.format,
@@ -336,23 +359,23 @@ function N(e) {
     });
   };
 }
-const k = v({
+const X = v({
   type: "texture",
   models: [
     Y,
+    G,
     $,
-    S,
     B,
-    D
+    _
   ],
-  extend: N
+  extend: k
 });
 export {
-  k as default,
+  X as default,
   j as getCanvasTextureConfig,
   O as getCubeTextureConfig,
-  V as getImageTextureConfig,
+  A as getImageTextureConfig,
   z as getLoadTextureConfig,
-  o as getTextureConfig,
-  A as getVideoTextureConfig
+  p as getTextureConfig,
+  F as getVideoTextureConfig
 };

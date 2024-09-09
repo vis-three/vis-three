@@ -22,7 +22,7 @@
         ShaderGeneratorManager,
       } from "@vis-three/library-module";
 
-      import { generateConfig } from "@vis-three/tdcm";
+      import { generateConfig, toSymbol } from "@vis-three/tdcm";
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
       import { linearTime, sinWare } from "@vis-three/library-animate-script";
@@ -58,18 +58,18 @@
       });
 
       const mesh = generateConfig("Mesh", {
-        material: material.vid,
-        geometry: geometry.vid,
+        material: toSymbol(material),
+        geometry: toSymbol(geometry),
       });
 
       const meshHelper = generateConfig("ObjectHelper", {
-        target: mesh.vid,
+        target: toSymbol(mesh),
       });
 
       const animation = generateConfig(
         "ScriptAnimation",
         {
-          target: material.vid,
+          target: toSymbol(material),
           attribute: ".uniforms.time.value",
           script: AniScriptGeneratorManager.generateConfig("linearTime", {
             multiply: 7,
@@ -83,7 +83,7 @@
       const animation2 = generateConfig(
         "ScriptAnimation",
         {
-          target: mesh.vid,
+          target: toSymbol(mesh),
           attribute: ".rotation.y",
           script: AniScriptGeneratorManager.generateConfig("linearTime", {
             multiply: 1,
@@ -97,7 +97,7 @@
       const animation3 = generateConfig(
         "ScriptAnimation",
         {
-          target: mesh.vid,
+          target: toSymbol(mesh),
           attribute: ".position.y",
           script: AniScriptGeneratorManager.generateConfig("sinWave", {
             amplitude: 10,
@@ -110,10 +110,10 @@
       );
 
       const scene = generateConfig("Scene", {
-        children: [pointLight.vid, mesh.vid],
+        children: [toSymbol(pointLight), toSymbol(mesh)],
       });
 
-      engine.setSceneBySymbol(scene.vid).play();
+      engine.setSceneBySymbol(toSymbol(scene)).play();
 
       const gui = new GUI();
 

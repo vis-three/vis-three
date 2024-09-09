@@ -1,4 +1,4 @@
-import { VideoTexture } from "three";
+import { VideoTexture } from "../extends/VideoTexture";
 import { getVideoTextureConfig, VideoTextureConfig } from "../TextureConfig";
 import { defineTextureModel, TextureModelShared } from "./TextureModel";
 import { syncObject } from "@vis-three/utils";

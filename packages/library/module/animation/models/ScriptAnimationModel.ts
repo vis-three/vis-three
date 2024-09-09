@@ -77,7 +77,7 @@ export default defineModel<
 
       if (!target || !configure) {
         console.warn(
-          "AnimationCompiler: can not found object target or config in engine",
+          "scrpit animation model: can not found object target or config in engine",
           config.vid
         );
       }
@@ -94,7 +94,7 @@ export default defineModel<
           configure = configure[key];
         } else {
           console.warn(
-            `AnimationCompiler: object and config attribute are not sync`
+            `scrpit animation model: object and config attribute are not sync`
           );
 
           return this;
@@ -130,6 +130,8 @@ export default defineModel<
             );
 
             compiler.symbolMap.delete(target);
+
+            model.restoreAttribute(config, engine);
 
             const newFun = model.createFunction(config, engine);
 

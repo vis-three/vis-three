@@ -126,6 +126,9 @@ export const defineMaterialModel = defineModel.extend<
   }) => T,
   <T extends Material>(params: { target: T }) => void
 >({
+  shared: {
+    cacheColor: new Color(),
+  },
   commands: {
     set: {
       $reg: [mapRegCommand, needUpdatesRegCommand],

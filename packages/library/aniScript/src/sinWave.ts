@@ -1,9 +1,8 @@
 import {
   AniScriptGenerator,
   BasicAniScriptConfig,
-  EngineSupport,
-  RenderEvent,
-} from "@vis-three/middleware";
+} from "@vis-three/module-animation";
+import { EngineSupport, RenderEvent } from "@vis-three/tdcm";
 
 export interface SinWave extends BasicAniScriptConfig {
   wavelength: number;

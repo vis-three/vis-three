@@ -1,2 +1,2 @@
-export * as linearTime from "./linearTime";
-export * as sinWare from "./sinWave";
+export * as linearTime from "./src/linearTime";
+export * as sinWare from "./src/sinWave";

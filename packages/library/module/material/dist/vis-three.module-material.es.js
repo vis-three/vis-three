@@ -1,5 +1,5 @@
 import { getBasicConfig as w, defineModel as v, MODULE_TYPE as C, defineModule as x, SUPPORT_LIFE_CYCLE as O } from "@vis-three/tdcm";
-import { FrontSide as j, OneMinusSrcAlphaFactor as L, AddEquation as P, NormalBlending as B, SrcAlphaFactor as I, MultiplyOperation as g, TangentSpaceNormalMap as M, Color as m, Texture as R, LineBasicMaterial as T, LineDashedMaterial as A, MeshBasicMaterial as U, MeshMatcapMaterial as E, MeshPhongMaterial as F, MeshPhysicalMaterial as D, MeshStandardMaterial as N, PointsMaterial as z, ShaderMaterial as $, SpriteMaterial as H } from "three";
+import { FrontSide as j, OneMinusSrcAlphaFactor as L, AddEquation as P, NormalBlending as B, SrcAlphaFactor as I, MultiplyOperation as g, TangentSpaceNormalMap as h, Color as M, Texture as R, LineBasicMaterial as T, LineDashedMaterial as A, MeshBasicMaterial as U, MeshMatcapMaterial as E, MeshPhongMaterial as F, MeshPhysicalMaterial as D, MeshStandardMaterial as N, PointsMaterial as z, ShaderMaterial as $, SpriteMaterial as H } from "three";
 import { syncObject as S } from "@vis-three/utils";
 const d = function() {
   return Object.assign(w(), {
@@ -61,7 +61,7 @@ const d = function() {
     flatShading: !1,
     lightMapIntensity: 1,
     metalness: 0,
-    normalMapType: M,
+    normalMapType: h,
     refractionRatio: 0.98,
     roughness: 1,
     wireframe: !1,
@@ -120,7 +120,7 @@ const d = function() {
     envMapIntensity: 1,
     flatShading: !1,
     lightMapIntensity: 1,
-    normalMapType: M,
+    normalMapType: h,
     refractionRatio: 0.98,
     wireframe: !1,
     wireframeLinecap: "round",
@@ -181,7 +181,7 @@ const d = function() {
     displacementBias: 0,
     flatShading: !1,
     fog: !0,
-    normalMapType: M,
+    normalMapType: h,
     normalSale: { x: 1, y: 1 },
     map: "",
     alphaMap: "",
@@ -195,7 +195,7 @@ const d = function() {
   handler({ target: t, key: e, value: a }) {
     t[e] = a, t.needsUpdate = !0;
   }
-}, h = function({
+}, m = function({
   model: t,
   target: e,
   key: a,
@@ -216,10 +216,10 @@ const d = function() {
     ), e[a] = null, !1);
   });
 }, Z = function() {
-  return h;
+  return m;
 }, G = {
   reg: new RegExp("map$", "i"),
-  handler: h
+  handler: m
 }, _ = function({
   model: t,
   target: e,
@@ -230,6 +230,9 @@ const d = function() {
 }, s = function() {
   return _;
 }, l = v.extend({
+  shared: {
+    cacheColor: new M()
+  },
   commands: {
     set: {
       $reg: [G, Q]
@@ -243,13 +246,13 @@ const d = function() {
   }) {
     const n = {};
     for (const i of Object.keys(a))
-      i.toLocaleLowerCase().endsWith("map") && a[i] ? (h.call(t, {
+      i.toLocaleLowerCase().endsWith("map") && a[i] ? (m.call(t, {
         model: t,
         target: e,
         key: i,
         value: a[i],
         engine: r
-      }), n[i] = !0) : e[i] instanceof m && (e[i] = new m(a[i]), n[i] = !0);
+      }), n[i] = !0) : e[i] instanceof M && (e[i] = new M(a[i]), n[i] = !0);
     return S(a, e, n), e.needsUpdate = !0, e;
   },
   dispose({ target: t }) {
