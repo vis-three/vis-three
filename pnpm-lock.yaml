@@ -773,40 +773,12 @@ importers:
 
   packages/library/aniScript:
     dependencies:
+      '@vis-three/module-animation':
+        specifier: workspace:^
+        version: link:../module/animation
       '@vis-three/tdcm':
         specifier: workspace:^
         version: link:../../tdcm
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
 
   packages/library/constraintor:
     dependencies:
@@ -829,18 +801,6 @@ importers:
         specifier: workspace:^
         version: link:../../tdcm
     devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
       '@vis-three/module-animation':
         specifier: workspace:^
         version: link:../module/animation
@@ -859,30 +819,6 @@ importers:
       '@vis-three/module-scene':
         specifier: workspace:^
         version: link:../module/scene
-      '@vis-three/orbit-controls-plugin':
-        specifier: ^0.5.12
-        version: 0.5.12
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
-      vite:
-        specifier: ^2.9.15
-        version: 2.9.18(less@4.2.0)
 
   packages/library/modifier:
     dependencies:
@@ -5441,22 +5377,6 @@ packages:
 
   /@ungap/structured-clone@1.2.0:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
-    dev: true
-
-  /@vis-three/core@0.5.10:
-    resolution: {integrity: sha512-pVmx0oa2dAByDNRPzr5IlIdwqx2CUG7qYAwkRYNRhvF6KUm9fH4ohj9bObyCpWlBFbGGt3AZ6CtM7tWMbHBDRA==}
-    engines: {node: '>=14.15.0'}
-    dev: true
-
-  /@vis-three/orbit-controls-plugin@0.5.12:
-    resolution: {integrity: sha512-oFhVgjdGYOc4GbS3i6FP981WVWwQhZU1vIAH8tRjPyle+U9c+5XsVjWGmEhjDQ+zWZI9XIJw7XeOV3fr/X3i1g==}
-    dependencies:
-      '@vis-three/core': 0.5.10
-      '@vis-three/utils': 0.5.0
-    dev: true
-
-  /@vis-three/utils@0.5.0:
-    resolution: {integrity: sha512-A35hVqYWM68cNcIuB0RhnWJ0zv2csEWZoRiCeS1c11Nfe9ooLoRT3K7N89/2XNMzcWS2aHEqWumgmzIiA86jSw==}
     dev: true
 
   /@vitejs/plugin-vue@2.3.4(vite@2.9.18)(vue@3.4.38):

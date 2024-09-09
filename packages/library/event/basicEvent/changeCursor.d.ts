@@ -1,4 +1,5 @@
-import { BasicEventConfig, EngineSupport, EventGenerator } from "@vis-three/middleware";
+import { EngineSupport } from "@vis-three/tdcm";
+import { BasicEventConfig, EventGenerator } from "@vis-three/module-object";
 export interface ChangeCursor extends BasicEventConfig {
     params: {
         cursor: string;

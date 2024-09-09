@@ -22,7 +22,7 @@
     <script type="module">
       import * as THREE from "three";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
-      import { generateConfig, CONFIGTYPE } from "@vis-three/tdcm";
+      import { generateConfig, CONFIG_TYPE } from "@vis-three/tdcm";
 
       const engine = new ModelingEngineSupport()
         .setDom(document.getElementById("app"))
@@ -48,14 +48,14 @@
       const meshMaterial = generateConfig("MeshStandardMaterial");
 
       const geometryTypeList = [
-        CONFIGTYPE.BOXGEOMETRY,
-        CONFIGTYPE.SPHEREGEOMETRY,
-        CONFIGTYPE.PLANEGEOMETRY,
-        CONFIGTYPE.CIRCLEGEOMETRY,
-        CONFIGTYPE.CONEGEOMETRY,
-        CONFIGTYPE.CYLINDERGEOMETRY,
-        CONFIGTYPE.RINGGEOMETRY,
-        CONFIGTYPE.TORUSGEOMETRY,
+        CONFIG_TYPE.BOXGEOMETRY,
+        CONFIG_TYPE.SPHEREGEOMETRY,
+        CONFIG_TYPE.PLANEGEOMETRY,
+        CONFIG_TYPE.CIRCLEGEOMETRY,
+        CONFIG_TYPE.CONEGEOMETRY,
+        CONFIG_TYPE.CYLINDERGEOMETRY,
+        CONFIG_TYPE.RINGGEOMETRY,
+        CONFIG_TYPE.TORUSGEOMETRY,
       ];
 
       const size = 15;

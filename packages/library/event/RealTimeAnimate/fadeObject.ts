@@ -1,11 +1,11 @@
 import { Tween } from "@tweenjs/tween.js";
 import {
-  BasicEventConfig,
   EngineSupport,
-  EventGenerator,
   ObjectEvent,
   RenderEvent,
-} from "@vis-three/middleware";
+  Vector3Config,
+} from "@vis-three/tdcm";
+import { BasicEventConfig, EventGenerator } from "@vis-three/module-object";
 import { Material } from "three";
 import { timingFunction, TIMINGFUNCTION } from "./common";
 import { MaterialConfig } from "@vis-three/module-material";

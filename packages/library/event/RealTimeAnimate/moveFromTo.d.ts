@@ -1,4 +1,5 @@
-import { BasicEventConfig, EventGenerator, Vector3Config } from "@vis-three/middleware";
+import { Vector3Config } from "@vis-three/tdcm";
+import { BasicEventConfig, EventGenerator } from "@vis-three/module-object";
 import { TIMINGFUNCTION } from "./common";
 export interface moveFromTo extends BasicEventConfig {
     params: {

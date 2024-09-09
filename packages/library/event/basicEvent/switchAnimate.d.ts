@@ -1,4 +1,4 @@
-import { BasicEventConfig, EventGenerator } from "@vis-three/middleware";
+import { BasicEventConfig, EventGenerator } from "@vis-three/module-object";
 export interface SwitchAnimate extends BasicEventConfig {
     params: {
         target: string;

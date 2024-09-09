@@ -1,8 +1,10 @@
 import {
-  BasicEventConfig,
-  EventGenerator,
+  EngineSupport,
   ObjectEvent,
-} from "@vis-three/middleware";
+  RenderEvent,
+  Vector3Config,
+} from "@vis-three/tdcm";
+import { BasicEventConfig, EventGenerator } from "@vis-three/module-object";
 
 import { CameraEngineSupport } from "@vis-three/module-camera";
 
@@ -22,10 +24,7 @@ export const config: ChangeCamera = {
 };
 
 export const generator: EventGenerator<ChangeCamera, CameraEngineSupport> =
-  function (
-    engine,
-    config
-  ): (event?: ObjectEvent) => void {
+  function (engine, config): (event?: ObjectEvent) => void {
     const params = config.params;
     return () => {
       setTimeout(() => {

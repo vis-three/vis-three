@@ -1,10 +1,5 @@
-import {
-  BasicEventConfig,
-  EngineSupport,
-  EventGenerator,
-  ObjectEvent,
-  Vector3Config,
-} from "@vis-three/middleware";
+import { ObjectEvent } from "@vis-three/tdcm";
+import { BasicEventConfig, EventGenerator } from "@vis-three/module-object";
 import { ObjectConfig } from "@vis-three/module-object";
 import { SceneEngineSupport } from "@vis-three/module-scene";
 
@@ -38,7 +33,9 @@ export const generator: EventGenerator<SetParent, SceneEngineSupport> =
     }
     return () => {
       setTimeout(() => {
-        parent.children.push(params.target);
+        if (!parent.children.includes(params.target)) {
+          parent.children.push(params.target);
+        }
       }, params.delay);
     };
   };

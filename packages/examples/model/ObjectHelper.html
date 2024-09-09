@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>helper</title>
+    <title>Objecthelper</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/common.css" />
   </head>
@@ -22,7 +22,7 @@
     <script type="module">
       import * as THREE from "three";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
-      import { generateConfig, CONFIGTYPE } from "@vis-three/tdcm";
+      import { generateConfig, CONFIG_TYPE, toSymbol } from "@vis-three/tdcm";
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
       const engine = new ModelingEngineSupport()
@@ -35,37 +35,40 @@
 
       const scene = generateConfig("Scene");
 
-      engine.setSceneBySymbol(scene.vid);
+      engine.setSceneBySymbol(toSymbol(scene));
 
       generateConfig.injectScene = true;
 
-      const pointLight = generateConfig(CONFIGTYPE.POINTLIGHT, {
+      const pointLight = generateConfig(CONFIG_TYPE.POINTLIGHT, {
         position: {
           y: 20,
           z: 15,
         },
       });
 
-      const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {});
+      const material = generateConfig(CONFIG_TYPE.MESHSTANDARDMATERIAL, {});
 
-      const geometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
-        width: 20,
-        height: 10,
-        depth: 10,
+      const geometry = generateConfig(CONFIG_TYPE.SPHEREGEOMETRY, {
+        radius: 10,
       });
 
-      const mesh = generateConfig(CONFIGTYPE.MESH, {
-        material: material.vid,
-        geometry: geometry.vid,
+      const mesh = generateConfig(CONFIG_TYPE.MESH, {
+        material: toSymbol(material),
+        geometry: toSymbol(geometry),
+        position: {
+          x: 5,
+          y: 5,
+          z: 5,
+        },
       });
 
-      const lightHelper = generateConfig(CONFIGTYPE.OBJECTHELPER, {
-        target: pointLight.vid,
+      const lightHelper = generateConfig(CONFIG_TYPE.OBJECTHELPER, {
+        target: toSymbol(pointLight),
         shape: true,
       });
 
-      const meshHelper = generateConfig(CONFIGTYPE.OBJECTHELPER, {
-        target: mesh.vid,
+      const meshHelper = generateConfig(CONFIG_TYPE.OBJECTHELPER, {
+        target: toSymbol(mesh),
         shape: true,
       });
 
@@ -78,8 +81,6 @@
       gui.add(meshHelper, "geometricOrigin");
 
       gui.add(meshHelper, "localAxes");
-
-      window.engine = engine;
     </script>
   </body>
 </html>

@@ -1,6 +1,7 @@
-import { BasicEventConfig, EngineSupport, EventGenerator, Vector3Config } from "@vis-three/middleware";
+import { EngineSupport, Vector3Config } from "@vis-three/tdcm";
+import { BasicEventConfig, EventGenerator } from "@vis-three/module-object";
 import { TIMINGFUNCTION } from "./common";
-import { OrbitControlsEngine } from "@vis-three/orbit-controls-plugin";
+import { OrbitControlsEngine } from "@vis-three/plugin-orbit-controls";
 export interface FocusObject extends BasicEventConfig {
     params: {
         target: string;

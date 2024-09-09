@@ -1,197 +1,153 @@
-import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
-import { Easing, Tween } from "@tweenjs/tween.js";
-export { Tween } from "@tweenjs/tween.js";
-import { Color, Material, Object3D, Euler, Vector3, Matrix4 } from "three";
-const config$k = {
+import { CSS3DObject as $ } from "three/examples/jsm/renderers/CSS3DRenderer.js";
+import { Easing as S, Tween as g } from "@tweenjs/tween.js";
+import { Color as I, Material as N, Object3D as C, Euler as M, Vector3 as w, Matrix4 as U } from "three";
+const F = {
   name: "addClass",
   params: {
     target: "",
     className: "",
     delay: 0
   }
-};
-const generator$k = function(engine, config2) {
-  const params = config2.params;
-  const targets = [];
-  if (params.target === "all") {
-    engine.scene.traverse((object) => {
-      if (object instanceof CSS3DObject) {
-        targets.push(object);
-      }
+}, L = function(e, l) {
+  const t = l.params, n = [];
+  if (t.target === "all")
+    e.scene.traverse((r) => {
+      r instanceof $ && n.push(r);
     });
-  } else if (Array.isArray(params.target)) {
-    params.target.forEach((symbol) => {
-      const target = engine.getObjectBySymbol(symbol);
-      if (!target) {
-        console.warn(
-          `basic event AddClass: can not found vid object: ${params.target}`
-        );
-      } else {
-        targets.push(target);
-      }
-    });
-  } else {
-    const target = engine.getObjectBySymbol(params.target);
-    if (!target) {
-      console.warn(
-        `basic event AddClass: can not found vid object: ${params.target}`
+  else if (Array.isArray(t.target))
+    t.target.forEach((r) => {
+      const i = e.getObjectBySymbol(r);
+      i ? n.push(i) : console.warn(
+        `basic event AddClass: can not found vid object: ${t.target}`
       );
-      return () => {
+    });
+  else {
+    const r = e.getObjectBySymbol(t.target);
+    if (!r)
+      return console.warn(
+        `basic event AddClass: can not found vid object: ${t.target}`
+      ), () => {
       };
-    }
-    if (!(target instanceof CSS3DObject)) {
-      console.warn(`basic event AddClass: object is not a CSS3DObject.`);
-      return () => {
+    if (!(r instanceof $))
+      return console.warn("basic event AddClass: object is not a CSS3DObject."), () => {
       };
-    }
-    targets.push(target);
+    n.push(r);
   }
-  if (!targets.length) {
-    console.warn(
-      `basic event AddClass: can not found vid object: ${params.target}`
-    );
-    return () => {
-    };
-  }
-  return () => {
+  return n.length ? () => {
     setTimeout(() => {
-      targets.forEach((target) => {
-        target.element.classList.add(params.className);
+      n.forEach((r) => {
+        r.element.classList.add(t.className);
       });
-    }, params.delay);
-  };
-};
-var addClass = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    }, t.delay);
+  } : (console.warn(
+    `basic event AddClass: can not found vid object: ${t.target}`
+  ), () => {
+  });
+}, R = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$k,
-  generator: generator$k
-}, Symbol.toStringTag, { value: "Module" }));
-const config$j = {
+  config: F,
+  generator: L
+}, Symbol.toStringTag, { value: "Module" })), h = {
   name: "changeCamera",
   params: {
     camera: "",
     delay: 0
   }
-};
-const generator$j = function(engine, config2) {
-  const params = config2.params;
+}, Q = function(e, l) {
+  const t = l.params;
   return () => {
     setTimeout(() => {
-      engine.setCameraBySymbol(params.camera);
-    }, params.delay);
+      e.setCameraBySymbol(t.camera);
+    }, t.delay);
   };
-};
-var changeCamera = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, D = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$j,
-  generator: generator$j
-}, Symbol.toStringTag, { value: "Module" }));
-const config$i = {
+  config: h,
+  generator: Q
+}, Symbol.toStringTag, { value: "Module" })), B = {
   name: "changeScene",
   params: {
     scene: "Scene",
     delay: 0
   }
-};
-const generator$i = function(engine, config2) {
-  const params = config2.params;
+}, P = function(e, l) {
+  const t = l.params;
   return () => {
     setTimeout(() => {
-      engine.setSceneBySymbol(params.scene);
-    }, params.delay);
+      e.setSceneBySymbol(t.scene);
+    }, t.delay);
   };
-};
-var changeScene = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, G = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$i,
-  generator: generator$i
-}, Symbol.toStringTag, { value: "Module" }));
-const config$h = {
+  config: B,
+  generator: P
+}, Symbol.toStringTag, { value: "Module" })), k = {
   name: "openWindow",
   params: {
     url: ""
   }
-};
-const generator$h = function(engine, config2) {
+}, W = function(e, l) {
   return () => {
-    window.open(config2.params.url);
+    window.open(l.params.url);
   };
-};
-var openWindow = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, H = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$h,
-  generator: generator$h
-}, Symbol.toStringTag, { value: "Module" }));
-const config$g = {
+  config: k,
+  generator: W
+}, Symbol.toStringTag, { value: "Module" })), V = {
   name: "switchAnimate",
   params: {
     target: "",
     toggle: "auto",
     delay: 0
   }
-};
-const generator$g = function(engine, config2) {
-  const params = config2.params;
-  const target = engine.getConfigBySymbol(params.target);
-  if (!target) {
-    console.warn(
-      `basic event switchAnimate: can not found vid config: ${params.target}`
-    );
-    return () => {
-    };
-  }
-  return () => {
+}, q = function(e, l) {
+  const t = l.params, n = e.getConfigBySymbol(t.target);
+  return n ? () => {
     setTimeout(() => {
-      if (params.toggle === "auto") {
-        target.play != target.play;
+      if (t.toggle === "auto") {
+        n.play != n.play;
         return;
       }
-      if (params.toggle === "off") {
-        target.play = false;
+      if (t.toggle === "off") {
+        n.play = !1;
         return;
       }
-      if (params.toggle === "on") {
-        target.play = true;
+      if (t.toggle === "on") {
+        n.play = !0;
         return;
       }
-    }, params.delay);
-  };
-};
-var switchAnimate = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    }, t.delay);
+  } : (console.warn(
+    `basic event switchAnimate: can not found vid config: ${t.target}`
+  ), () => {
+  });
+}, J = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$g,
-  generator: generator$g
-}, Symbol.toStringTag, { value: "Module" }));
-const config$f = {
+  config: V,
+  generator: q
+}, Symbol.toStringTag, { value: "Module" })), K = {
   name: "visibleObject",
   params: {
     target: "",
-    visible: true,
+    visible: !0,
     delay: 0
   }
-};
-const generator$f = function(engine, config2) {
-  const params = config2.params;
-  const target = engine.getObjectBySymbol(params.target);
-  if (!target) {
-    console.warn(
-      `basic event visibleObject: can not found vid object: ${params.target}`
-    );
-    return () => {
-    };
-  }
-  return () => {
+}, X = function(e, l) {
+  const t = l.params, n = e.getObjectBySymbol(t.target);
+  return n ? () => {
     setTimeout(() => {
-      target.visible = params.visible;
-    }, params.delay);
-  };
-};
-var visibleObject = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+      n.visible = t.visible;
+    }, t.delay);
+  } : (console.warn(
+    `basic event visibleObject: can not found vid object: ${t.target}`
+  ), () => {
+  });
+}, Y = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$f,
-  generator: generator$f
-}, Symbol.toStringTag, { value: "Module" }));
-const config$e = {
+  config: K,
+  generator: X
+}, Symbol.toStringTag, { value: "Module" })), Z = {
   name: "setPosition",
   params: {
     target: "",
@@ -202,99 +158,69 @@ const config$e = {
     },
     delay: 0
   }
-};
-const generator$e = function(engine, config2) {
-  const params = config2.params;
-  const target = engine.getConfigBySymbol(params.target);
-  if (!target) {
-    console.warn(
-      `basic event setPosition: can not found vid config: ${params.target}`
-    );
-    return () => {
-    };
-  }
-  return () => {
+}, tt = function(e, l) {
+  const t = l.params, n = e.getConfigBySymbol(t.target);
+  return n ? () => {
     setTimeout(() => {
-      target.position.x = params.position.x;
-      target.position.y = params.position.y;
-      target.position.z = params.position.z;
-    }, params.delay);
-  };
-};
-var setPosition = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+      n.position.x = t.position.x, n.position.y = t.position.y, n.position.z = t.position.z;
+    }, t.delay);
+  } : (console.warn(
+    `basic event setPosition: can not found vid config: ${t.target}`
+  ), () => {
+  });
+}, et = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$e,
-  generator: generator$e
-}, Symbol.toStringTag, { value: "Module" }));
-const config$d = {
+  config: Z,
+  generator: tt
+}, Symbol.toStringTag, { value: "Module" })), nt = {
   name: "setParent",
   params: {
     target: "",
     parent: "",
     delay: 0
   }
-};
-const generator$d = function(engine, config2) {
-  const params = config2.params;
-  const parent = engine.getConfigBySymbol(params.parent);
-  if (!parent) {
-    console.warn(
-      `basic event setParent: can not found vid config: ${params.parent}`
-    );
-    return () => {
-    };
-  }
-  return () => {
+}, ot = function(e, l) {
+  const t = l.params, n = e.getConfigBySymbol(t.parent);
+  return n ? () => {
     setTimeout(() => {
-      parent.children.push(params.target);
-    }, params.delay);
-  };
-};
-var setParent = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+      n.children.includes(t.target) || n.children.push(t.target);
+    }, t.delay);
+  } : (console.warn(
+    `basic event setParent: can not found vid config: ${t.parent}`
+  ), () => {
+  });
+}, rt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$d,
-  generator: generator$d
-}, Symbol.toStringTag, { value: "Module" }));
-const config$c = {
+  config: nt,
+  generator: ot
+}, Symbol.toStringTag, { value: "Module" })), at = {
   name: "changeCursor",
   params: {
     cursor: "",
     delay: 0
   }
-};
-const generator$c = function(engine, config2) {
-  const params = config2.params;
+}, it = function(e, l) {
+  const t = l.params;
   return () => {
     setTimeout(() => {
-      document.body.style.cursor = params.cursor;
-    }, params.delay);
+      document.body.style.cursor = t.cursor;
+    }, t.delay);
   };
-};
-var changeCursor = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, ct = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$c,
-  generator: generator$c
+  config: at,
+  generator: it
 }, Symbol.toStringTag, { value: "Module" }));
-var TIMINGFUNCTION = /* @__PURE__ */ ((TIMINGFUNCTION2) => {
-  TIMINGFUNCTION2["EASING_LINEAR_NONE"] = "EASING_LINEAR_NONE";
-  TIMINGFUNCTION2["EASING_QUARTIC_IN"] = "EASING_QUARTIC_IN";
-  TIMINGFUNCTION2["EASING_QUARTIC_OUT"] = "EASING_QUARTIC_OUT";
-  TIMINGFUNCTION2["EASING_QUARTIC_INOUT"] = "EASING_QUARTIC_INOUT";
-  TIMINGFUNCTION2["EASING_QUADRATIC_IN"] = "EASING_QUADRATIC_IN";
-  TIMINGFUNCTION2["EASING_QUADRATIC_OUT"] = "EASING_QUADRATIC_OUT";
-  TIMINGFUNCTION2["EASING_QUADRATIC_INOUT"] = "EASING_QUADRATIC_INOUT";
-  return TIMINGFUNCTION2;
-})(TIMINGFUNCTION || {});
-const timingFunction = {
-  EASING_LINEAR_NONE: Easing.Linear.None,
-  EASING_QUARTIC_IN: Easing.Quartic.In,
-  EASING_QUARTIC_OUT: Easing.Quartic.Out,
-  EASING_QUARTIC_INOUT: Easing.Quartic.InOut,
-  EASING_QUADRATIC_IN: Easing.Quadratic.In,
-  EASING_QUADRATIC_OUT: Easing.Quadratic.Out,
-  EASING_QUADRATIC_INOUT: Easing.Quadratic.InOut
-};
-const config$b = {
+var p = /* @__PURE__ */ ((e) => (e.EASING_LINEAR_NONE = "EASING_LINEAR_NONE", e.EASING_QUARTIC_IN = "EASING_QUARTIC_IN", e.EASING_QUARTIC_OUT = "EASING_QUARTIC_OUT", e.EASING_QUARTIC_INOUT = "EASING_QUARTIC_INOUT", e.EASING_QUADRATIC_IN = "EASING_QUADRATIC_IN", e.EASING_QUADRATIC_OUT = "EASING_QUADRATIC_OUT", e.EASING_QUADRATIC_INOUT = "EASING_QUADRATIC_INOUT", e))(p || {});
+const m = {
+  EASING_LINEAR_NONE: S.Linear.None,
+  EASING_QUARTIC_IN: S.Quartic.In,
+  EASING_QUARTIC_OUT: S.Quartic.Out,
+  EASING_QUARTIC_INOUT: S.Quartic.InOut,
+  EASING_QUADRATIC_IN: S.Quadratic.In,
+  EASING_QUADRATIC_OUT: S.Quadratic.Out,
+  EASING_QUADRATIC_INOUT: S.Quadratic.InOut
+}, st = {
   name: "colorChange",
   params: {
     target: "",
@@ -302,154 +228,110 @@ const config$b = {
     color: "rgb(255, 255, 255)",
     delay: 0,
     duration: 500,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+    timingFunction: p.EASING_QUADRATIC_INOUT
   }
-};
-const generator$b = function(engine, config2) {
-  const params = config2.params;
-  const material = engine.getObjectBySymbol(params.target);
-  if (!material) {
-    console.warn(
-      `real time animation ColorChange: can not found vid material: ${params.target}`
-    );
-    return () => {
+}, lt = function(e, l) {
+  const t = l.params, n = e.getObjectBySymbol(t.target);
+  if (!n)
+    return console.warn(
+      `real time animation ColorChange: can not found vid material: ${t.target}`
+    ), () => {
     };
-  }
-  if (!material[params.attribute] || !(material[params.attribute] instanceof Color)) {
-    console.warn(
-      `real time animation ColorChange: material attribute is illeage: ${params.attribute}`
-    );
-    return () => {
+  if (!n[t.attribute] || !(n[t.attribute] instanceof I))
+    return console.warn(
+      `real time animation ColorChange: material attribute is illeage: ${t.attribute}`
+    ), () => {
     };
-  }
-  const supportData = engine.getConfigBySymbol(params.target);
-  if (!supportData) {
-    console.warn(
-      `real time animation ColorChange: can not found material config: ${params.target}`
-    );
-    return () => {
+  const r = e.getConfigBySymbol(t.target);
+  if (!r)
+    return console.warn(
+      `real time animation ColorChange: can not found material config: ${t.target}`
+    ), () => {
     };
-  }
-  const color = new Color(params.color);
-  const renderManager = engine.renderManager;
-  let animating = false;
+  const i = new I(t.color), c = e.renderManager;
+  let o = !1;
   return () => {
-    if (animating) {
+    if (o)
       return;
-    }
-    animating = true;
-    const tween = new Tween(material[params.attribute]).to({
-      r: color.r,
-      g: color.g,
-      b: color.b
-    }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const renderFun = (event) => {
-      tween.update();
+    o = !0;
+    const a = new g(n[t.attribute]).to({
+      r: i.r,
+      g: i.g,
+      b: i.b
+    }).duration(t.duration).delay(t.delay).easing(m[t.timingFunction]).start(), s = (u) => {
+      a.update();
     };
-    renderManager.addEventListener("render", renderFun);
-    tween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      supportData[params.attribute] = params.color;
-      animating = false;
+    c.addEventListener("render", s), a.onComplete(() => {
+      c.removeEventListener("render", s), r[t.attribute] = t.color, o = !1;
     });
   };
-};
-var colorChange = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, ut = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$b,
-  generator: generator$b
-}, Symbol.toStringTag, { value: "Module" }));
-const config$a = {
+  config: st,
+  generator: lt
+}, Symbol.toStringTag, { value: "Module" })), dt = {
   name: "fadeObject",
   params: {
     target: "",
     direction: "out",
     delay: 0,
     duration: 300,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
-    visible: true
+    timingFunction: p.EASING_QUADRATIC_INOUT,
+    visible: !0
   }
-};
-const generator$a = function(engine, config2) {
-  const params = config2.params;
-  const target = engine.getObjectBySymbol(params.target);
-  if (!target) {
-    console.warn(
-      `real time animation fadeObject: can not found vid object: ${params.target}`
-    );
-    return () => {
+}, gt = function(e, l) {
+  const t = l.params, n = e.getObjectBySymbol(t.target);
+  if (!n)
+    return console.warn(
+      `real time animation fadeObject: can not found vid object: ${t.target}`
+    ), () => {
     };
-  }
-  const objectConfig = engine.getObjectConfig(target);
-  if (!objectConfig.material) {
-    console.warn(
-      `real time animation fadeObject: target can not support fade: ${params.target}`
-    );
-    return () => {
+  const r = e.getObjectConfig(n);
+  if (!r.material)
+    return console.warn(
+      `real time animation fadeObject: target can not support fade: ${t.target}`
+    ), () => {
     };
-  }
-  const materialList = [];
-  const materialConfigList = [];
-  const materialSymbolList = Array.isArray(objectConfig.material) ? [].concat(objectConfig.material) : [objectConfig.material];
-  for (const vid of materialSymbolList) {
-    const material = engine.getObjectBySymbol(vid);
-    const materialConfig = engine.getConfigBySymbol(vid);
-    if (!(material instanceof Material)) {
+  const i = [], c = [], o = Array.isArray(r.material) ? [].concat(r.material) : [r.material];
+  for (const s of o) {
+    const u = e.getObjectBySymbol(s), d = e.getConfigBySymbol(s);
+    if (!(u instanceof N)) {
       console.error(
-        `real time animation fadeObject: object config material is not instanceof Material: ${vid}`
+        `real time animation fadeObject: object config material is not instanceof Material: ${s}`
       );
       continue;
     }
-    if (!materialConfig) {
+    if (!d) {
       console.error(
-        `real time animation fadeObject: object config material can not found config: ${vid}`
+        `real time animation fadeObject: object config material can not found config: ${s}`
       );
       continue;
     }
-    materialList.push(material);
-    materialConfigList.push(materialConfig);
+    i.push(u), c.push(d);
   }
-  let animating = false;
+  let a = !1;
   return () => {
-    if (animating) {
+    if (a)
       return;
-    }
-    animating = true;
-    const renderManager = engine.renderManager;
-    objectConfig.visible = true;
-    materialList.forEach((material, i, arr) => {
-      material.visible = true;
-      material.transparent = true;
-      material.opacity = params.direction === "in" ? 0 : 1;
-      material.needsUpdate = true;
-      const tween = new Tween(material).to({
-        opacity: params.direction === "in" ? 1 : 0
-      }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-      const renderFun = (event) => {
-        tween.update();
+    a = !0;
+    const s = e.renderManager;
+    r.visible = !0, i.forEach((u, d, b) => {
+      u.visible = !0, u.transparent = !0, u.opacity = t.direction === "in" ? 0 : 1, u.needsUpdate = !0;
+      const y = new g(u).to({
+        opacity: t.direction === "in" ? 1 : 0
+      }).duration(t.duration).delay(t.delay).easing(m[t.timingFunction]).start(), v = (O) => {
+        y.update();
       };
-      renderManager.addEventListener("render", renderFun);
-      tween.onComplete(() => {
-        renderManager.removeEventListener("render", renderFun);
-        if (params.direction === "out" && params.visible) {
-          materialConfigList[i].visible = false;
-          objectConfig.visible = false;
-        } else if (params.direction === "in" && params.visible) {
-          materialConfigList[i].visible = true;
-          objectConfig.visible = true;
-        }
-        materialConfigList[i].opacity = params.direction === "in" ? 1 : 0;
-        animating = false;
+      s.addEventListener("render", v), y.onComplete(() => {
+        s.removeEventListener("render", v), t.direction === "out" && t.visible ? (c[d].visible = !1, r.visible = !1) : t.direction === "in" && t.visible && (c[d].visible = !0, r.visible = !0), c[d].opacity = t.direction === "in" ? 1 : 0, a = !1;
       });
     });
   };
-};
-var fadeObject = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, mt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$a,
-  generator: generator$a
-}, Symbol.toStringTag, { value: "Module" }));
-const config$9 = {
+  config: dt,
+  generator: gt
+}, Symbol.toStringTag, { value: "Module" })), ft = {
   name: "focusObject",
   params: {
     target: "",
@@ -462,170 +344,120 @@ const config$9 = {
     },
     delay: 0,
     duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
-    back: true
+    timingFunction: p.EASING_QUADRATIC_INOUT,
+    back: !0
   }
-};
-const generator$9 = function(engine, config2) {
-  const params = config2.params;
-  const target = engine.getObjectBySymbol(params.target);
-  const orbTarget = engine.orbitControls.target;
-  if (!target) {
-    console.warn(
-      `real time animation focusObject: can not found vid object: ${params.target}`
-    );
-    return () => {
+}, pt = function(e, l) {
+  const t = l.params, n = e.getObjectBySymbol(t.target), r = e.orbitControls.target;
+  if (!n)
+    return console.warn(
+      `real time animation focusObject: can not found vid object: ${t.target}`
+    ), () => {
     };
-  }
-  if (!(target instanceof Object3D)) {
-    console.warn(
-      `real time animation focusObject: vid object is not a class of THREE.Object3D: ${params.target}`
-    );
-    return () => {
+  if (!(n instanceof C))
+    return console.warn(
+      `real time animation focusObject: vid object is not a class of THREE.Object3D: ${t.target}`
+    ), () => {
     };
-  }
-  let animating = false;
-  const cacheEuler = new Euler();
+  let i = !1;
+  const c = new M();
   return () => {
-    if (animating) {
+    if (i)
       return;
-    }
-    animating = true;
-    let camera = engine.camera;
-    if (params.camera) {
-      camera = engine.getObjectBySymbol(params.camera);
-      if (!camera) {
-        camera = engine.camera;
-        console.warn(
-          `real time animation focusObject: can not found camera config: ${params.camera}`
-        );
-      }
-    }
-    const cameraConfig = engine.getObjectConfig(camera);
-    const orb = engine.orbitControls && engine.orbitControls.object === camera;
-    if (!cameraConfig) {
-      console.warn(`engine current camera can not found config.`);
-    }
-    const renderManager = engine.renderManager;
-    let position = {
-      x: target.matrixWorld.elements[12] + params.offset.x,
-      y: target.matrixWorld.elements[13] + params.offset.y,
-      z: target.matrixWorld.elements[14] + params.offset.z
+    i = !0;
+    let o = e.camera;
+    t.camera && (o = e.getObjectBySymbol(t.camera), o || (o = e.camera, console.warn(
+      `real time animation focusObject: can not found camera config: ${t.camera}`
+    )));
+    const a = e.getObjectConfig(o), s = e.orbitControls && e.orbitControls.object === o;
+    a || console.warn("engine current camera can not found config.");
+    const u = e.renderManager;
+    let d = {
+      x: n.matrixWorld.elements[12] + t.offset.x,
+      y: n.matrixWorld.elements[13] + t.offset.y,
+      z: n.matrixWorld.elements[14] + t.offset.z
     };
-    const backPosition = {
-      x: camera.position.x,
-      y: camera.position.y,
-      z: camera.position.z
+    const b = {
+      x: o.position.x,
+      y: o.position.y,
+      z: o.position.z
     };
-    if (params.space === "local") {
-      const vector3 = new Vector3(
-        params.offset.x,
-        params.offset.y,
-        params.offset.z
-      ).applyEuler(cacheEuler.setFromRotationMatrix(target.matrixWorld));
-      position = {
-        x: target.matrixWorld.elements[12] + vector3.x,
-        y: target.matrixWorld.elements[13] + vector3.y,
-        z: target.matrixWorld.elements[14] + vector3.z
+    if (t.space === "local") {
+      const f = new w(
+        t.offset.x,
+        t.offset.y,
+        t.offset.z
+      ).applyEuler(c.setFromRotationMatrix(n.matrixWorld));
+      d = {
+        x: n.matrixWorld.elements[12] + f.x,
+        y: n.matrixWorld.elements[13] + f.y,
+        z: n.matrixWorld.elements[14] + f.z
       };
     }
-    const positionTween = new Tween(camera.position).to(position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    let upTween;
-    const backUp = {
-      x: camera.up.x,
-      y: camera.up.y,
-      z: camera.up.z
+    const y = new g(o.position).to(d).duration(t.duration).delay(t.delay).easing(m[t.timingFunction]).start();
+    let v;
+    const O = {
+      x: o.up.x,
+      y: o.up.y,
+      z: o.up.z
     };
-    if (params.space === "local") {
-      const upVector3 = new Vector3(0, 1, 0).applyEuler(
-        cacheEuler.setFromRotationMatrix(target.matrixWorld)
+    if (t.space === "local") {
+      const f = new w(0, 1, 0).applyEuler(
+        c.setFromRotationMatrix(n.matrixWorld)
       );
-      upTween = new Tween(camera.up).to({
-        x: upVector3.x,
-        y: upVector3.y,
-        z: upVector3.z
-      }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
+      v = new g(o.up).to({
+        x: f.x,
+        y: f.y,
+        z: f.z
+      }).duration(t.duration).delay(t.delay).easing(m[t.timingFunction]).start();
     }
-    let orbTween;
-    const backOrb = {
-      x: orbTarget.x,
-      y: orbTarget.y,
-      z: orbTarget.z
+    let j;
+    const T = {
+      x: r.x,
+      y: r.y,
+      z: r.z
     };
-    if (orb) {
-      orbTween = new Tween(orbTarget).to({
-        x: target.matrixWorld.elements[12],
-        y: target.matrixWorld.elements[13],
-        z: target.matrixWorld.elements[14]
-      }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    }
-    let renderFun;
-    if (orb && params.space === "local") {
-      renderFun = (event) => {
-        positionTween.update();
-        upTween.update();
-        orbTween.update();
-      };
-    } else if (orb) {
-      renderFun = (event) => {
-        positionTween.update();
-        orbTween.update();
-      };
-    } else if (params.space === "local") {
-      renderFun = (event) => {
-        positionTween.update();
-        upTween.update();
-      };
-    } else {
-      renderFun = (event) => {
-        positionTween.update();
-      };
-    }
-    renderManager.addEventListener("render", renderFun);
-    positionTween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      if (cameraConfig) {
-        cameraConfig.position.x = position.x;
-        cameraConfig.position.y = position.y;
-        cameraConfig.position.z = position.z;
-      }
-      animating = false;
-      if (params.back) {
-        const backFun = () => {
-          const positionTween2 = new Tween(camera.position).to(backPosition).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-          let upTween2;
-          if (params.space === "local") {
-            upTween2 = new Tween(camera.up).to(backUp).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-          }
-          let orbTween2;
-          if (orb) {
-            orbTween2 = new Tween(orbTarget).to(backOrb).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-          }
-          const renderFun2 = (event) => {
-            positionTween2.update();
-            upTween2 && upTween2.update();
-            orbTween2 && orbTween2.update();
+    s && (j = new g(r).to({
+      x: n.matrixWorld.elements[12],
+      y: n.matrixWorld.elements[13],
+      z: n.matrixWorld.elements[14]
+    }).duration(t.duration).delay(t.delay).easing(m[t.timingFunction]).start());
+    let _;
+    s && t.space === "local" ? _ = (f) => {
+      y.update(), v.update(), j.update();
+    } : s ? _ = (f) => {
+      y.update(), j.update();
+    } : t.space === "local" ? _ = (f) => {
+      y.update(), v.update();
+    } : _ = (f) => {
+      y.update();
+    }, u.addEventListener("render", _), y.onComplete(() => {
+      if (u.removeEventListener("render", _), a && (a.position.x = d.x, a.position.y = d.y, a.position.z = d.z), i = !1, t.back) {
+        const f = () => {
+          const x = new g(o.position).to(b).duration(t.duration).delay(t.delay).easing(m[t.timingFunction]).start();
+          let z;
+          t.space === "local" && (z = new g(o.up).to(O).duration(t.duration).delay(t.delay).easing(m[t.timingFunction]).start());
+          let A;
+          s && (A = new g(r).to(T).duration(t.duration).delay(t.delay).easing(m[t.timingFunction]).start());
+          const E = (kt) => {
+            x.update(), z && z.update(), A && A.update();
           };
-          positionTween2.onComplete(() => {
-            renderManager.removeEventListener(
+          x.onComplete(() => {
+            u.removeEventListener(
               "render",
-              renderFun2
+              E
             );
-          });
-          renderManager.addEventListener("render", renderFun2);
-          document.removeEventListener("dblclick", backFun);
+          }), u.addEventListener("render", E), document.removeEventListener("dblclick", f);
         };
-        document.addEventListener("dblclick", backFun);
+        document.addEventListener("dblclick", f);
       }
     });
   };
-};
-var focusObject = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, yt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$9,
-  generator: generator$9
-}, Symbol.toStringTag, { value: "Module" }));
-const config$8 = {
+  config: ft,
+  generator: pt
+}, Symbol.toStringTag, { value: "Module" })), bt = {
   name: "moveFromTo",
   params: {
     target: "",
@@ -641,58 +473,38 @@ const config$8 = {
     },
     delay: 0,
     duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+    timingFunction: p.EASING_QUADRATIC_INOUT
   }
-};
-const generator$8 = function(engine, config2) {
-  const params = config2.params;
-  const compiler = engine.compilerManager;
-  const object = compiler.getObjectBySymbol(params.target);
-  if (!object) {
-    console.warn(
-      `real time animation moveTO: can not found vid object: ${params.target}`
-    );
-    return () => {
+}, vt = function(e, l) {
+  const t = l.params, r = e.compilerManager.getObjectBySymbol(t.target);
+  if (!r)
+    return console.warn(
+      `real time animation moveTO: can not found vid object: ${t.target}`
+    ), () => {
     };
-  }
-  const renderManager = engine.renderManager;
-  const supportData = engine.dataSupportManager.getConfigBySymbol(
-    params.target
+  const i = e.renderManager, c = e.dataSupportManager.getConfigBySymbol(
+    t.target
   );
-  if (!supportData) {
-    console.warn(`can not found object config: ${params.target}`);
-    return () => {
+  if (!c)
+    return console.warn(`can not found object config: ${t.target}`), () => {
     };
-  }
-  let animating = false;
+  let o = !1;
   return () => {
-    if (animating) {
+    if (o)
       return;
-    }
-    animating = true;
-    object.position.set(params.from.x, params.from.y, params.from.z);
-    object.updateMatrix();
-    object.updateMatrixWorld();
-    const tween = new Tween(object.position).to(params.to).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const renderFun = (event) => {
-      tween.update();
+    o = !0, r.position.set(t.from.x, t.from.y, t.from.z), r.updateMatrix(), r.updateMatrixWorld();
+    const a = new g(r.position).to(t.to).duration(t.duration).delay(t.delay).easing(m[t.timingFunction]).start(), s = (u) => {
+      a.update();
     };
-    renderManager.addEventListener("render", renderFun);
-    tween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      supportData.position.x = params.to.x;
-      supportData.position.y = params.to.y;
-      supportData.position.z = params.to.z;
-      animating = false;
+    i.addEventListener("render", s), a.onComplete(() => {
+      i.removeEventListener("render", s), c.position.x = t.to.x, c.position.y = t.to.y, c.position.z = t.to.z, o = !1;
     });
   };
-};
-var moveFromTo = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, _t = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$8,
-  generator: generator$8
-}, Symbol.toStringTag, { value: "Module" }));
-const config$7 = {
+  config: bt,
+  generator: vt
+}, Symbol.toStringTag, { value: "Module" })), jt = {
   name: "moveSpacing",
   params: {
     target: "",
@@ -703,55 +515,38 @@ const config$7 = {
     },
     delay: 0,
     duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+    timingFunction: p.EASING_QUADRATIC_INOUT
   }
-};
-const generator$7 = function(engine, config2) {
-  const params = config2.params;
-  const object = engine.getObjectBySymbol(params.target);
-  if (!object) {
-    console.warn(`can not found vid object: ${params.target}`);
-    return () => {
+}, St = function(e, l) {
+  const t = l.params, n = e.getObjectBySymbol(t.target);
+  if (!n)
+    return console.warn(`can not found vid object: ${t.target}`), () => {
     };
-  }
-  if (!(object instanceof Object3D)) {
-    console.warn(`object is not instanceof Object3D: ${params.target}`);
-    return () => {
+  if (!(n instanceof C))
+    return console.warn(`object is not instanceof Object3D: ${t.target}`), () => {
     };
-  }
-  const renderManager = engine.renderManager;
-  const supportData = engine.getConfigBySymbol(params.target);
-  let animating = false;
+  const r = e.renderManager, i = e.getConfigBySymbol(t.target);
+  let c = !1;
   return () => {
-    if (animating) {
+    if (c)
       return;
-    }
-    animating = true;
-    const position = {
-      x: object.position.x + params.spacing.x,
-      y: object.position.y + params.spacing.y,
-      z: object.position.z + params.spacing.z
+    c = !0;
+    const o = {
+      x: n.position.x + t.spacing.x,
+      y: n.position.y + t.spacing.y,
+      z: n.position.z + t.spacing.z
+    }, a = new g(n.position).to(o).duration(t.duration).delay(t.delay).easing(m[t.timingFunction]).start(), s = (u) => {
+      a.update();
     };
-    const tween = new Tween(object.position).to(position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const renderFun = (event) => {
-      tween.update();
-    };
-    renderManager.addEventListener("render", renderFun);
-    tween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      supportData.position.x = position.x;
-      supportData.position.y = position.y;
-      supportData.position.z = position.z;
-      animating = false;
+    r.addEventListener("render", s), a.onComplete(() => {
+      r.removeEventListener("render", s), i.position.x = o.x, i.position.y = o.y, i.position.z = o.z, c = !1;
     });
   };
-};
-var moveSpacing = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, Ot = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$7,
-  generator: generator$7
-}, Symbol.toStringTag, { value: "Module" }));
-const config$6 = {
+  config: jt,
+  generator: St
+}, Symbol.toStringTag, { value: "Module" })), Tt = {
   name: "moveTo",
   params: {
     target: "",
@@ -762,55 +557,38 @@ const config$6 = {
     },
     delay: 0,
     duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+    timingFunction: p.EASING_QUADRATIC_INOUT
   }
-};
-const generator$6 = function(engine, config2) {
-  const params = config2.params;
-  const compiler = engine.compilerManager;
-  const object = compiler.getObjectBySymbol(params.target);
-  if (!object) {
-    console.warn(
-      `real time animation moveTO: can not found vid object: ${params.target}`
-    );
-    return () => {
+}, xt = function(e, l) {
+  const t = l.params, r = e.compilerManager.getObjectBySymbol(t.target);
+  if (!r)
+    return console.warn(
+      `real time animation moveTO: can not found vid object: ${t.target}`
+    ), () => {
     };
-  }
-  const renderManager = engine.renderManager;
-  const supportData = engine.dataSupportManager.getConfigBySymbol(
-    params.target
+  const i = e.renderManager, c = e.dataSupportManager.getConfigBySymbol(
+    t.target
   );
-  if (!supportData) {
-    console.warn(`can not found object config: ${params.target}`);
-    return () => {
+  if (!c)
+    return console.warn(`can not found object config: ${t.target}`), () => {
     };
-  }
-  let animating = false;
+  let o = !1;
   return () => {
-    if (animating) {
+    if (o)
       return;
-    }
-    animating = true;
-    const tween = new Tween(object.position).to(params.position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const renderFun = (event) => {
-      tween.update();
+    o = !0;
+    const a = new g(r.position).to(t.position).duration(t.duration).delay(t.delay).easing(m[t.timingFunction]).start(), s = (u) => {
+      a.update();
     };
-    renderManager.addEventListener("render", renderFun);
-    tween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      supportData.position.x = params.position.x;
-      supportData.position.y = params.position.y;
-      supportData.position.z = params.position.z;
-      animating = false;
+    i.addEventListener("render", s), a.onComplete(() => {
+      i.removeEventListener("render", s), c.position.x = t.position.x, c.position.y = t.position.y, c.position.z = t.position.z, o = !1;
     });
   };
-};
-var moveTo = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, zt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$6,
-  generator: generator$6
-}, Symbol.toStringTag, { value: "Module" }));
-const config$5 = {
+  config: Tt,
+  generator: xt
+}, Symbol.toStringTag, { value: "Module" })), At = {
   name: "moveToObject",
   params: {
     target: "",
@@ -822,68 +600,47 @@ const config$5 = {
     },
     delay: 0,
     duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+    timingFunction: p.EASING_QUADRATIC_INOUT
   }
-};
-const generator$5 = function(engine, config2) {
-  const params = config2.params;
-  const compiler = engine.compilerManager;
-  const object = compiler.getObjectBySymbol(params.target);
-  const toObject = compiler.getObjectBySymbol(params.to);
-  if (!object) {
-    console.warn(
-      `real time animation MoveToObject: can not found vid object: ${params.target}`
-    );
-    return () => {
+}, wt = function(e, l) {
+  const t = l.params, n = e.compilerManager, r = n.getObjectBySymbol(t.target), i = n.getObjectBySymbol(t.to);
+  if (!r)
+    return console.warn(
+      `real time animation MoveToObject: can not found vid object: ${t.target}`
+    ), () => {
     };
-  }
-  if (!toObject) {
-    console.warn(
-      `real time animation MoveToObject: can not found vid object: ${params.target}`
-    );
-    return () => {
+  if (!i)
+    return console.warn(
+      `real time animation MoveToObject: can not found vid object: ${t.target}`
+    ), () => {
     };
-  }
-  const renderManager = engine.renderManager;
-  const supportData = engine.dataSupportManager.getConfigBySymbol(
-    params.target
+  const c = e.renderManager, o = e.dataSupportManager.getConfigBySymbol(
+    t.target
   );
-  if (!supportData) {
-    console.warn(`can not found object config: ${params.target}`);
-    return () => {
+  if (!o)
+    return console.warn(`can not found object config: ${t.target}`), () => {
     };
-  }
-  let animating = false;
+  let a = !1;
   return () => {
-    if (animating) {
+    if (a)
       return;
-    }
-    animating = true;
-    const position = {
-      x: toObject.position.x + params.offset.x,
-      y: toObject.position.y + params.offset.y,
-      z: toObject.position.z + params.offset.z
+    a = !0;
+    const s = {
+      x: i.position.x + t.offset.x,
+      y: i.position.y + t.offset.y,
+      z: i.position.z + t.offset.z
+    }, u = new g(r.position).to(s).duration(t.duration).delay(t.delay).easing(m[t.timingFunction]).start(), d = (b) => {
+      u.update();
     };
-    const tween = new Tween(object.position).to(position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const renderFun = (event) => {
-      tween.update();
-    };
-    renderManager.addEventListener("render", renderFun);
-    tween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      supportData.position.x = position.x;
-      supportData.position.y = position.y;
-      supportData.position.z = position.z;
-      animating = false;
+    c.addEventListener("render", d), u.onComplete(() => {
+      c.removeEventListener("render", d), o.position.x = s.x, o.position.y = s.y, o.position.z = s.z, a = !1;
     });
   };
-};
-var moveToObject = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, Ct = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$5,
-  generator: generator$5
-}, Symbol.toStringTag, { value: "Module" }));
-const config$4 = {
+  config: At,
+  generator: wt
+}, Symbol.toStringTag, { value: "Module" })), Et = {
   name: "orbitTargetMove",
   params: {
     target: "",
@@ -894,58 +651,44 @@ const config$4 = {
     },
     delay: 0,
     duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+    timingFunction: p.EASING_QUADRATIC_INOUT
   }
-};
-const generator$4 = function(engine, config2) {
-  const params = config2.params;
-  engine.compilerManager;
-  if (!engine.orbitControls) {
-    console.warn(
-      `real time animation orbitTargetMove: engine can not install orbitControls.`
-    );
-    return () => {
+}, $t = function(e, l) {
+  const t = l.params;
+  if (e.compilerManager, !e.orbitControls)
+    return console.warn(
+      "real time animation orbitTargetMove: engine can not install orbitControls."
+    ), () => {
     };
-  }
-  const renderManager = engine.renderManager;
-  let animating = false;
+  const n = e.renderManager;
+  let r = !1;
   return () => {
-    if (animating) {
+    if (r)
       return;
+    r = !0;
+    let i = t.offset;
+    if (t.target) {
+      const a = e.getObjectBySymbol(t.target);
+      a ? i = {
+        x: a.matrixWorld.elements[12] + i.x,
+        y: a.matrixWorld.elements[13] + i.y,
+        z: a.matrixWorld.elements[14] + i.z
+      } : console.warn(
+        `real time animation orbitTargetMove: can not found vid object: ${t.target}`
+      );
     }
-    animating = true;
-    let position = params.offset;
-    if (params.target) {
-      const object = engine.getObjectBySymbol(params.target);
-      if (!object) {
-        console.warn(
-          `real time animation orbitTargetMove: can not found vid object: ${params.target}`
-        );
-      } else {
-        position = {
-          x: object.matrixWorld.elements[12] + position.x,
-          y: object.matrixWorld.elements[13] + position.y,
-          z: object.matrixWorld.elements[14] + position.z
-        };
-      }
-    }
-    const tween = new Tween(engine.orbitControls.target).to(position).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const renderFun = (event) => {
-      tween.update();
+    const c = new g(e.orbitControls.target).to(i).duration(t.duration).delay(t.delay).easing(m[t.timingFunction]).start(), o = (a) => {
+      c.update();
     };
-    renderManager.addEventListener("render", renderFun);
-    tween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      animating = false;
+    n.addEventListener("render", o), c.onComplete(() => {
+      n.removeEventListener("render", o), r = !1;
     });
   };
-};
-var orbitTargetMove = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, It = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$4,
-  generator: generator$4
-}, Symbol.toStringTag, { value: "Module" }));
-const config$3 = {
+  config: Et,
+  generator: $t
+}, Symbol.toStringTag, { value: "Module" })), Mt = {
   name: "rotationTo",
   params: {
     target: "",
@@ -956,55 +699,38 @@ const config$3 = {
     },
     delay: 0,
     duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+    timingFunction: p.EASING_QUADRATIC_INOUT
   }
-};
-const generator$3 = function(engine, config2) {
-  const params = config2.params;
-  const compiler = engine.compilerManager;
-  const object = compiler.getObjectBySymbol(params.target);
-  if (!object) {
-    console.warn(
-      `real time animation moveTO: can not found vid object: ${params.target}`
-    );
-    return () => {
+}, Nt = function(e, l) {
+  const t = l.params, r = e.compilerManager.getObjectBySymbol(t.target);
+  if (!r)
+    return console.warn(
+      `real time animation moveTO: can not found vid object: ${t.target}`
+    ), () => {
     };
-  }
-  const renderManager = engine.renderManager;
-  const supportData = engine.dataSupportManager.getConfigBySymbol(
-    params.target
+  const i = e.renderManager, c = e.dataSupportManager.getConfigBySymbol(
+    t.target
   );
-  if (!supportData) {
-    console.warn(`can not found object config: ${params.target}`);
-    return () => {
+  if (!c)
+    return console.warn(`can not found object config: ${t.target}`), () => {
     };
-  }
-  let animating = false;
+  let o = !1;
   return () => {
-    if (animating) {
+    if (o)
       return;
-    }
-    animating = true;
-    const tween = new Tween(object.rotation).to(params.rotation).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const renderFun = (event) => {
-      tween.update();
+    o = !0;
+    const a = new g(r.rotation).to(t.rotation).duration(t.duration).delay(t.delay).easing(m[t.timingFunction]).start(), s = (u) => {
+      a.update();
     };
-    renderManager.addEventListener("render", renderFun);
-    tween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      supportData.rotation.x = params.rotation.x;
-      supportData.rotation.y = params.rotation.y;
-      supportData.rotation.z = params.rotation.z;
-      animating = false;
+    i.addEventListener("render", s), a.onComplete(() => {
+      i.removeEventListener("render", s), c.rotation.x = t.rotation.x, c.rotation.y = t.rotation.y, c.rotation.z = t.rotation.z, o = !1;
     });
   };
-};
-var rotationTo = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, Ut = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$3,
-  generator: generator$3
-}, Symbol.toStringTag, { value: "Module" }));
-const config$2 = {
+  config: Mt,
+  generator: Nt
+}, Symbol.toStringTag, { value: "Module" })), Ft = {
   name: "showToCamera",
   params: {
     target: "",
@@ -1015,119 +741,76 @@ const config$2 = {
     },
     delay: 0,
     duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT,
-    back: true
+    timingFunction: p.EASING_QUADRATIC_INOUT,
+    back: !0
   }
-};
-const generator$2 = function(engine, config2) {
-  const params = config2.params;
-  const target = engine.getObjectBySymbol(params.target);
-  const targetConfig = engine.getConfigBySymbol(params.target);
-  const camera = engine.camera;
-  if (!target) {
-    console.warn(
-      `real time animation showToCamera: can not found vid object: ${params.target}`
-    );
-    return () => {
+}, Lt = function(e, l) {
+  const t = l.params, n = e.getObjectBySymbol(t.target), r = e.getConfigBySymbol(t.target), i = e.camera;
+  if (!n)
+    return console.warn(
+      `real time animation showToCamera: can not found vid object: ${t.target}`
+    ), () => {
     };
-  }
-  if (!target) {
-    console.warn(
-      `real time animation showToCamera: can not found vid config: ${params.target}`
-    );
-    return () => {
+  if (!n)
+    return console.warn(
+      `real time animation showToCamera: can not found vid config: ${t.target}`
+    ), () => {
     };
-  }
-  if (!(target instanceof Object3D)) {
-    console.warn(
-      `real time animation showToCamera: vid object is not a class of THREE.Object3D: ${params.target}`
-    );
-    return () => {
+  if (!(n instanceof C))
+    return console.warn(
+      `real time animation showToCamera: vid object is not a class of THREE.Object3D: ${t.target}`
+    ), () => {
     };
-  }
-  const matrix4 = new Matrix4();
-  const euler = new Euler();
-  const vector3 = new Vector3();
-  let animating = false;
+  const c = new U(), o = new M(), a = new w();
+  let s = !1;
   return () => {
-    if (animating) {
+    if (s)
       return;
-    }
-    animating = true;
-    const renderManager = engine.renderManager;
-    vector3.set(params.offset.x, params.offset.y, params.offset.z).applyEuler(camera.rotation);
-    vector3.set(
-      camera.position.x + vector3.x,
-      camera.position.y + vector3.y,
-      camera.position.z + vector3.z
-    );
-    matrix4.lookAt(camera.position, vector3, camera.up);
-    euler.setFromRotationMatrix(matrix4);
-    const cachePosition = {
-      x: target.position.x,
-      y: target.position.y,
-      z: target.position.z
+    s = !0;
+    const u = e.renderManager;
+    a.set(t.offset.x, t.offset.y, t.offset.z).applyEuler(i.rotation), a.set(
+      i.position.x + a.x,
+      i.position.y + a.y,
+      i.position.z + a.z
+    ), c.lookAt(i.position, a, i.up), o.setFromRotationMatrix(c);
+    const d = {
+      x: n.position.x,
+      y: n.position.y,
+      z: n.position.z
+    }, b = {
+      x: n.rotation.x,
+      y: n.rotation.y,
+      z: n.rotation.z
+    }, y = new g(n.position).to({
+      x: a.x,
+      y: a.y,
+      z: a.z
+    }).duration(t.duration).delay(t.delay).easing(m[t.timingFunction]).start(), v = new g(n.rotation).to({
+      x: o.x,
+      y: o.y,
+      z: o.z
+    }).duration(t.duration).delay(t.delay).easing(m[t.timingFunction]).start(), O = (j) => {
+      y.update(), v.update();
     };
-    const cacheRotation = {
-      x: target.rotation.x,
-      y: target.rotation.y,
-      z: target.rotation.z
-    };
-    const positionTween = new Tween(target.position).to({
-      x: vector3.x,
-      y: vector3.y,
-      z: vector3.z
-    }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const rotationTween = new Tween(target.rotation).to({
-      x: euler.x,
-      y: euler.y,
-      z: euler.z
-    }).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const renderFun = (event) => {
-      positionTween.update();
-      rotationTween.update();
-    };
-    renderManager.addEventListener("render", renderFun);
-    positionTween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      targetConfig.position.x = vector3.x;
-      targetConfig.position.y = vector3.y;
-      targetConfig.position.z = vector3.z;
-      targetConfig.rotation.x = euler.x;
-      targetConfig.rotation.y = euler.y;
-      targetConfig.rotation.z = euler.z;
-      animating = false;
-      if (params.back) {
-        const backFun = () => {
-          const positionTween2 = new Tween(target.position).to(cachePosition).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-          const rotationTween2 = new Tween(target.rotation).to(cacheRotation).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-          const renderFun2 = (event) => {
-            positionTween2.update();
-            rotationTween2.update();
+    u.addEventListener("render", O), y.onComplete(() => {
+      if (u.removeEventListener("render", O), r.position.x = a.x, r.position.y = a.y, r.position.z = a.z, r.rotation.x = o.x, r.rotation.y = o.y, r.rotation.z = o.z, s = !1, t.back) {
+        const j = () => {
+          const T = new g(n.position).to(d).duration(t.duration).delay(t.delay).easing(m[t.timingFunction]).start(), _ = new g(n.rotation).to(b).duration(t.duration).delay(t.delay).easing(m[t.timingFunction]).start(), f = (x) => {
+            T.update(), _.update();
           };
-          positionTween2.onComplete(() => {
-            renderManager.removeEventListener("render", renderFun2);
-            targetConfig.position.x = cachePosition.x;
-            targetConfig.position.y = cachePosition.y;
-            targetConfig.position.z = cachePosition.z;
-            targetConfig.rotation.x = cacheRotation.x;
-            targetConfig.rotation.y = cacheRotation.y;
-            targetConfig.rotation.z = cacheRotation.z;
-          });
-          renderManager.addEventListener("render", renderFun2);
-          document.removeEventListener("dblclick", backFun);
+          T.onComplete(() => {
+            u.removeEventListener("render", f), r.position.x = d.x, r.position.y = d.y, r.position.z = d.z, r.rotation.x = b.x, r.rotation.y = b.y, r.rotation.z = b.z;
+          }), u.addEventListener("render", f), document.removeEventListener("dblclick", j);
         };
-        document.addEventListener("dblclick", backFun);
+        document.addEventListener("dblclick", j);
       }
     });
   };
-};
-var showToCamera = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, Rt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$2,
-  generator: generator$2
-}, Symbol.toStringTag, { value: "Module" }));
-const config$1 = {
+  config: Ft,
+  generator: Lt
+}, Symbol.toStringTag, { value: "Module" })), ht = {
   name: "upTo",
   params: {
     target: "",
@@ -1138,55 +821,38 @@ const config$1 = {
     },
     delay: 0,
     duration: 1e3,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+    timingFunction: p.EASING_QUADRATIC_INOUT
   }
-};
-const generator$1 = function(engine, config2) {
-  const params = config2.params;
-  const compiler = engine.compilerManager;
-  const object = compiler.getObjectBySymbol(params.target);
-  if (!object) {
-    console.warn(
-      `real time animation upTo: can not found vid object: ${params.target}`
-    );
-    return () => {
+}, Qt = function(e, l) {
+  const t = l.params, r = e.compilerManager.getObjectBySymbol(t.target);
+  if (!r)
+    return console.warn(
+      `real time animation upTo: can not found vid object: ${t.target}`
+    ), () => {
     };
-  }
-  const renderManager = engine.renderManager;
-  const supportData = engine.dataSupportManager.getConfigBySymbol(
-    params.target
+  const i = e.renderManager, c = e.dataSupportManager.getConfigBySymbol(
+    t.target
   );
-  if (!supportData) {
-    console.warn(`can not found object config: ${params.target}`);
-    return () => {
+  if (!c)
+    return console.warn(`can not found object config: ${t.target}`), () => {
     };
-  }
-  let animating = false;
+  let o = !1;
   return () => {
-    if (animating) {
+    if (o)
       return;
-    }
-    animating = true;
-    const tween = new Tween(object.up).to(params.up).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const renderFun = (event) => {
-      tween.update();
+    o = !0;
+    const a = new g(r.up).to(t.up).duration(t.duration).delay(t.delay).easing(m[t.timingFunction]).start(), s = (u) => {
+      a.update();
     };
-    renderManager.addEventListener("render", renderFun);
-    tween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      supportData.up.x = params.up.x;
-      supportData.up.y = params.up.y;
-      supportData.up.z = params.up.z;
-      animating = false;
+    i.addEventListener("render", s), a.onComplete(() => {
+      i.removeEventListener("render", s), c.up.x = t.up.x, c.up.y = t.up.y, c.up.z = t.up.z, o = !1;
     });
   };
-};
-var upTo = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, Dt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config: config$1,
-  generator: generator$1
-}, Symbol.toStringTag, { value: "Module" }));
-const config = {
+  config: ht,
+  generator: Qt
+}, Symbol.toStringTag, { value: "Module" })), Bt = {
   name: "vector3To",
   params: {
     target: "",
@@ -1199,117 +865,96 @@ const config = {
     delay: 0,
     duration: 500,
     to: {},
-    compiling: false,
-    timingFunction: TIMINGFUNCTION.EASING_QUADRATIC_INOUT
+    compiling: !1,
+    timingFunction: p.EASING_QUADRATIC_INOUT
   }
-};
-const generator = function(engine, config2) {
-  var _a, _b, _c;
-  const params = config2.params;
-  const object = engine.compilerManager.getObjectBySymbol(params.target);
-  if (!object) {
-    console.warn(
-      `real time animation vector3To: can not found vid object: ${params.target}`
-    );
-    return () => {
+}, Pt = function(e, l) {
+  const t = l.params, n = e.compilerManager.getObjectBySymbol(t.target);
+  if (!n)
+    return console.warn(
+      `real time animation vector3To: can not found vid object: ${t.target}`
+    ), () => {
     };
-  }
-  const renderManager = engine.renderManager;
-  let supportData = engine.dataSupportManager.getConfigBySymbol(params.target);
-  if (!supportData) {
-    console.warn(
-      `real time animation vector3To: can not found object config: ${params.target}`
-    );
-    return () => {
+  const r = e.renderManager;
+  let i = e.dataSupportManager.getConfigBySymbol(t.target);
+  if (!i)
+    return console.warn(
+      `real time animation vector3To: can not found object config: ${t.target}`
+    ), () => {
     };
-  }
-  const attributeList = params.attribute.split(".");
-  attributeList.shift();
-  let targetObject = object;
-  for (const key of attributeList) {
-    if (targetObject[key] === void 0) {
-      console.error(
-        `real time animation vector3To: object can not support key: ${key}`,
-        object
-      );
-      return () => {
+  const c = t.attribute.split(".");
+  c.shift();
+  let o = n;
+  for (const d of c) {
+    if (o[d] === void 0)
+      return console.error(
+        `real time animation vector3To: object can not support key: ${d}`,
+        n
+      ), () => {
       };
-    }
-    targetObject = targetObject[key];
-    supportData = supportData[key];
+    o = o[d], i = i[d];
   }
-  const props = params.props;
-  if (!(props.x in targetObject) || !(props.y in targetObject) || !(props.z in targetObject)) {
-    console.error(
-      `real time animation vector3To: object can not support props:`,
-      targetObject,
-      props
-    );
-    return () => {
+  const a = t.props;
+  if (!(a.x in o) || !(a.y in o) || !(a.z in o))
+    return console.error(
+      "real time animation vector3To: object can not support props:",
+      o,
+      a
+    ), () => {
     };
-  }
-  if (!(props.x in supportData) || !(props.y in supportData) || !(props.z in supportData)) {
-    console.error(
-      `real time animation vector3To: config can not support props:`,
-      supportData,
-      props
-    );
-    return () => {
+  if (!(a.x in i) || !(a.y in i) || !(a.z in i))
+    return console.error(
+      "real time animation vector3To: config can not support props:",
+      i,
+      a
+    ), () => {
     };
-  }
-  const toObject = {
-    x: (_a = params.to.x) != null ? _a : targetObject[props.x],
-    y: (_b = params.to.y) != null ? _b : targetObject[props.y],
-    z: (_c = params.to.z) != null ? _c : targetObject[props.z]
+  const s = {
+    x: t.to.x ?? o[a.x],
+    y: t.to.y ?? o[a.y],
+    z: t.to.z ?? o[a.z]
   };
-  let animating = false;
+  let u = !1;
   return () => {
-    if (animating) {
+    if (u)
       return;
-    }
-    animating = true;
-    const tween = new Tween(params.compiling ? supportData : targetObject).to(toObject).duration(params.duration).delay(params.delay).easing(timingFunction[params.timingFunction]).start();
-    const renderFun = (event) => {
-      tween.update();
+    u = !0;
+    const d = new g(t.compiling ? i : o).to(s).duration(t.duration).delay(t.delay).easing(m[t.timingFunction]).start(), b = (y) => {
+      d.update();
     };
-    renderManager.addEventListener("render", renderFun);
-    tween.onComplete(() => {
-      renderManager.removeEventListener("render", renderFun);
-      if (!params.compiling) {
-        supportData[props.x] = toObject.x;
-        supportData[props.y] = toObject.y;
-        supportData[props.z] = toObject.z;
-      }
-      animating = false;
+    r.addEventListener("render", b), d.onComplete(() => {
+      r.removeEventListener("render", b), t.compiling || (i[a.x] = s.x, i[a.y] = s.y, i[a.z] = s.z), u = !1;
     });
   };
-};
-var vector3To = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, Gt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  config,
-  generator
-}, Symbol.toStringTag, { value: "Module" }));
-var index = {
-  addClass,
-  changeCamera,
-  changeScene,
-  openWindow,
-  switchAnimate,
-  visibleObject,
-  colorChange,
-  fadeObject,
-  focusObject,
-  moveFromTo,
-  moveSpacing,
-  moveTo,
-  moveToObject,
-  orbitTargetMove,
-  rotationTo,
-  showToCamera,
-  upTo,
-  vector3To,
-  setPosition,
-  setParent,
-  changeCursor
+  config: Bt,
+  generator: Pt
+}, Symbol.toStringTag, { value: "Module" })), qt = {
+  addClass: R,
+  changeCamera: D,
+  changeScene: G,
+  openWindow: H,
+  switchAnimate: J,
+  visibleObject: Y,
+  colorChange: ut,
+  fadeObject: mt,
+  focusObject: yt,
+  moveFromTo: _t,
+  moveSpacing: Ot,
+  moveTo: zt,
+  moveToObject: Ct,
+  orbitTargetMove: It,
+  rotationTo: Ut,
+  showToCamera: Rt,
+  upTo: Dt,
+  vector3To: Gt,
+  setPosition: et,
+  setParent: rt,
+  changeCursor: ct
 };
-export { TIMINGFUNCTION, index as default, timingFunction };
+export {
+  p as TIMINGFUNCTION,
+  qt as default,
+  m as timingFunction
+};

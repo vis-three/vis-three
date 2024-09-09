@@ -20,7 +20,6 @@ import * as showToCamera from "./RealTimeAnimate/showToCamera";
 import * as upTo from "./RealTimeAnimate/upTo";
 import * as vector3To from "./RealTimeAnimate/vector3To";
 export { timingFunction, TIMINGFUNCTION } from "./RealTimeAnimate/common";
-export { Tween } from "@tweenjs/tween.js";
 declare const _default: {
     addClass: typeof addClass;
     changeCamera: typeof changeCamera;

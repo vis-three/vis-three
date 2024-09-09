@@ -1,4 +1,4 @@
-import { BasicEventConfig, EventGenerator } from "@vis-three/middleware";
+import { BasicEventConfig, EventGenerator } from "@vis-three/module-object";
 import { SceneEngineSupport } from "@vis-three/module-scene";
 export interface SetParent extends BasicEventConfig {
     params: {

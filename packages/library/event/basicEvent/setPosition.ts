@@ -1,10 +1,10 @@
 import {
-  BasicEventConfig,
   EngineSupport,
-  EventGenerator,
   ObjectEvent,
+  RenderEvent,
   Vector3Config,
-} from "@vis-three/middleware";
+} from "@vis-three/tdcm";
+import { BasicEventConfig, EventGenerator } from "@vis-three/module-object";
 import { ObjectConfig } from "@vis-three/module-object";
 import { SceneEngineSupport } from "@vis-three/module-scene";
 

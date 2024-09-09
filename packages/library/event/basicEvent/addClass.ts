@@ -1,10 +1,6 @@
-import {
-  BasicEventConfig,
-  EngineSupport,
-  EventGenerator,
-  ObjectEvent,
-} from "@vis-three/middleware";
-import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { EngineSupport, ObjectEvent } from "@vis-three/tdcm";
+import { BasicEventConfig, EventGenerator } from "@vis-three/module-object";
+import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 
 export interface AddClass extends BasicEventConfig {
   params: {

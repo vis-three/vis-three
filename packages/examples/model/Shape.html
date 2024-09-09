@@ -22,7 +22,7 @@
     <script type="module">
       import * as THREE from "three";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
-      import { generateConfig, CONFIGTYPE } from "@vis-three/tdcm";
+      import { generateConfig, CONFIG_TYPE, toSymbol } from "@vis-three/tdcm";
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
       const engine = new ModelingEngineSupport()
@@ -35,20 +35,22 @@
 
       const scene = generateConfig("Scene");
 
-      engine.setSceneBySymbol(scene.vid);
+      engine.setSceneBySymbol(toSymbol(scene));
 
       generateConfig.injectScene = true;
 
-      generateConfig(CONFIGTYPE.POINTLIGHT, {
+      generateConfig(CONFIG_TYPE.POINTLIGHT, {
         position: {
           y: 20,
           z: 15,
         },
+        intensity: 2,
+        distance: 0,
       });
 
-      const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {});
+      const material = generateConfig(CONFIG_TYPE.MESHSTANDARDMATERIAL, {});
 
-      const path = generateConfig(CONFIGTYPE.PATH, {
+      const path = generateConfig(CONFIG_TYPE.PATH, {
         curves: [
           {
             curve: "line",
@@ -62,7 +64,7 @@
         autoClose: true,
       });
 
-      const path2 = generateConfig(CONFIGTYPE.PATH, {
+      const path2 = generateConfig(CONFIG_TYPE.PATH, {
         curves: [
           {
             curve: "line",
@@ -80,48 +82,48 @@
         autoClose: true,
       });
 
-      const shape = generateConfig(CONFIGTYPE.SHAPE, {
-        shape: path.vid,
+      const shape = generateConfig(CONFIG_TYPE.SHAPE, {
+        shape: toSymbol(path),
       });
 
-      const shape2 = generateConfig(CONFIGTYPE.SHAPE, {
-        shape: path2.vid,
+      const shape2 = generateConfig(CONFIG_TYPE.SHAPE, {
+        shape: toSymbol(path2),
       });
 
-      const geometry = generateConfig(CONFIGTYPE.EXTRUDEGEOMETRY, {
-        shapes: shape.vid,
+      const geometry = generateConfig(CONFIG_TYPE.EXTRUDEGEOMETRY, {
+        shapes: toSymbol(shape),
         options: {
           bevelEnabled: false,
         },
       });
 
-      const pathGeometry = generateConfig(CONFIGTYPE.PATHGEOMETRY, {
-        path: path.vid,
+      const pathGeometry = generateConfig(CONFIG_TYPE.PATHGEOMETRY, {
+        path: toSymbol(path),
       });
 
-      const shapeGeometry = generateConfig(CONFIGTYPE.SHAPEGEOMETRY, {
-        shape: shape2.vid,
+      const shapeGeometry = generateConfig(CONFIG_TYPE.SHAPEGEOMETRY, {
+        shape: toSymbol(shape2),
       });
 
-      const mesh = generateConfig(CONFIGTYPE.MESH, {
-        material: material.vid,
-        geometry: geometry.vid,
+      const mesh = generateConfig(CONFIG_TYPE.MESH, {
+        material: toSymbol(material),
+        geometry: toSymbol(geometry),
         position: {
           x: -15,
         },
       });
 
-      const mesh2 = generateConfig(CONFIGTYPE.MESH, {
-        material: material.vid,
-        geometry: shapeGeometry.vid,
+      const mesh2 = generateConfig(CONFIG_TYPE.MESH, {
+        material: toSymbol(material),
+        geometry: toSymbol(shapeGeometry),
         position: {
           x: 15,
         },
       });
 
-      const line = generateConfig(CONFIGTYPE.LINE, {
-        material: material.vid,
-        geometry: pathGeometry.vid,
+      const line = generateConfig(CONFIG_TYPE.LINE, {
+        material: toSymbol(material),
+        geometry: toSymbol(pathGeometry),
       });
 
       const gui = new GUI();

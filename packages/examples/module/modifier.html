@@ -22,7 +22,7 @@
     <script type="module">
       import * as THREE from "three";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
-      import { generateConfig, CONFIGTYPE } from "@vis-three/tdcm";
+      import { generateConfig, CONFIG_TYPE } from "@vis-three/tdcm";
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
       const engine = new ModelingEngineSupport()
@@ -39,22 +39,22 @@
 
       generateConfig.injectScene = true;
 
-      generateConfig(CONFIGTYPE.POINTLIGHT, {
+      generateConfig(CONFIG_TYPE.POINTLIGHT, {
         position: {
           y: 20,
           z: 15,
         },
       });
 
-      const material = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {});
+      const material = generateConfig(CONFIG_TYPE.MESHSTANDARDMATERIAL, {});
 
-      const geometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+      const geometry = generateConfig(CONFIG_TYPE.BOXGEOMETRY, {
         width: 20,
         height: 10,
         depth: 10,
       });
 
-      const mesh1 = generateConfig(CONFIGTYPE.MESH, {
+      const mesh1 = generateConfig(CONFIG_TYPE.MESH, {
         material: material.vid,
         geometry: geometry.vid,
         position: {
@@ -62,11 +62,11 @@
         },
       });
 
-      const geometry2 = generateConfig(CONFIGTYPE.SPHEREGEOMETRY, {
+      const geometry2 = generateConfig(CONFIG_TYPE.SPHEREGEOMETRY, {
         radius: 7,
       });
 
-      const mesh2 = generateConfig(CONFIGTYPE.MESH, {
+      const mesh2 = generateConfig(CONFIG_TYPE.MESH, {
         material: material.vid,
         geometry: geometry2.vid,
         visible: false,
@@ -76,12 +76,12 @@
         },
       });
 
-      const geometry3 = generateConfig(CONFIGTYPE.CONEGEOMETRY, {
+      const geometry3 = generateConfig(CONFIG_TYPE.CONEGEOMETRY, {
         radius: 5,
         height: 10,
       });
 
-      const mesh3 = generateConfig(CONFIGTYPE.MESH, {
+      const mesh3 = generateConfig(CONFIG_TYPE.MESH, {
         material: material.vid,
         geometry: geometry3.vid,
         visible: false,
@@ -90,13 +90,13 @@
         },
       });
 
-      const geometry4 = generateConfig(CONFIGTYPE.CYLINDERGEOMETRY, {
+      const geometry4 = generateConfig(CONFIG_TYPE.CYLINDERGEOMETRY, {
         radiusTop: 4,
         radiusBottom: 4,
         height: 15,
       });
 
-      const mesh4 = generateConfig(CONFIGTYPE.MESH, {
+      const mesh4 = generateConfig(CONFIG_TYPE.MESH, {
         material: material.vid,
         geometry: geometry4.vid,
         visible: false,
@@ -105,13 +105,13 @@
         },
       });
 
-      const modifier = generateConfig(CONFIGTYPE.BOOLEANMODIFIER, {
+      const modifier = generateConfig(CONFIG_TYPE.BOOLEANMODIFIER, {
         source: mesh1.vid,
         target: mesh2.vid,
         // mode: "intersect",
       });
 
-      const modifier2 = generateConfig(CONFIGTYPE.BOOLEANMODIFIER, {
+      const modifier2 = generateConfig(CONFIG_TYPE.BOOLEANMODIFIER, {
         source: mesh1.vid,
         target: mesh3.vid,
         mode: "union",

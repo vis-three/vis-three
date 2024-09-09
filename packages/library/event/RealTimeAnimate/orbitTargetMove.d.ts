@@ -1,5 +1,6 @@
 import { TIMINGFUNCTION } from "./common";
-import { BasicEventConfig, EngineSupport, EventGenerator, Vector3Config } from "@vis-three/middleware";
+import { EngineSupport, Vector3Config } from "@vis-three/tdcm";
+import { BasicEventConfig, EventGenerator } from "@vis-three/module-object";
 import { OrbitControlsEngine } from "@vis-three/plugin-orbit-controls";
 export interface OrbitTargetMove extends BasicEventConfig {
     params: {

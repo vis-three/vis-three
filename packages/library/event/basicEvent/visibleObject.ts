@@ -1,9 +1,10 @@
 import {
-  BasicEventConfig,
   EngineSupport,
-  EventGenerator,
   ObjectEvent,
-} from "@vis-three/middleware";
+  RenderEvent,
+  Vector3Config,
+} from "@vis-three/tdcm";
+import { BasicEventConfig, EventGenerator } from "@vis-three/module-object";
 import { Object3D } from "three";
 export interface VisibleObject extends BasicEventConfig {
   params: {
