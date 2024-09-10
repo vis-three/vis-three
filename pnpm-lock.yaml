@@ -826,79 +826,6 @@ importers:
         specifier: ^3.2.0
         version: 3.2.0(@types/three@0.167.1)(three@0.167.1)
 
-  packages/library/modifier/BooleanModifier:
-    dependencies:
-      '@vis-three/modifier-base':
-        specifier: workspace:^
-        version: link:../Modifier
-      three-csg-ts:
-        specifier: ^3.1.10
-        version: 3.2.0(@types/three@0.167.1)(three@0.167.1)
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
-
-  packages/library/modifier/Modifier:
-    devDependencies:
-      '@types/node':
-        specifier: ^18.11.12
-        version: 18.19.44
-      '@types/three':
-        specifier: ^0.167.1
-        version: 0.167.1
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.18.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.18.0
-        version: 5.62.0(eslint@8.57.0)(typescript@5.5.4)
-      eslint:
-        specifier: ^8.12.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^8.5.0
-        version: 8.10.0(eslint@8.57.0)
-      eslint-plugin-prettier:
-        specifier: ^4.0.0
-        version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.57.0)(prettier@2.8.8)
-      prettier:
-        specifier: ^2.6.2
-        version: 2.8.8
-      three:
-        specifier: ^0.167.1
-        version: 0.167.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
-
   packages/library/module:
     dependencies:
       '@vis-three/module-animation':
@@ -2510,12 +2437,12 @@ importers:
       '@vis-three/core':
         specifier: workspace:^
         version: link:../core
-      '@vis-three/middleware':
-        specifier: workspace:^
-        version: link:../middleware
       '@vis-three/module-object':
         specifier: workspace:^
         version: link:../library/module/object
+      '@vis-three/tdcm':
+        specifier: workspace:^
+        version: link:../tdcm
       '@vis-three/utils':
         specifier: workspace:^
         version: link:../utils

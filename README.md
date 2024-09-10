@@ -9,6 +9,7 @@
 <p align="center">
    <img alt="NPM" src="https://img.shields.io/npm/l/vis-three?color=blue">
    <img alt="version" src="https://img.shields.io/badge/version-0.7.X-g.svg">
+   <img alt="three" src="https://img.shields.io/badge/three.js-0.167.1-g.svg">
    <br/>
     <a target="_black" href="https://space.bilibili.com/3048588">
       <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.bilibili.com%2Fx%2Frelation%2Fstat%3Fvmid%3D3048588&query=%24.data.follower&suffix=%20Follower&logo=bilibili&logoColor=%23fff&label=%20&labelColor=%23FB7299&color=%233F454F
