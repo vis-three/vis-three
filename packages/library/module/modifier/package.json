@@ -17,7 +17,6 @@
   "dependencies": {
     "@vis-three/library-modifier": "workspace:^",
     "@vis-three/tdcm": "workspace:^",
-    "@vis-three/modifier-base": "workspace:^",
     "@vis-three/utils": "workspace:^"
   },
   "files": [

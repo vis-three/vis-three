@@ -1,4 +1,9 @@
-import { defineModel, EngineSupport, MODEL_EVENT } from "@vis-three/tdcm";
+import {
+  BasicConfig,
+  defineModel,
+  EngineSupport,
+  MODEL_EVENT,
+} from "@vis-three/tdcm";
 import {
   BooleanModifierConfig,
   getBooleanModifierConfig,
@@ -13,7 +18,7 @@ export default defineModel<
   BooleanModifier,
   {
     renderFun: () => void;
-    cacheTarget: object;
+    cacheTarget: string;
   },
   { modifyKey: string[] },
   EngineSupport,
@@ -38,7 +43,7 @@ export default defineModel<
   context() {
     return {
       renderFun: () => {},
-      cacheTarget: {},
+      cacheTarget: "",
     };
   },
   commands: {
@@ -59,10 +64,8 @@ export default defineModel<
             }
             modifier.target = target;
 
-            const oldTarget = model.cacheTarget as Mesh;
-
-            if (oldTarget) {
-              const targetModel = model.toModel(oldTarget);
+            if (model.cacheTarget) {
+              const targetModel = model.toModel(model.cacheTarget);
 
               for (const key of model.modifyKey) {
                 targetModel?.off(
@@ -71,24 +74,36 @@ export default defineModel<
                 );
               }
 
-              model
-                .toModel(oldTarget.geometry)
-                ?.off(MODEL_EVENT.COMPILED_UPDATE, model.renderFun);
+              const targetConfig = model.toConfig<
+                BasicConfig & { geometry: string }
+              >(model.cacheTarget);
+
+              if (targetConfig && targetConfig.geometry) {
+                model
+                  .toModel(targetConfig.geometry)
+                  ?.off(MODEL_EVENT.COMPILED_UPDATE, model.renderFun);
+              }
             }
 
             const targetModel = model.toModel(config.target);
             for (const key of model.modifyKey) {
-              targetModel?.off(
+              targetModel?.on(
                 `${MODEL_EVENT.COMPILED_ATTR}:${key}`,
                 model.renderFun
               );
             }
 
-            model
-              .toModel(target.geometry)
-              ?.off(MODEL_EVENT.COMPILED_UPDATE, model.renderFun);
+            const targetConfig = model.toConfig<
+              BasicConfig & { geometry: string }
+            >(config.target);
 
-            model.cacheTarget = target;
+            if (targetConfig && targetConfig.geometry) {
+              model
+                .toModel(targetConfig.geometry)
+                ?.on(MODEL_EVENT.COMPILED_UPDATE, model.renderFun);
+            }
+
+            model.cacheTarget = config.target;
 
             model.renderFun();
             return true;
@@ -99,7 +114,7 @@ export default defineModel<
       $reg: [
         {
           reg: new RegExp(".*"),
-          handler({ model, value, key, target: modifier}) {
+          handler({ model, value, key, target: modifier }) {
             modifier[key] = value;
             model.renderFun();
           },
@@ -138,9 +153,15 @@ export default defineModel<
           );
         }
 
-        model
-          .toModel(source.geometry)
-          ?.on(MODEL_EVENT.COMPILED_UPDATE, model.renderFun);
+        const sourceConfig = model.toConfig<BasicConfig & { geometry: string }>(
+          config.source
+        );
+
+        if (sourceConfig && sourceConfig.geometry) {
+          model
+            .toModel(sourceConfig.geometry)
+            ?.on(MODEL_EVENT.COMPILED_UPDATE, model.renderFun);
+        }
 
         modifier.source = source;
 
@@ -174,11 +195,17 @@ export default defineModel<
           );
         }
 
-        model
-          .toModel(target.geometry)
-          ?.on(MODEL_EVENT.COMPILED_UPDATE, model.renderFun);
+        const targetConfig = model.toConfig<BasicConfig & { geometry: string }>(
+          config.target
+        );
 
-        model.cacheTarget = target;
+        if (targetConfig && targetConfig.geometry) {
+          model
+            .toModel(targetConfig.geometry)
+            ?.on(MODEL_EVENT.COMPILED_UPDATE, model.renderFun);
+        }
+
+        model.cacheTarget = config.target;
 
         model.renderFun();
         return true;

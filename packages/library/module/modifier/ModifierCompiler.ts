@@ -1,5 +1,5 @@
 import { Compiler, CompilerParameters, EngineSupport } from "@vis-three/tdcm";
-import { Modifier } from "@vis-three/modifier-base";
+import { Modifier } from "@vis-three/library-modifier";
 
 export class ModifierCompiler extends Compiler<EngineSupport> {
   cacheRenderFun: Map<Modifier, any> = new Map();

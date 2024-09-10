@@ -44,14 +44,13 @@ const recursion = (parentDir) => {
   "./plugins",
   "./strategy",
   "./tdcm",
-  "./module",
   "./widget",
   "./model",
   "./convenient",
   "./modifier",
   "./demo",
   "./test",
-  "./shaderLibrary",
+  "./shader",
 ].forEach((url) => {
   recursion(path.resolve(__dirname, url));
 });

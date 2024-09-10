@@ -1,7 +1,7 @@
-import { Compiler as y, getBasicConfig as g, defineModel as p, MODEL_EVENT as a, defineModule as h, SUPPORT_LIFE_CYCLE as l } from "@vis-three/tdcm";
-import { BooleanModifier as E } from "@vis-three/library-modifier";
-import { syncObject as O } from "@vis-three/utils";
-class T extends y {
+import { Compiler as M, getBasicConfig as p, defineModel as h, MODEL_EVENT as f, defineModule as C, SUPPORT_LIFE_CYCLE as E } from "@vis-three/tdcm";
+import { BooleanModifier as O } from "@vis-three/library-modifier";
+import { syncObject as T } from "@vis-three/utils";
+class b extends M {
   constructor(r) {
     super(r), this.cacheRenderFun = /* @__PURE__ */ new Map(), this.sourceModifiers = /* @__PURE__ */ new Map();
   }
@@ -23,26 +23,26 @@ class T extends y {
       `${this.MODULE} compiler: can not found this modifier in source list`,
       r
     );
-    const i = t.slice(t.indexOf(r) + 1, t.length);
-    for (const n of i)
-      n.render();
+    const c = t.slice(t.indexOf(r) + 1, t.length);
+    for (const o of c)
+      o.render();
   }
 }
-const b = function() {
-  return Object.assign(g(), {
+const F = function() {
+  return Object.assign(p(), {
     name: "",
     visible: !0,
     source: "",
     index: 0
   });
-}, F = function() {
-  return Object.assign(b(), {
+}, l = function() {
+  return Object.assign(F(), {
     target: "",
     mode: "subtract"
   });
-}, C = p({
+}, D = h({
   type: "BooleanModifier",
-  config: F,
+  config: l,
   shared: {
     modifyKey: [
       "position.x",
@@ -61,42 +61,42 @@ const b = function() {
     return {
       renderFun: () => {
       },
-      cacheTarget: {}
+      cacheTarget: ""
     };
   },
   commands: {
     set: {
       source: () => {
       },
-      target: ({ model: e, target: r, config: t, engine: i }) => {
-        e.toAsync((n) => {
-          var f, c;
+      target: ({ model: e, target: r, config: t, engine: c }) => {
+        e.toAsync((o) => {
+          var g, a;
           if (t.target) {
-            const o = i.compilerManager.getObjectBySymbol(
+            const u = c.compilerManager.getObjectBySymbol(
               t.target
             );
-            if (!o)
-              return n && console.warn(
+            if (!u)
+              return o && console.warn(
                 `Boolean modifier processor can not found object by vid: ${t.target}`
               ), !1;
-            r.target = o;
-            const s = e.cacheTarget;
-            if (s) {
-              const d = e.toModel(s);
-              for (const M of e.modifyKey)
-                d == null || d.off(
-                  `${a.COMPILED_ATTR}:${M}`,
+            if (r.target = u, e.cacheTarget) {
+              const i = e.toModel(e.cacheTarget);
+              for (const d of e.modifyKey)
+                i == null || i.off(
+                  `${f.COMPILED_ATTR}:${d}`,
                   e.renderFun
                 );
-              (f = e.toModel(s.geometry)) == null || f.off(a.COMPILED_UPDATE, e.renderFun);
+              const y = e.toConfig(e.cacheTarget);
+              y && y.geometry && ((g = e.toModel(y.geometry)) == null || g.off(f.COMPILED_UPDATE, e.renderFun));
             }
-            const u = e.toModel(t.target);
-            for (const d of e.modifyKey)
-              u == null || u.off(
-                `${a.COMPILED_ATTR}:${d}`,
+            const n = e.toModel(t.target);
+            for (const i of e.modifyKey)
+              n == null || n.on(
+                `${f.COMPILED_ATTR}:${i}`,
                 e.renderFun
               );
-            return (c = e.toModel(o.geometry)) == null || c.off(a.COMPILED_UPDATE, e.renderFun), e.cacheTarget = o, e.renderFun(), !0;
+            const s = e.toConfig(t.target);
+            return s && s.geometry && ((a = e.toModel(s.geometry)) == null || a.on(f.COMPILED_UPDATE, e.renderFun)), e.cacheTarget = t.target, e.renderFun(), !0;
           }
           return !0;
         });
@@ -104,72 +104,78 @@ const b = function() {
       $reg: [
         {
           reg: new RegExp(".*"),
-          handler({ model: e, value: r, key: t, target: i }) {
-            i[t] = r, e.renderFun();
+          handler({ model: e, value: r, key: t, target: c }) {
+            c[t] = r, e.renderFun();
           }
         }
       ]
     }
   },
-  create({ model: e, config: r, engine: t, compiler: i }) {
-    const n = new E({
+  create({ model: e, config: r, engine: t, compiler: c }) {
+    const o = new O({
       mode: r.mode
     });
     return e.renderFun = () => {
-      n.render(), i.chainRender(n);
-    }, e.toAsync((f) => {
-      var c;
+      o.render(), c.chainRender(o);
+    }, e.toAsync((g) => {
+      var a;
       if (r.source) {
-        const o = t.compilerManager.getObjectBySymbol(
+        const u = t.compilerManager.getObjectBySymbol(
           r.source
         );
-        if (!o)
-          return f && console.warn(
+        if (!u)
+          return g && console.warn(
             `Boolean modifier processor can not found object by vid: ${r.source}`
           ), !1;
-        const s = e.toModel(r.source);
-        for (const u of e.modifyKey)
-          s == null || s.on(
-            `${a.COMPILED_ATTR}:${u}`,
+        const n = e.toModel(r.source);
+        for (const i of e.modifyKey)
+          n == null || n.on(
+            `${f.COMPILED_ATTR}:${i}`,
             e.renderFun
           );
-        return (c = e.toModel(o.geometry)) == null || c.on(a.COMPILED_UPDATE, e.renderFun), n.source = o, i.integrateModifer(n), e.renderFun(), !0;
+        const s = e.toConfig(
+          r.source
+        );
+        return s && s.geometry && ((a = e.toModel(s.geometry)) == null || a.on(f.COMPILED_UPDATE, e.renderFun)), o.source = u, c.integrateModifer(o), e.renderFun(), !0;
       }
       return !0;
-    }), e.toAsync((f) => {
-      var c;
+    }), e.toAsync((g) => {
+      var a;
       if (r.target) {
-        const o = t.compilerManager.getObjectBySymbol(
+        const u = t.compilerManager.getObjectBySymbol(
           r.target
         );
-        if (!o)
-          return f && console.warn(
+        if (!u)
+          return g && console.warn(
             `Boolean modifier processor can not found object by vid: ${r.target}`
           ), !1;
-        n.target = o;
-        const s = e.toModel(r.target);
-        for (const u of e.modifyKey)
-          s == null || s.on(
-            `${a.COMPILED_ATTR}:${u}`,
+        o.target = u;
+        const n = e.toModel(r.target);
+        for (const i of e.modifyKey)
+          n == null || n.on(
+            `${f.COMPILED_ATTR}:${i}`,
             e.renderFun
           );
-        return (c = e.toModel(o.geometry)) == null || c.on(a.COMPILED_UPDATE, e.renderFun), e.cacheTarget = o, e.renderFun(), !0;
+        const s = e.toConfig(
+          r.target
+        );
+        return s && s.geometry && ((a = e.toModel(s.geometry)) == null || a.on(f.COMPILED_UPDATE, e.renderFun)), e.cacheTarget = r.target, e.renderFun(), !0;
       }
       return !0;
-    }), O(r, n, { target: !0, source: !0 }), n;
+    }), T(r, o, { target: !0, source: !0 }), o;
   },
   dispose({ target: e }) {
     e.dispose();
   }
-}), $ = h({
+}), A = C({
   type: "modifier",
-  compiler: T,
-  models: [C],
-  lifeOrder: l.NINE
+  compiler: b,
+  models: [D],
+  lifeOrder: E.NINE
 });
 export {
-  T as ModifierCompiler,
-  $ as default,
-  F as getBooleanModifierConfig,
-  b as getModifierConfig
+  b as ModifierCompiler,
+  A as default,
+  l as getBooleanModifierConfig,
+  F as getModifierConfig
 };

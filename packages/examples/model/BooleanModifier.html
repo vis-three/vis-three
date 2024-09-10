@@ -22,7 +22,7 @@
     <script type="module">
       import * as THREE from "three";
       import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
-      import { generateConfig, CONFIG_TYPE } from "@vis-three/tdcm";
+      import { generateConfig, CONFIG_TYPE, toSymbol } from "@vis-three/tdcm";
       import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
       const engine = new ModelingEngineSupport()
@@ -35,7 +35,7 @@
 
       const scene = generateConfig("Scene");
 
-      engine.setSceneBySymbol(scene.vid);
+      engine.setSceneBySymbol(toSymbol(scene));
 
       generateConfig.injectScene = true;
 
@@ -44,6 +44,7 @@
           y: 20,
           z: 15,
         },
+        intensity: 4,
       });
 
       const material = generateConfig(CONFIG_TYPE.MESHSTANDARDMATERIAL, {});
@@ -55,8 +56,8 @@
       });
 
       const mesh1 = generateConfig(CONFIG_TYPE.MESH, {
-        material: material.vid,
-        geometry: geometry.vid,
+        material: toSymbol(material),
+        geometry: toSymbol(geometry),
         position: {
           x: -2,
         },
@@ -67,8 +68,8 @@
       });
 
       const mesh2 = generateConfig(CONFIG_TYPE.MESH, {
-        material: material.vid,
-        geometry: geometry2.vid,
+        material: toSymbol(material),
+        geometry: toSymbol(geometry2),
         visible: false,
         position: {
           x: 2,
@@ -82,8 +83,8 @@
       });
 
       const mesh3 = generateConfig(CONFIG_TYPE.MESH, {
-        material: material.vid,
-        geometry: geometry3.vid,
+        material: toSymbol(material),
+        geometry: toSymbol(geometry3),
         visible: false,
         position: {
           z: 2,
@@ -97,8 +98,8 @@
       });
 
       const mesh4 = generateConfig(CONFIG_TYPE.MESH, {
-        material: material.vid,
-        geometry: geometry4.vid,
+        material: toSymbol(material),
+        geometry: toSymbol(geometry4),
         visible: false,
         position: {
           x: -6,
@@ -106,28 +107,28 @@
       });
 
       const modifier = generateConfig(CONFIG_TYPE.BOOLEANMODIFIER, {
-        source: mesh1.vid,
-        target: mesh2.vid,
+        source: toSymbol(mesh1),
+        target: toSymbol(mesh2),
         // mode: "intersect",
       });
 
       const modifier2 = generateConfig(CONFIG_TYPE.BOOLEANMODIFIER, {
-        source: mesh1.vid,
-        target: mesh3.vid,
+        source: toSymbol(mesh1),
+        target: toSymbol(mesh3),
         mode: "union",
       });
 
-      const gui = new GUI();
+      // const gui = new GUI();
 
-      const modif1Folder = gui.addFolder("modifier1");
-      modif1Folder.add(modifier, "target", [mesh2.vid, mesh4.vid]);
-      modif1Folder.add(modifier, "mode", ["subtract", "union", "intersect"]);
+      // const modif1Folder = gui.addFolder("modifier1");
+      // modif1Folder.add(modifier, "target", [mesh2.vid, mesh4.vid]);
+      // modif1Folder.add(modifier, "mode", ["subtract", "union", "intersect"]);
 
-      const modif2Folder = gui.addFolder("modifier2");
-      modif2Folder.add(modifier2, "target", [mesh3.vid, mesh4.vid]);
-      modif2Folder.add(modifier2, "mode", ["subtract", "union", "intersect"]);
+      // const modif2Folder = gui.addFolder("modifier2");
+      // modif2Folder.add(modifier2, "target", [mesh3.vid, mesh4.vid]);
+      // modif2Folder.add(modifier2, "mode", ["subtract", "union", "intersect"]);
 
-      window.engine = engine;
+      // window.engine = engine;
     </script>
   </body>
 </html>

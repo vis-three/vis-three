@@ -39,7 +39,7 @@
     "@vis-three/library-module": "workspace:^",
     "@vis-three/library-parser": "workspace:^",
     "@vis-three/library-shader": "workspace:^",
-    "@vis-three/modifier-boolean": "workspace:^",
+    "@vis-three/library-modifier": "workspace:^",
     "@vis-three/module-modifier": "workspace:^",
     "@vis-three/module-pass": "workspace:^",
     "@vis-three/plugin-axes-helper": "workspace:^",

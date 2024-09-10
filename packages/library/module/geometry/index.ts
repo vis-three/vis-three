@@ -19,6 +19,8 @@ import TorusGeometryModel from "./models/TorusGeometryModel";
 import SphereGeometryModel from "./models/SphereGeometryModel";
 import DecalGeometryModel from "./models/DecalGeometryModel";
 import SplineTubeGeometryModel from "./models/SplineTubeGeometryModel";
+import ConeGeometryModel from "./models/ConeGeometryModel";
+import CylinderGeometryModel from "./models/CylinderGeometryModel";
 
 export * from "./GeometryInterface";
 export * from "./extends";
@@ -30,6 +32,8 @@ export default defineModule({
     CircleGeometryModel,
     CubicBezierCurveGeometryModel,
     CustomGeometryModel,
+    ConeGeometryModel,
+    CylinderGeometryModel,
     DecalGeometryModel,
     EdgesGeometryModel,
     ExtrudeGeometryModel,
