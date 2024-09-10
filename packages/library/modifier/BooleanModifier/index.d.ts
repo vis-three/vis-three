@@ -1,5 +1,5 @@
 import { Mesh } from "three";
-import { Modifier, ModifierParameters } from "./BaseModifier";
+import { Modifier, ModifierParameters } from "../BaseModifier";
 export interface BooleanModifierParameters extends ModifierParameters {
     source?: Mesh;
     target?: Mesh;

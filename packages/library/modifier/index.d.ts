@@ -1,2 +1,2 @@
-export * from "./src/BaseModifier";
-export * from "./src/BooleanModifier";
+export * from "./BaseModifier";
+export * from "./BooleanModifier";

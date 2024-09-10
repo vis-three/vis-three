@@ -1,6 +1,6 @@
 import { BufferGeometry, Mesh } from "three";
 import { CSG } from "three-csg-ts";
-import { Modifier, ModifierParameters } from "./BaseModifier";
+import { Modifier, ModifierParameters } from "../BaseModifier";
 
 export interface BooleanModifierParameters extends ModifierParameters {
   source?: Mesh;
