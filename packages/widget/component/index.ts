@@ -6,7 +6,7 @@ import {
 } from "@vue/reactivity";
 import { Data, VNode, isOnProp, isVNode } from "../vnode";
 import { EngineWidget } from "../engine";
-import { createSymbol } from "@vis-three/middleware";
+import { createSymbol } from "@vis-three/tdcm";
 import { ENGINE_EVENT, EventDispatcher, RenderEvent } from "@vis-three/core";
 import { Renderer } from "../renderer";
 import { Widget } from "../widget";
@@ -61,10 +61,12 @@ export class Component<
 
   static setCurrentComponent(component: Component) {
     Component.currentComponent = component;
+    // @ts-ignore
     component.scope.on();
   }
 
   static unsetCurrentComponent() {
+    // @ts-ignore
     Component.currentComponent && Component.currentComponent.scope.off();
     Component.currentComponent = null;
   }
@@ -389,6 +391,7 @@ export class Component<
         }
       },
       () => queueJob(update),
+      undefined,
       this.scope
     );
 

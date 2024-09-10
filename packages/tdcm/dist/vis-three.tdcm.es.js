@@ -2425,14 +2425,14 @@ class EngineSupport extends Engine {
 }
 const defineEngineSupport = function(options, params = {}) {
   const engine = new EngineSupport(params);
-  if (options.modules) {
-    options.modules.forEach((module) => {
-      engine.useModule(module);
-    });
-  }
   if (options.plugins) {
     options.plugins.forEach((plugin) => {
       engine.install(plugin);
+    });
+  }
+  if (options.modules) {
+    options.modules.forEach((module) => {
+      engine.useModule(module);
     });
   }
   if (options.strategy) {

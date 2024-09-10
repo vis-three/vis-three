@@ -1,1067 +1,718 @@
-import { createSymbol, isObjectType, OBJECTMODULE, generateConfig, EngineSupport } from "@vis-three/middleware";
-import { isObject } from "@vis-three/utils";
-import { shallowReactive, EffectScope, proxyRefs, ReactiveEffect, getCurrentScope, isRef, isShallow, isReactive } from "@vue/reactivity";
-export { computed, reactive, ref, shallowReactive, shallowReadonly, shallowRef, toRef, toRefs } from "@vue/reactivity";
-import { EventDispatcher, ENGINE_EVENT } from "@vis-three/core";
-import { isFunction, isPromise, isArray, EMPTY_OBJ, NOOP, hasChanged, remove, isObject as isObject$1, isSet, isMap, isPlainObject } from "@vue/shared";
-const version = "0.6.0";
-const createVNode = function(type, props = null, options = {}) {
+import { createSymbol as H, isObjectType as L, OBJECT_MODULE as x, generateConfig as ie, EngineSupport as ce } from "@vis-three/tdcm";
+import { isObject as le } from "@vis-three/utils";
+import { shallowReactive as fe, EffectScope as ue, proxyRefs as pe, ReactiveEffect as Z, getCurrentScope as ae, isRef as B, isShallow as G, isReactive as j } from "@vue/reactivity";
+import { computed as et, reactive as tt, ref as nt, shallowReactive as ot, shallowReadonly as rt, shallowRef as st, toRef as it, toRefs as ct } from "@vue/reactivity";
+import { EventDispatcher as he, ENGINE_EVENT as T } from "@vis-three/core";
+import { isFunction as D, isPromise as de, isArray as z, EMPTY_OBJ as me, NOOP as ge, hasChanged as Y, remove as ye, isObject as Ee, isSet as ve, isMap as we, isPlainObject as Ce } from "@vue/shared";
+const Re = "0.7.0", Q = function(t, e = null, n = {}) {
   return {
-    _isVNode: true,
-    type,
-    props,
+    _isVNode: !0,
+    type: t,
+    props: e,
     config: null,
     component: null,
     el: null,
-    key: options.key || null,
-    ref: options.ref || null,
-    raw: options.raw || null,
+    key: n.key || null,
+    ref: n.ref || null,
+    raw: n.raw || null,
     children: null
   };
+}, v = function(t) {
+  return typeof t == "object" ? !!t._isVNode : !1;
+}, N = function(t) {
+  return /^on[A-Z]/.test(t);
+}, Se = function(t) {
+  const e = t.props, n = {};
+  for (const o in e)
+    N(o) && (n[o] = e[o]);
+  return n;
 };
-const isVNode = function(object) {
-  if (typeof object === "object") {
-    return Boolean(object["_isVNode"]);
-  } else {
-    return false;
-  }
-};
-const isOnProp = function(key) {
-  return /^on[A-Z]/.test(key);
-};
-const getOnProps = function(vnode) {
-  const props = vnode.props;
-  const onProps = {};
-  for (const key in props) {
-    if (isOnProp(key)) {
-      onProps[key] = props[key];
-    }
-  }
-  return onProps;
-};
-var RENDER_SCOPE = /* @__PURE__ */ ((RENDER_SCOPE2) => {
-  RENDER_SCOPE2["STATIC"] = "static";
-  RENDER_SCOPE2["VIF"] = "vif";
-  RENDER_SCOPE2["VFOR"] = "vfor";
-  return RENDER_SCOPE2;
-})(RENDER_SCOPE || {});
-const _h = function(type, props = null) {
-  const vnode = createVNode(type, props, {
-    key: props && props.key || null,
-    ref: props && props.ref || null,
-    raw: props && props.raw || null
+var W = /* @__PURE__ */ ((t) => (t.STATIC = "static", t.VIF = "vif", t.VFOR = "vfor", t))(W || {});
+const f = function(t, e = null) {
+  const n = Q(t, e, {
+    key: e && e.key || null,
+    ref: e && e.ref || null,
+    raw: e && e.raw || null
   });
-  _h.add(vnode);
-  return vnode;
+  return f.add(n), n;
 };
-_h.reset = function() {
-  _h.el = null;
-  _h.scope = "static";
-  _h.vnodes = [];
+f.reset = function() {
+  f.el = null, f.scope = "static", f.vnodes = [];
 };
-_h.add = function(vnode) {
-  vnode.el = _h.el;
-  if (_h.scope !== "static") {
-    const scope = _h.vnodes[_h.vnodes.length - 1];
-    if (_h.scope === "vfor") {
-      if (!vnode.key) {
-        vnode.key = scope.vnodes.length;
-      }
-      scope.keyMap.set(vnode.key, vnode);
-    }
-    scope.vnodes.push(vnode);
-  } else {
-    _h.vnodes.push(vnode);
-  }
-  return _h.vnodes;
+f.add = function(t) {
+  if (t.el = f.el, f.scope !== "static") {
+    const e = f.vnodes[f.vnodes.length - 1];
+    f.scope === "vfor" && (t.key || (t.key = e.vnodes.length), e.keyMap.set(t.key, t)), e.vnodes.push(t);
+  } else
+    f.vnodes.push(t);
+  return f.vnodes;
 };
-const h = function(type, props = null) {
-  return _h(type, props);
-};
-const vif = function(fun) {
-  _h.scope = "vif";
-  _h.vnodes.push({
-    scope: _h.scope,
+const qe = function(t, e = null) {
+  return f(t, e);
+}, Je = function(t) {
+  f.scope = "vif", f.vnodes.push({
+    scope: f.scope,
     vnodes: [],
     keyMap: /* @__PURE__ */ new Map()
-  });
-  fun();
-  _h.scope = "static";
-};
-const vfor = function(fun) {
-  _h.scope = "vfor";
-  _h.vnodes.push({
-    scope: _h.scope,
+  }), t(), f.scope = "static";
+}, Ue = function(t) {
+  f.scope = "vfor", f.vnodes.push({
+    scope: f.scope,
     vnodes: [],
     keyMap: /* @__PURE__ */ new Map()
-  });
-  fun();
-  _h.scope = "static";
+  }), t(), f.scope = "static";
 };
-var LifeCycleHooks = /* @__PURE__ */ ((LifeCycleHooks2) => {
-  LifeCycleHooks2["MOUNTED"] = "mounted";
-  LifeCycleHooks2["BEFORE_DISTORY"] = "beforeDistory";
-  LifeCycleHooks2["UPDATE"] = "update";
-  LifeCycleHooks2["FRAME"] = "frame";
-  LifeCycleHooks2["CAMERA_CHANGE"] = "cameraChange";
-  LifeCycleHooks2["SCENE_CHANGE"] = "sceneCHange";
-  return LifeCycleHooks2;
-})(LifeCycleHooks || {});
-const onMounted = function(fn = () => {
+var F = /* @__PURE__ */ ((t) => (t.MOUNTED = "mounted", t.BEFORE_DISTORY = "beforeDistory", t.UPDATE = "update", t.FRAME = "frame", t.CAMERA_CHANGE = "cameraChange", t.SCENE_CHANGE = "sceneCHange", t))(F || {});
+const Le = function(t = () => {
 }) {
-  Component.currentComponent && Component.currentComponent.on("mounted", (event) => fn());
-};
-const onBeforeDistory = function(fn = () => {
+  h.currentComponent && h.currentComponent.on("mounted", (e) => t());
+}, Ge = function(t = () => {
 }) {
-  Component.currentComponent && Component.currentComponent.on(
+  h.currentComponent && h.currentComponent.on(
     "beforeDistory",
-    (event) => fn()
+    (e) => t()
   );
-};
-const onFrame = function(fn = () => {
+}, Ye = function(t = () => {
 }) {
-  Component.currentComponent && Component.currentComponent.on(
+  h.currentComponent && h.currentComponent.on(
     "frame",
-    (event) => fn(event.delta, event.total)
+    (e) => t(e.delta, e.total)
   );
 };
-let isFlushing = false;
-let isFlushPending = false;
-const queue = [];
-let flushIndex = 0;
-const pendingPostFlushCbs = [];
-let activePostFlushCbs = null;
-let postFlushIndex = 0;
-const resolvedPromise = /* @__PURE__ */ Promise.resolve();
-function findInsertionIndex(id) {
-  let start = flushIndex + 1;
-  let end = queue.length;
-  while (start < end) {
-    const middle = start + end >>> 1;
-    const middleJob = queue[middle];
-    const middleJobId = getId(middleJob);
-    if (middleJobId < id || middleJobId === id && middleJob.pre) {
-      start = middle + 1;
-    } else {
-      end = middle;
-    }
+let I = !1, _ = !1;
+const m = [];
+let E = 0;
+const O = [];
+let y = null, R = 0;
+const ke = /* @__PURE__ */ Promise.resolve();
+function Oe(t) {
+  let e = E + 1, n = m.length;
+  for (; e < n; ) {
+    const o = e + n >>> 1, s = m[o], i = M(s);
+    i < t || i === t && s.pre ? e = o + 1 : n = o;
   }
-  return start;
+  return e;
 }
-function queueJob(job) {
-  if (!queue.length || !queue.includes(
-    job,
-    isFlushing && job.allowRecurse ? flushIndex + 1 : flushIndex
-  )) {
-    if (job.id == null) {
-      queue.push(job);
-    } else {
-      queue.splice(findInsertionIndex(job.id), 0, job);
-    }
-    queueFlush();
-  }
+function X(t) {
+  (!m.length || !m.includes(
+    t,
+    I && t.allowRecurse ? E + 1 : E
+  )) && (t.id == null ? m.push(t) : m.splice(Oe(t.id), 0, t), V());
 }
-function queueFlush() {
-  if (!isFlushing && !isFlushPending) {
-    isFlushPending = true;
-    resolvedPromise.then(flushJobs);
-  }
+function V() {
+  !I && !_ && (_ = !0, ke.then(ee));
 }
-function queuePostFlushCb(cb) {
-  if (!Array.isArray(cb)) {
-    if (!activePostFlushCbs || !activePostFlushCbs.includes(
-      cb,
-      cb.allowRecurse ? postFlushIndex + 1 : postFlushIndex
-    )) {
-      pendingPostFlushCbs.push(cb);
-    }
-  } else {
-    pendingPostFlushCbs.push(...cb);
-  }
-  queueFlush();
+function $(t) {
+  Array.isArray(t) ? O.push(...t) : (!y || !y.includes(
+    t,
+    t.allowRecurse ? R + 1 : R
+  )) && O.push(t), V();
 }
-function flushPostFlushCbs() {
-  if (pendingPostFlushCbs.length) {
-    const deduped = [...new Set(pendingPostFlushCbs)];
-    pendingPostFlushCbs.length = 0;
-    if (activePostFlushCbs) {
-      activePostFlushCbs.push(...deduped);
+function Me() {
+  if (O.length) {
+    const t = [...new Set(O)];
+    if (O.length = 0, y) {
+      y.push(...t);
       return;
     }
-    activePostFlushCbs = deduped;
-    activePostFlushCbs.sort((a, b) => getId(a) - getId(b));
-    for (postFlushIndex = 0; postFlushIndex < activePostFlushCbs.length; postFlushIndex++) {
-      activePostFlushCbs[postFlushIndex]();
-    }
-    activePostFlushCbs = null;
-    postFlushIndex = 0;
+    for (y = t, y.sort((e, n) => M(e) - M(n)), R = 0; R < y.length; R++)
+      y[R]();
+    y = null, R = 0;
   }
 }
-const getId = (job) => job.id == null ? Infinity : job.id;
-const comparator = (a, b) => {
-  const diff = getId(a) - getId(b);
-  if (diff === 0) {
-    if (a.pre && !b.pre)
-      return -1;
-    if (b.pre && !a.pre)
-      return 1;
+const M = (t) => t.id == null ? 1 / 0 : t.id, be = (t, e) => {
+  const n = M(t) - M(e);
+  if (n === 0) {
+    if (t.pre && !e.pre) return -1;
+    if (e.pre && !t.pre) return 1;
   }
-  return diff;
+  return n;
 };
-function flushJobs() {
-  isFlushPending = false;
-  isFlushing = true;
-  queue.sort(comparator);
+function ee() {
+  _ = !1, I = !0, m.sort(be);
   try {
-    for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
-      const job = queue[flushIndex];
-      if (job && job.active !== false) {
+    for (E = 0; E < m.length; E++) {
+      const t = m[E];
+      if (t && t.active !== !1)
         try {
-          job();
-        } catch (err) {
-          console.error(err);
+          t();
+        } catch (e) {
+          console.error(e);
         }
-      }
     }
   } finally {
-    flushIndex = 0;
-    queue.length = 0;
-    flushPostFlushCbs();
-    isFlushing = false;
-    if (queue.length || pendingPostFlushCbs.length) {
-      flushJobs();
-    }
+    E = 0, m.length = 0, Me(), I = !1, (m.length || O.length) && ee();
   }
 }
-const EVENT_SYMBOL = Symbol.for("vis.widget.event");
-const createInvoker = function(fn) {
-  const invoker = function(event) {
-    invoker.value(event);
+const S = Symbol.for("vis.widget.event"), Te = function(t) {
+  const e = function(n) {
+    e.value(n);
   };
-  invoker.value = fn;
-  return invoker;
-};
-const eventOptionsReg = /Once$/;
-function parseName(name) {
-  let options = {};
-  if (eventOptionsReg.test(name)) {
-    options = {};
-    let m;
-    while (m = name.match(eventOptionsReg)) {
-      name = name.slice(0, name.length - m[0].length);
-      options[m[0].toLowerCase()] = true;
-    }
+  return e.value = t, e;
+}, K = /Once$/;
+function J(t) {
+  let e = {};
+  if (K.test(t)) {
+    e = {};
+    let o;
+    for (; o = t.match(K); )
+      t = t.slice(0, t.length - o[0].length), e[o[0].toLowerCase()] = !0;
   }
-  const event = name.slice(2).toLowerCase();
-  return [event, options];
+  return [t.slice(2).toLowerCase(), e];
 }
-const mountEvents = function(vnode, config, object) {
-  if (config[EVENT_SYMBOL]) {
-    console.error(`config has already create events`, config);
+const Pe = function(t, e, n) {
+  if (e[S]) {
+    console.error("config has already create events", e);
     return;
   }
-  const eventProps = getOnProps(vnode);
-  for (const key in eventProps) {
-    eventProps[key] = createInvoker(eventProps[key]);
-    const [name, options] = parseName(key);
-    object.addEventListener(name, eventProps[key]);
+  const o = Se(t);
+  for (const s in o) {
+    o[s] = Te(o[s]);
+    const [i, c] = J(s);
+    n.addEventListener(i, o[s]);
   }
-  config[EVENT_SYMBOL] = eventProps;
-};
-const updateEvents = function(vnode) {
-  const props = vnode.props;
-  const config = vnode.config;
-  if (!config[EVENT_SYMBOL]) {
+  e[S] = o;
+}, Fe = function(t) {
+  const e = t.props, n = t.config;
+  if (!n[S])
     return;
+  const o = n[S];
+  for (const s in o) {
+    const i = o[s];
+    i && i.value !== e[s] && (i.value = e[s]);
   }
-  const events = config[EVENT_SYMBOL];
-  for (const key in events) {
-    const invoker = events[key];
-    if (invoker && invoker.value !== props[key]) {
-      invoker.value = props[key];
+}, Ae = function(t, e) {
+  const n = t.config;
+  if (!n[S])
+    return;
+  const o = n[S];
+  for (const s in o) {
+    const i = o[s];
+    if (i) {
+      const [c, l] = J(s);
+      e.removeEventListener(c, i);
     }
   }
+  n[S] = void 0;
 };
-const unmountEvents = function(vnode, object) {
-  const config = vnode.config;
-  if (!config[EVENT_SYMBOL]) {
-    return;
-  }
-  const events = config[EVENT_SYMBOL];
-  for (const key in events) {
-    const invoker = events[key];
-    if (invoker) {
-      const [name, options] = parseName(key);
-      object.removeEventListener(name, invoker);
-    }
-  }
-  config[EVENT_SYMBOL] = void 0;
-};
-class Component extends EventDispatcher {
-  constructor(vnode, renderer) {
-    super();
-    this.cid = createSymbol();
-    this.name = "";
-    this.el = "";
-    this.isMounted = false;
-    this.props = shallowReactive(Object.create(Object.prototype));
-    this.scope = new EffectScope(true);
-    this.subTree = null;
-    this.cacheResources = Object.create(Object.prototype);
-    this.resourcesKeyEnum = Object.create(
+class h extends he {
+  constructor(e, n) {
+    super(), this.cid = H(), this.name = "", this.el = "", this.isMounted = !1, this.props = fe(Object.create(Object.prototype)), this.scope = new ue(!0), this.subTree = null, this.cacheResources = Object.create(Object.prototype), this.resourcesKeyEnum = Object.create(
       Object.prototype
-    );
-    this.cacheEvent = {};
-    this.vnode = vnode;
-    const options = vnode.type;
-    options.name && (this.name = options.name);
-    this.el = options.el;
-    this.options = options;
-    this.renderer = renderer;
-    this.engine = renderer.engine;
-    this.ctx = renderer.context;
-    this.createProps();
-    this.createSetup();
-    this.createResources();
-    this.createRender();
-    this.createEffect();
+    ), this.cacheEvent = {}, this.vnode = e;
+    const o = e.type;
+    o.name && (this.name = o.name), this.el = o.el, this.options = o, this.renderer = n, this.engine = n.engine, this.ctx = n.context, this.createProps(), this.createSetup(), this.createResources(), this.createRender(), this.createEffect();
   }
-  static setCurrentComponent(component) {
-    Component.currentComponent = component;
-    component.scope.on();
+  static setCurrentComponent(e) {
+    h.currentComponent = e, e.scope.on();
   }
   static unsetCurrentComponent() {
-    Component.currentComponent && Component.currentComponent.scope.off();
-    Component.currentComponent = null;
+    h.currentComponent && h.currentComponent.scope.off(), h.currentComponent = null;
   }
   renderTree() {
-    _h.reset();
-    _h.el = this.el;
-    this.render.call(
+    return f.reset(), f.el = this.el, this.render.call(
       { ...this.setupState, ...this.props },
       {
         components: this.options.components || {},
         resources: this.resourcesKeyEnum
       }
-    );
-    let tree = _h.vnodes;
-    return tree;
+    ), f.vnodes;
   }
   createResources() {
-    if (!this.options.resources) {
+    if (!this.options.resources)
       return;
-    }
-    const resources = this.options.resources.call(this.setupState);
-    this.engine.registerResources(resources);
-    this.cacheResources = resources;
-    for (const key in resources) {
-      this.resourcesKeyEnum[key] = key;
-    }
+    const e = this.options.resources.call(this.setupState);
+    this.engine.registerResources(e), this.cacheResources = e;
+    for (const n in e)
+      this.resourcesKeyEnum[n] = n;
   }
   createProps() {
-    const propsOptions = this.options.props || {};
-    const vnProps = this.vnode.props || {};
-    const props = this.props;
-    const emits = this.options.emits || {};
-    const inputProps = {};
-    for (const key in vnProps) {
-      if (isOnProp(key)) {
-        const [name, options] = parseName(key);
-        if (emits[name]) {
-          this[options.once ? "once" : "on"](name, vnProps[key]);
-        } else {
-          console.warn(
-            `widget Component: you not declare attribute  ${key}  in emits options`,
-            this.options
-          );
-        }
-      } else {
-        inputProps[key] = vnProps[key];
-      }
-    }
-    for (const key in propsOptions) {
-      const options = propsOptions[key];
-      if (options.required && typeof inputProps[key] === "undefined") {
-        console.error(`widget component: component prop is required.`, {
+    const e = this.options.props || {}, n = this.vnode.props || {}, o = this.props, s = this.options.emits || {}, i = {};
+    for (const c in n)
+      if (N(c)) {
+        const [l, r] = J(c);
+        s[l] ? this[r.once ? "once" : "on"](l, n[c]) : console.warn(
+          `widget Component: you not declare attribute  ${c}  in emits options`,
+          this.options
+        );
+      } else
+        i[c] = n[c];
+    for (const c in e) {
+      const l = e[c];
+      if (l.required && typeof i[c] > "u") {
+        console.error("widget component: component prop is required.", {
           component: this,
-          props: inputProps,
-          key
+          props: i,
+          key: c
         });
         return;
       }
-      let value;
-      if (typeof inputProps[key] !== "undefined") {
-        value = inputProps[key];
-      } else if (options.default) {
-        value = typeof options.default === "function" ? options.default() : options.default;
-      }
-      if (value.constructor !== options.type) {
+      let r;
+      if (typeof i[c] < "u" ? r = i[c] : l.default && (r = typeof l.default == "function" ? l.default() : l.default), r.constructor !== l.type) {
         console.error(
-          `widget component: component prop is not instance of type.`,
+          "widget component: component prop is not instance of type.",
           {
             component: this,
-            props: inputProps,
-            key,
-            value,
-            type: options.type
+            props: i,
+            key: c,
+            value: r,
+            type: l.type
           }
         );
         return;
       }
-      props[key] = value;
+      o[c] = r;
     }
   }
   createSetup() {
-    if (!this.options.setup) {
+    if (!this.options.setup)
       return;
-    }
-    Component.setCurrentComponent(this);
-    const setupResult = this.options.setup({
+    h.setCurrentComponent(this);
+    const e = this.options.setup({
       engine: this.engine,
       props: this.props,
       emit: this.emit.bind(this)
     }) || {};
-    this.setupState = proxyRefs(setupResult);
-    this.rawSetupState = setupResult;
-    Component.unsetCurrentComponent();
+    this.setupState = pe(e), this.rawSetupState = e, h.unsetCurrentComponent();
   }
   createRender() {
     this.render = this.options.render;
   }
   createEffect() {
-    const effect = new ReactiveEffect(
+    const e = new Z(
       () => {
-        if (!this.isMounted) {
-          const setupState = this.rawSetupState;
-          const matchRef = (vnode) => {
-            if (!vnode.ref) {
-              return;
-            }
-            if (typeof setupState[vnode.ref] !== "undefined") {
-              setupState[vnode.ref].value = vnode.component ? vnode.component : vnode.config || null;
-            }
-          };
-          const matchRaw = (vnode) => {
-            if (!vnode.raw) {
-              return;
-            }
-            if (typeof setupState[vnode.raw] !== "undefined") {
-              if (vnode.config) {
-                const raw2 = this.engine.getObjectBySymbol(vnode.config.vid);
-                if (!raw2) {
-                  console.warn(`can not found raw object in engine`, {
-                    component: this,
-                    vnode
-                  });
-                }
-                setupState[vnode.raw].value = raw2 || null;
-              } else {
-                console.warn(`component raw object is not a native config`, {
-                  component: this,
-                  vnode
-                });
-                return;
-              }
-            }
-          };
-          const subTree = this.subTree = this.renderTree();
-          for (const vnode of subTree) {
-            if (isVNode(vnode)) {
-              this.renderer.patch(null, vnode);
-              matchRef(vnode);
-              matchRaw(vnode);
-            } else {
-              for (const vn of vnode.vnodes) {
-                this.renderer.patch(null, vn);
-                matchRef(vn);
-                matchRaw(vn);
-              }
-            }
-          }
-          this.isMounted = true;
-          queuePostFlushCb(() => this.emit(LifeCycleHooks.MOUNTED));
-          const frameEvent = (event) => {
-            this.emit(LifeCycleHooks.FRAME, event);
-          };
-          this.engine.renderManager.addEventListener(
-            ENGINE_EVENT.RENDER,
-            frameEvent
-          );
-          this.cacheEvent[ENGINE_EVENT.RENDER] = frameEvent;
-        } else {
-          const nextTree = this.renderTree();
-          const prevTree = this.subTree;
-          if (prevTree.length !== nextTree.length) {
-            console.error(`widget component render: tree render error`, {
-              nextTree,
-              prevTree
+        if (this.isMounted) {
+          const o = this.renderTree(), s = this.subTree;
+          if (s.length !== o.length) {
+            console.error("widget component render: tree render error", {
+              nextTree: o,
+              prevTree: s
             });
             return;
           }
-          for (let i = 0; i < nextTree.length; i += 1) {
-            if (isVNode(prevTree[i]) && isVNode(nextTree[i])) {
-              this.renderer.patch(prevTree[i], nextTree[i]);
-            } else {
-              const next = nextTree[i];
-              const prev = prevTree[i];
-              if (next.scope !== prev.scope) {
-                console.error(`widget component render: tree render error`, {
-                  nextTree,
-                  prevTree
+          for (let i = 0; i < o.length; i += 1)
+            if (v(s[i]) && v(o[i]))
+              this.renderer.patch(s[i], o[i]);
+            else {
+              const c = o[i], l = s[i];
+              if (c.scope !== l.scope) {
+                console.error("widget component render: tree render error", {
+                  nextTree: o,
+                  prevTree: s
                 });
                 return;
               }
-              if (next.scope === RENDER_SCOPE.VIF) {
-                for (const vnode of prev.vnodes) {
-                  this.renderer.patch(vnode, null);
-                }
-                for (const vnode of next.vnodes) {
-                  this.renderer.patch(null, vnode);
-                }
-              } else if (next.scope === RENDER_SCOPE.VFOR) {
-                for (const key of next.keyMap.keys()) {
-                  if (prev.keyMap.has(key)) {
-                    this.renderer.patch(
-                      prev.keyMap.get(key),
-                      next.keyMap.get(key)
-                    );
-                    prev.keyMap.delete(key);
-                  } else {
-                    this.renderer.patch(null, next.keyMap.get(key));
-                  }
-                }
-                for (const vnode of prev.keyMap.values()) {
-                  this.renderer.unmountElement(vnode);
-                }
-              } else {
+              if (c.scope === W.VIF) {
+                for (const r of l.vnodes)
+                  this.renderer.patch(r, null);
+                for (const r of c.vnodes)
+                  this.renderer.patch(null, r);
+              } else if (c.scope === W.VFOR) {
+                for (const r of c.keyMap.keys())
+                  l.keyMap.has(r) ? (this.renderer.patch(
+                    l.keyMap.get(r),
+                    c.keyMap.get(r)
+                  ), l.keyMap.delete(r)) : this.renderer.patch(null, c.keyMap.get(r));
+                for (const r of l.keyMap.values())
+                  this.renderer.unmountElement(r);
+              } else
                 console.warn(
-                  `widget component render: unknow scope type: ${next.scope}`
+                  `widget component render: unknow scope type: ${c.scope}`
                 );
-              }
             }
-          }
-          this.subTree = nextTree;
+          this.subTree = o;
+        } else {
+          const o = this.rawSetupState, s = (r) => {
+            r.ref && typeof o[r.ref] < "u" && (o[r.ref].value = r.component ? r.component : r.config || null);
+          }, i = (r) => {
+            if (r.raw && typeof o[r.raw] < "u")
+              if (r.config) {
+                const p = this.engine.getObjectBySymbol(r.config.vid);
+                p || console.warn("can not found raw object in engine", {
+                  component: this,
+                  vnode: r
+                }), o[r.raw].value = p || null;
+              } else {
+                console.warn("component raw object is not a native config", {
+                  component: this,
+                  vnode: r
+                });
+                return;
+              }
+          }, c = this.subTree = this.renderTree();
+          for (const r of c)
+            if (v(r))
+              this.renderer.patch(null, r), s(r), i(r);
+            else
+              for (const p of r.vnodes)
+                this.renderer.patch(null, p), s(p), i(p);
+          this.isMounted = !0, $(() => this.emit(F.MOUNTED));
+          const l = (r) => {
+            this.emit(F.FRAME, r);
+          };
+          this.engine.renderManager.addEventListener(
+            T.RENDER,
+            l
+          ), this.cacheEvent[T.RENDER] = l;
         }
       },
-      () => queueJob(update),
+      () => X(n),
+      void 0,
       this.scope
-    );
-    const update = () => effect.run();
-    update();
-    this.effect = effect;
-    this.update = update;
+    ), n = () => e.run();
+    n(), this.effect = e, this.update = n;
   }
   distory() {
     this.engine.removeEventListener(
-      ENGINE_EVENT.RENDER,
-      this.cacheEvent[ENGINE_EVENT.RENDER]
-    );
-    this.emit(LifeCycleHooks.BEFORE_DISTORY);
-    this.scope.stop();
-    this.effect.active = false;
-    this.effect.stop();
-    const tree = this.subTree || [];
-    for (let i = 0; i < tree.length; i += 1) {
-      if (isVNode(tree[i])) {
-        this.renderer.patch(tree[i], null);
-        tree[i].config = null;
-        tree[i].raw = null;
-      } else {
-        for (const vnode of tree[i].vnodes) {
-          this.renderer.patch(vnode, null);
-          vnode.config = null;
-          vnode.raw = null;
-        }
-      }
-    }
+      T.RENDER,
+      this.cacheEvent[T.RENDER]
+    ), this.emit(F.BEFORE_DISTORY), this.scope.stop(), this.effect.active = !1, this.effect.stop();
+    const e = this.subTree || [];
+    for (let n = 0; n < e.length; n += 1)
+      if (v(e[n]))
+        this.renderer.patch(e[n], null), e[n].config = null, e[n].raw = null;
+      else
+        for (const o of e[n].vnodes)
+          this.renderer.patch(o, null), o.config = null, o.raw = null;
   }
-  updateProps(newProps) {
-    const props = this.props;
-    for (const key in newProps) {
-      props[key] = newProps[key];
-    }
+  updateProps(e) {
+    const n = this.props;
+    for (const o in e)
+      n[o] = e[o];
   }
-  getState(raw2 = true) {
-    return raw2 ? this.rawSetupState : this.setupState;
+  getState(e = !0) {
+    return e ? this.rawSetupState : this.setupState;
   }
 }
-const defineComponent = function(options) {
-  return options;
+const Ke = function(t) {
+  return t;
+}, te = (t) => {
+  if (typeof t == "object") {
+    if (v(t))
+      return t.config.vid;
+    for (const e in t)
+      t[e] = te(t[e]);
+    return t;
+  } else
+    return t;
 };
-const vnodePropConverter = (object) => {
-  if (typeof object === "object") {
-    if (isVNode(object)) {
-      return object.config.vid;
-    } else {
-      for (const key in object) {
-        object[key] = vnodePropConverter(object[key]);
-      }
-      return object;
-    }
-  } else {
-    return object;
+class Ne {
+  constructor(e) {
+    this.context = e, this.engine = e.engine;
   }
-};
-class Renderer {
-  constructor(ctx) {
-    this.context = ctx;
-    this.engine = ctx.engine;
+  log(e, n, o) {
+    n ? console[e](`Widget renderer: ${n}`, o) : console.info(`Widget renderer: ${e}`);
   }
-  log(type, msg, object) {
-    if (!msg) {
-      console.info(`Widget renderer: ${type}`);
-    } else {
-      console[type](`Widget renderer: ${msg}`, object);
-    }
-  }
-  patch(oldVn, newVn) {
-    if (!oldVn && !newVn) {
-      console.error(`widget renderer: patch prarams all of null`);
+  patch(e, n) {
+    if (!e && !n) {
+      console.error("widget renderer: patch prarams all of null");
       return;
     }
-    if (oldVn === newVn) {
+    e !== n && (n && typeof n.type == "string" || e && typeof e.type == "string" ? this.processElement(e, n) : this.processComponent(e, n));
+  }
+  render(e) {
+    this.patch(null, e);
+  }
+  processElement(e, n) {
+    if (!e && !n) {
+      console.error("widget renderer: processElement prarams all of null");
       return;
     }
-    if (newVn && typeof newVn.type === "string" || oldVn && typeof oldVn.type === "string") {
-      this.processElement(oldVn, newVn);
-    } else {
-      this.processComponent(oldVn, newVn);
-    }
+    e === null ? this.mountElement(n) : n === null ? this.unmountElement(e) : this.patchElement(e, n);
   }
-  render(vnode) {
-    this.patch(null, vnode);
-  }
-  processElement(oldVn, newVn) {
-    if (!oldVn && !newVn) {
-      console.error(`widget renderer: processElement prarams all of null`);
-      return;
-    }
-    if (oldVn === null) {
-      this.mountElement(newVn);
-    } else if (newVn === null) {
-      this.unmountElement(oldVn);
-    } else {
-      this.patchElement(oldVn, newVn);
-    }
-  }
-  unmountElement(vnode) {
-    if (isObjectType(vnode.type)) {
-      if (vnode.config.parent) {
-        const parentConfig = this.engine.getConfigfromModules(
-          OBJECTMODULE,
-          vnode.config.parent
+  unmountElement(e) {
+    if (L(e.type)) {
+      if (e.config.parent) {
+        const o = this.engine.getConfigFromModules(
+          x,
+          e.config.parent
         );
-        if (!parentConfig) {
+        if (!o) {
           console.error(
             "widget renderer: can not found parent config with: ",
-            vnode
+            e
           );
           return;
         }
-        parentConfig.children.splice(
-          parentConfig.children.indexOf(
-            vnode.config.vid
+        o.children.splice(
+          o.children.indexOf(
+            e.config.vid
           ),
           1
         );
-      } else if (!vnode.el) {
-        const object2 = this.engine.getObjectBySymbol(
-          vnode.config.vid
+      } else if (!e.el) {
+        const o = this.engine.getObjectBySymbol(
+          e.config.vid
         );
-        if (!object2) {
-          console.error(
-            "widget renderer: can not found Three object with: ",
-            vnode
-          );
-        }
-        object2.removeFromParent();
+        o || console.error(
+          "widget renderer: can not found Three object with: ",
+          e
+        ), o.removeFromParent();
       }
-      const object = this.engine.getObjectBySymbol(
-        vnode.config.vid
+      const n = this.engine.getObjectBySymbol(
+        e.config.vid
       );
-      unmountEvents(vnode, object);
+      Ae(e, n);
     }
-    this.engine.removeConfigBySymbol(vnode.config.vid);
+    this.engine.removeConfigBySymbol(e.config.vid);
   }
-  mountElement(vnode) {
-    const { element, onProps } = this.createElement(vnode);
-    this.engine.applyConfig(element);
-    if (isObjectType(element.type)) {
-      if (!vnode.el) {
+  mountElement(e) {
+    const { element: n, onProps: o } = this.createElement(e);
+    if (this.engine.applyConfig(n), L(n.type)) {
+      if (!e.el)
         this.engine.scene.add(
-          this.engine.getObjectfromModules(OBJECTMODULE, element.vid)
+          this.engine.getObjectFromModules(x, n.vid)
         );
-      } else {
-        const parent = this.engine.getConfigfromModules(
-          OBJECTMODULE,
-          vnode.el
+      else {
+        const i = this.engine.getConfigFromModules(
+          x,
+          e.el
         );
-        if (!parent) {
+        if (!i) {
           console.error(
-            `widget renderer: can not found parent config with: ${vnode.el}`
+            `widget renderer: can not found parent config with: ${e.el}`
           );
           return;
         }
-        parent.children.push(element.vid);
+        i.children.push(n.vid);
       }
-      const object = this.engine.getObjectBySymbol(element.vid);
-      mountEvents(vnode, element, object);
+      const s = this.engine.getObjectBySymbol(n.vid);
+      Pe(e, n, s);
     }
   }
-  patchElement(oldVn, newVn) {
-    if (oldVn.type !== newVn.type) {
-      this.unmountElement(oldVn);
-      this.mountElement(newVn);
-    } else {
-      newVn.config = oldVn.config;
-      const config = oldVn.config;
-      if (!config) {
-        console.error("widget renderer: can not found  config with: ", oldVn);
-      }
-      let oldProps = {};
-      const newProps = newVn.props;
-      let hasEvent = false;
-      for (const key in oldVn.props) {
-        if (isOnProp(key)) {
-          hasEvent = true;
+  patchElement(e, n) {
+    if (e.type !== n.type)
+      this.unmountElement(e), this.mountElement(n);
+    else {
+      n.config = e.config;
+      const o = e.config;
+      o || console.error("widget renderer: can not found  config with: ", e);
+      let s = {};
+      const i = n.props;
+      let c = !1;
+      for (const r in e.props) {
+        if (N(r)) {
+          c = !0;
           continue;
         }
-        oldProps[key] = oldVn.props[key];
+        s[r] = e.props[r];
       }
-      const traverse2 = (props1, props2, target) => {
-        for (const key in props1) {
-          if (isVNode(props1[key])) {
-            if (isVNode(props2[key]) && props2[key].config.vid !== props1[key].config.vid) {
-              target[key] = props2[key].config.vid;
-            } else if (!isVNode(props2[key])) {
-              target[key] = props2[key];
-            }
-          } else if (isObject(props1[key])) {
-            traverse2(props1[key], props2[key], target[key]);
-          } else {
-            if (props2[key] !== props1[key]) {
-              target[key] = props2[key];
-            }
-          }
-        }
+      const l = (r, p, g) => {
+        for (const u in r)
+          v(r[u]) ? v(p[u]) && p[u].config.vid !== r[u].config.vid ? g[u] = p[u].config.vid : v(p[u]) || (g[u] = p[u]) : le(r[u]) ? l(r[u], p[u], g[u]) : p[u] !== r[u] && (g[u] = p[u]);
       };
-      traverse2(oldProps, newProps, config);
-      hasEvent && updateEvents(newVn);
+      l(s, i, o), c && Fe(n);
     }
   }
-  createElement(vnode) {
-    const props = vnode.props;
-    const merge = {};
-    const onProps = {};
-    for (const key in props) {
-      if (["ref", "index"].includes(key)) {
-        continue;
-      }
-      if (isOnProp(key)) {
-        onProps[key] = props[key];
-      } else {
-        merge[key] = vnodePropConverter(props[key]);
-      }
-    }
-    const config = generateConfig(vnode.type, merge, {
-      strict: false,
-      warn: false
+  createElement(e) {
+    const n = e.props, o = {}, s = {};
+    for (const c in n)
+      ["ref", "index"].includes(c) || (N(c) ? s[c] = n[c] : o[c] = te(n[c]));
+    const i = ie(e.type, o, {
+      strict: !1,
+      warn: !1
     });
-    vnode.config = config;
-    return { element: config, onProps };
+    return e.config = i, { element: i, onProps: s };
   }
-  processComponent(oldVn, newVn) {
-    if (!oldVn && !newVn) {
-      console.error(`widget renderer: processElement prarams all of null`);
+  processComponent(e, n) {
+    if (!e && !n) {
+      console.error("widget renderer: processElement prarams all of null");
       return;
     }
-    if (oldVn === null) {
-      this.mountComponent(newVn);
-    } else if (newVn === null) {
-      this.unmountComponent(oldVn);
-    } else {
-      this.patchComponent(oldVn, newVn);
-    }
+    e === null ? this.mountComponent(n) : n === null ? this.unmountComponent(e) : this.patchComponent(e, n);
   }
-  mountComponent(vnode) {
-    vnode.component = new Component(vnode, this);
+  mountComponent(e) {
+    e.component = new h(e, this);
   }
-  unmountComponent(vnode) {
-    var _a;
-    (_a = vnode.component) == null ? void 0 : _a.distory();
-    vnode.component = null;
+  unmountComponent(e) {
+    var n;
+    (n = e.component) == null || n.distory(), e.component = null;
   }
-  patchComponent(oldVn, newVn) {
-    const component = oldVn.component;
-    newVn.component = component;
-    component.vnode = newVn;
-    const oldProps = oldVn.props || {};
-    const newProps = newVn.props || {};
-    const updateProps = {};
-    let needUpdate = false;
-    for (const key in newProps) {
-      if (newProps[key] !== oldProps[key]) {
-        updateProps[key] = newProps[key];
-        needUpdate = true;
-      }
-    }
-    if (needUpdate) {
-      component.updateProps(updateProps);
-      component.update();
-    }
+  patchComponent(e, n) {
+    const o = e.component;
+    n.component = o, o.vnode = n;
+    const s = e.props || {}, i = n.props || {}, c = {};
+    let l = !1;
+    for (const r in i)
+      i[r] !== s[r] && (c[r] = i[r], l = !0);
+    l && (o.updateProps(c), o.update());
   }
 }
-class Widget {
-  constructor(engine, component) {
-    this.wid = createSymbol();
-    this.version = version;
-    this.components = {};
-    this.instance = null;
-    this.engine = engine;
-    this.root = component;
-    this.renderer = new Renderer(this);
+class Ie {
+  constructor(e, n) {
+    this.wid = H(), this.version = Re, this.components = {}, this.instance = null, this.engine = e, this.root = n, this.renderer = new Ne(this);
   }
-  component(name, component) {
-    if (typeof name === "object") {
-      component = name;
-      if (!component.name) {
+  component(e, n) {
+    if (typeof e == "object") {
+      if (n = e, !n.name) {
         console.error(
-          `widget register component must be provide a name`,
-          component
+          "widget register component must be provide a name",
+          n
         );
         return;
       }
-      name = component.name;
+      e = n.name;
     }
-    if (!component) {
+    if (!n) {
       console.error(
-        `widget register component must be provide a component not a null`,
-        name
+        "widget register component must be provide a component not a null",
+        e
       );
       return;
     }
-    if (this.components[name]) {
-      console.warn(`A component with this name already exists: ${name}`);
+    if (this.components[e]) {
+      console.warn(`A component with this name already exists: ${e}`);
       return;
     }
-    this.components[name] = component;
+    this.components[e] = n;
   }
   mount() {
-    const vnode = createVNode(this.root);
-    this.renderer.render(vnode);
-    this.instance = vnode.component;
-    return this;
+    const e = Q(this.root);
+    return this.renderer.render(e), this.instance = e.component, this;
   }
   getState() {
-    var _a;
-    return (_a = this.instance) == null ? void 0 : _a.getState(true);
+    var e;
+    return (e = this.instance) == null ? void 0 : e.getState(!0);
   }
   unmount() {
-    var _a;
-    (_a = this.instance) == null ? void 0 : _a.distory();
+    var e;
+    (e = this.instance) == null || e.distory();
   }
   use() {
   }
 }
-class EngineWidget extends EngineSupport {
-  constructor(params = {}) {
-    super(params);
+class xe extends ce {
+  constructor(e = {}) {
+    super(e);
   }
-  createWidget(component) {
-    return new Widget(this, component);
+  createWidget(e) {
+    return new Ie(this, e);
   }
 }
-const defineEngineWidget = function(options, params = {}) {
-  const engine = new EngineWidget();
-  if (options.modules) {
-    options.modules.forEach((module) => {
-      engine.registModule(module);
-    });
-  }
-  if (options.plugins) {
-    options.plugins.forEach((plugin) => {
-      engine.install(plugin);
-    });
-  }
-  if (options.strategy) {
-    options.strategy.forEach((strategy) => {
-      engine.exec(strategy);
-    });
-  }
-  if (options.wdigets) {
-    options.wdigets.forEach((widget) => {
-      engine.createWidget(widget);
-    });
-  }
-  return engine;
-};
-const raw = function(value) {
+const He = function(t, e = {}) {
+  const n = new xe();
+  return t.modules && t.modules.forEach((o) => {
+    n.registModule(o);
+  }), t.plugins && t.plugins.forEach((o) => {
+    n.install(o);
+  }), t.strategy && t.strategy.forEach((o) => {
+    n.exec(o);
+  }), t.wdigets && t.wdigets.forEach((o) => {
+    n.createWidget(o);
+  }), n;
+}, Ze = function(t) {
   return {
-    value
+    value: t
   };
 };
-function callWithErrorHandling(fn, instance, args) {
-  let res;
+function A(t, e, n) {
+  let o;
   try {
-    res = args ? fn(...args) : fn();
-  } catch (err) {
-    console.error(err);
+    o = n ? t(...n) : t();
+  } catch (s) {
+    console.error(s);
   }
-  return res;
+  return o;
 }
-function callWithAsyncErrorHandling(fn, instance, args) {
-  if (isFunction(fn)) {
-    const res = callWithErrorHandling(fn, instance, args);
-    if (res && isPromise(res)) {
-      res.catch((err) => {
-        console.error(err);
-      });
-    }
-    return res;
+function q(t, e, n) {
+  if (D(t)) {
+    const s = A(t, e, n);
+    return s && de(s) && s.catch((i) => {
+      console.error(i);
+    }), s;
   }
-  const values = [];
-  for (let i = 0; i < fn.length; i++) {
-    values.push(callWithAsyncErrorHandling(fn[i], instance, args));
-  }
-  return values;
+  const o = [];
+  for (let s = 0; s < t.length; s++)
+    o.push(q(t[s], e, n));
+  return o;
 }
-function watchEffect(effect, options) {
-  return doWatch(effect, null, options);
+function ze(t, e) {
+  return ne(t, null, e);
 }
-const INITIAL_WATCHER_VALUE = {};
-function watch(source, cb, options) {
-  return doWatch(source, cb, options);
+const P = {};
+function Qe(t, e, n) {
+  return ne(t, e, n);
 }
-function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = EMPTY_OBJ) {
-  var _a;
-  const instance = getCurrentScope() === ((_a = Component.currentComponent) == null ? void 0 : _a.scope) ? Component.currentComponent : null;
-  let getter;
-  let forceTrigger = false;
-  let isMultiSource = false;
-  if (isRef(source)) {
-    getter = () => source.value;
-    forceTrigger = isShallow(source);
-  } else if (isReactive(source)) {
-    getter = () => source;
-    deep = true;
-  } else if (isArray(source)) {
-    isMultiSource = true;
-    forceTrigger = source.some((s) => isReactive(s) || isShallow(s));
-    getter = () => source.map((s) => {
-      if (isRef(s)) {
-        return s.value;
-      } else if (isReactive(s)) {
-        return traverse(s);
-      } else if (isFunction(s)) {
-        return callWithErrorHandling(s);
-      }
-    });
-  } else if (isFunction(source)) {
-    if (cb) {
-      getter = () => callWithErrorHandling(source);
-    } else {
-      getter = () => {
-        if (instance && !instance.isMounted) {
-          return;
-        }
-        if (cleanup) {
-          cleanup();
-        }
-        return callWithAsyncErrorHandling(source, instance);
-      };
-    }
-  } else {
-    getter = NOOP;
+function ne(t, e, { immediate: n, deep: o, flush: s, onTrack: i, onTrigger: c } = me) {
+  var U;
+  const l = ae() === ((U = h.currentComponent) == null ? void 0 : U.scope) ? h.currentComponent : null;
+  let r, p = !1, g = !1;
+  if (B(t) ? (r = () => t.value, p = G(t)) : j(t) ? (r = () => t, o = !0) : z(t) ? (g = !0, p = t.some((a) => j(a) || G(a)), r = () => t.map((a) => {
+    if (B(a))
+      return a.value;
+    if (j(a))
+      return k(a);
+    if (D(a))
+      return A(a);
+  })) : D(t) ? e ? r = () => A(t) : r = () => {
+    if (!(l && !l.isMounted))
+      return u && u(), q(t, l);
+  } : r = ge, e && o) {
+    const a = r;
+    r = () => k(a());
   }
-  if (cb && deep) {
-    const baseGetter = getter;
-    getter = () => traverse(baseGetter());
-  }
-  let cleanup;
-  let onCleanup = (fn) => {
-    cleanup = effect.onStop = () => {
-      callWithErrorHandling(fn);
-      cleanup = effect.onStop = void 0;
+  let u, oe = (a) => {
+    u = d.onStop = () => {
+      A(a), u = d.onStop = void 0;
     };
+  }, w = g ? new Array(t.length).fill(P) : P;
+  const C = () => {
+    if (d.active)
+      if (e) {
+        const a = d.run();
+        (o || p || (g ? a.some((re, se) => Y(re, w[se])) : Y(a, w))) && (u && u(), q(e, l, [
+          a,
+          // pass undefined as the old value when it's changed for the first time
+          w === P ? void 0 : g && w[0] === P ? [] : w,
+          oe
+        ]), w = a);
+      } else
+        d.run();
   };
-  let oldValue = isMultiSource ? new Array(source.length).fill(INITIAL_WATCHER_VALUE) : INITIAL_WATCHER_VALUE;
-  const job = () => {
-    if (!effect.active) {
-      return;
-    }
-    if (cb) {
-      const newValue = effect.run();
-      if (deep || forceTrigger || (isMultiSource ? newValue.some((v, i) => hasChanged(v, oldValue[i])) : hasChanged(newValue, oldValue))) {
-        if (cleanup) {
-          cleanup();
-        }
-        callWithAsyncErrorHandling(cb, instance, [
-          newValue,
-          oldValue === INITIAL_WATCHER_VALUE ? void 0 : isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE ? [] : oldValue,
-          onCleanup
-        ]);
-        oldValue = newValue;
-      }
-    } else {
-      effect.run();
-    }
+  C.allowRecurse = !!e;
+  let b;
+  s === "sync" ? b = C : s === "post" ? b = () => $(C) : (C.pre = !0, l && (C.id = l.cid), b = () => X(C));
+  const d = new Z(r, b);
+  return e ? n ? C() : w = d.run() : s === "post" ? $(d.run.bind(d)) : d.run(), () => {
+    d.stop(), l && l.scope && ye(l.scope.effects, d);
   };
-  job.allowRecurse = !!cb;
-  let scheduler;
-  if (flush === "sync") {
-    scheduler = job;
-  } else if (flush === "post") {
-    scheduler = () => queuePostFlushCb(job);
-  } else {
-    job.pre = true;
-    if (instance)
-      job.id = instance.cid;
-    scheduler = () => queueJob(job);
-  }
-  const effect = new ReactiveEffect(getter, scheduler);
-  if (cb) {
-    if (immediate) {
-      job();
-    } else {
-      oldValue = effect.run();
-    }
-  } else if (flush === "post") {
-    queuePostFlushCb(effect.run.bind(effect));
-  } else {
-    effect.run();
-  }
-  const unwatch = () => {
-    effect.stop();
-    if (instance && instance.scope) {
-      remove(instance.scope.effects, effect);
-    }
-  };
-  return unwatch;
 }
-function traverse(value, seen) {
-  if (!isObject$1(value) || value["__v_skip"]) {
-    return value;
-  }
-  seen = seen || /* @__PURE__ */ new Set();
-  if (seen.has(value)) {
-    return value;
-  }
-  seen.add(value);
-  if (isRef(value)) {
-    traverse(value.value, seen);
-  } else if (isArray(value)) {
-    for (let i = 0; i < value.length; i++) {
-      traverse(value[i], seen);
-    }
-  } else if (isSet(value) || isMap(value)) {
-    value.forEach((v) => {
-      traverse(v, seen);
+function k(t, e) {
+  if (!Ee(t) || t.__v_skip || (e = e || /* @__PURE__ */ new Set(), e.has(t)))
+    return t;
+  if (e.add(t), B(t))
+    k(t.value, e);
+  else if (z(t))
+    for (let n = 0; n < t.length; n++)
+      k(t[n], e);
+  else if (ve(t) || we(t))
+    t.forEach((n) => {
+      k(n, e);
     });
-  } else if (isPlainObject(value)) {
-    for (const key in value) {
-      traverse(value[key], seen);
-    }
-  }
-  return value;
+  else if (Ce(t))
+    for (const n in t)
+      k(t[n], e);
+  return t;
 }
-export { EngineWidget, defineComponent, defineEngineWidget, h, onBeforeDistory, onFrame, onMounted, raw, vfor, vif, watch, watchEffect };
+export {
+  xe as EngineWidget,
+  et as computed,
+  Ke as defineComponent,
+  He as defineEngineWidget,
+  qe as h,
+  Ge as onBeforeDistory,
+  Ye as onFrame,
+  Le as onMounted,
+  Ze as raw,
+  tt as reactive,
+  nt as ref,
+  ot as shallowReactive,
+  rt as shallowReadonly,
+  st as shallowRef,
+  it as toRef,
+  ct as toRefs,
+  Ue as vfor,
+  Je as vif,
+  Qe as watch,
+  ze as watchEffect
+};

@@ -127,10 +127,10 @@
           setup({ engine }) {
             const rotationZ = ref(0);
 
-            const animation = animate({
-              target: rotationZ,
-              to: { value: Math.PI / 6 },
-            });
+            // const animation = animate({
+            //   target: rotationZ,
+            //   to: { value: Math.PI / 6 },
+            // });
             
             const enter = () => {
               rotationZ.value = Math.PI / 6;

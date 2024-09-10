@@ -13,7 +13,7 @@ export declare class Renderer<E extends EngineWidget = EngineWidget> {
     mountElement(vnode: VNode): void;
     patchElement(oldVn: VNode, newVn: VNode): void;
     createElement(vnode: VNode): {
-        element: import("@vis-three/middleware").SymbolConfig;
+        element: import("@vis-three/tdcm").BasicConfig;
         onProps: Record<string, Function>;
     };
     processComponent(oldVn: VNode | null, newVn: VNode | null): void;

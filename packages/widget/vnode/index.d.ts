@@ -1,8 +1,8 @@
-import { SymbolConfig } from "@vis-three/middleware";
+import { BasicConfig } from "@vis-three/tdcm";
 import { Component, ComponentOptions } from "../component";
 export type VNodeTypes = string | ComponentOptions;
 export type Data = Record<string, any>;
-export type ElementData = SymbolConfig;
+export type ElementData = BasicConfig;
 export interface VNode<NodeProps = Data> {
     _isVNode: true;
     type: VNodeTypes;

@@ -2,7 +2,7 @@ import {
   EngineSupport,
   EngineSupportOptions,
   EngineSupportParameters,
-} from "@vis-three/middleware";
+} from "@vis-three/tdcm";
 import { ComponentOptions } from "../component";
 import { Widget } from "../widget";
 

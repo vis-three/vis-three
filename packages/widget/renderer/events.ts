@@ -1,4 +1,4 @@
-import { ObjectEvent, SymbolConfig } from "@vis-three/middleware";
+import { ObjectEvent, BasicConfig } from "@vis-three/tdcm";
 import { VNode, getOnProps } from "../vnode";
 import { Object3D } from "three";
 
@@ -13,7 +13,7 @@ export interface Invoker {
   value: Function;
 }
 
-export type EventConfig = SymbolConfig & {
+export type EventConfig = BasicConfig & {
   [EVENT_SYMBOL]?: Record<string, Invoker | undefined>;
 };
 

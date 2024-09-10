@@ -1,6 +1,7 @@
-import { PerspectiveCamera as l, Scene as h } from "three";
-import { RectAreaLightUniformsLib as c } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
-class u {
+import { PerspectiveCamera as l, Scene as h, OrthographicCamera as c, AmbientLight as u, RectAreaLight as f, HemisphereLight as d } from "three";
+import { LightShadow as p } from "three/src/lights/LightShadow.js";
+import { RectAreaLightUniformsLib as g } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
+class m {
   constructor() {
     this.listeners = /* @__PURE__ */ new Map();
   }
@@ -10,11 +11,11 @@ class u {
    * @param listener
    * @returns
    */
-  addEventListener(e, s) {
-    const t = this.listeners;
-    t.has(e) || t.set(e, []);
-    const i = t.get(e);
-    i.includes(s) || i.push(s);
+  addEventListener(e, t) {
+    const s = this.listeners;
+    s.has(e) || s.set(e, []);
+    const i = s.get(e);
+    i.includes(t) || i.push(t);
   }
   /**
    * 是否有此事件
@@ -22,9 +23,9 @@ class u {
    * @param listener
    * @returns
    */
-  hasEventListener(e, s) {
-    const t = this.listeners;
-    return t.has(e) ? t.get(e).includes(s) : !1;
+  hasEventListener(e, t) {
+    const s = this.listeners;
+    return s.has(e) ? s.get(e).includes(t) : !1;
   }
   /**
    * 移除事件
@@ -32,12 +33,12 @@ class u {
    * @param listener
    * @returns
    */
-  removeEventListener(e, s) {
-    const t = this.listeners;
-    if (!t.has(e) || !t.get(e).includes(s))
+  removeEventListener(e, t) {
+    const s = this.listeners;
+    if (!s.has(e) || !s.get(e).includes(t))
       return;
-    const i = t.get(e);
-    i.splice(i.indexOf(s), 1);
+    const i = s.get(e);
+    i.splice(i.indexOf(t), 1);
   }
   /**
    * 移除该类型的所有事件
@@ -45,8 +46,8 @@ class u {
    * @returns
    */
   removeEvent(e) {
-    const s = this.listeners;
-    s.has(e) && s.delete(e);
+    const t = this.listeners;
+    t.has(e) && t.delete(e);
   }
   /**
    * 触发事件
@@ -54,10 +55,10 @@ class u {
    */
   dispatchEvent(e) {
     var i;
-    const s = e.type, t = this.listeners;
-    if (t.has(s))
+    const t = e.type, s = this.listeners;
+    if (s.has(t))
       try {
-        (i = t.get(s)) == null || i.forEach((r) => {
+        (i = s.get(t)) == null || i.forEach((r) => {
           r.call(this, e);
         });
       } catch (r) {
@@ -69,26 +70,26 @@ class u {
    * @param type
    * @param listener
    */
-  once(e, s) {
-    const t = function(i) {
-      s.call(this, i), Promise.resolve().then(() => {
-        this.removeEventListener(e, t);
+  once(e, t) {
+    const s = function(i) {
+      t.call(this, i), Promise.resolve().then(() => {
+        this.removeEventListener(e, s);
       });
     };
-    this.addEventListener(e, t);
+    this.addEventListener(e, s);
   }
   /**
    * 触发事件
    * @param name
    * @param params
    */
-  emit(e, s = {}) {
+  emit(e, t = {}) {
     var i;
-    const t = this.listeners;
-    if (t.has(e))
+    const s = this.listeners;
+    if (s.has(e))
       try {
-        (i = t.get(e)) == null || i.forEach((r) => {
-          r.call(this, s);
+        (i = s.get(e)) == null || i.forEach((r) => {
+          r.call(this, t);
         });
       } catch (r) {
         console.error(r);
@@ -99,8 +100,8 @@ class u {
    * @param type
    * @param listener
    */
-  on(e, s) {
-    this.addEventListener(e, s);
+  on(e, t) {
+    this.addEventListener(e, t);
   }
   /**
    * 是否有此事件
@@ -108,8 +109,8 @@ class u {
    * @param listener
    * @returns
    */
-  has(e, s) {
-    return this.hasEventListener(e, s);
+  has(e, t) {
+    return this.hasEventListener(e, t);
   }
   /**
    * 移除事件
@@ -117,14 +118,14 @@ class u {
    * @param listener
    * @returns
    */
-  off(e, s) {
-    if (s)
-      this.removeEventListener(e, s);
+  off(e, t) {
+    if (t)
+      this.removeEventListener(e, t);
     else {
-      const t = this.listeners;
-      if (!t.has(e))
+      const s = this.listeners;
+      if (!s.has(e))
         return;
-      t.delete(e);
+      s.delete(e);
     }
   }
   /**
@@ -157,7 +158,7 @@ class u {
     return !![...this.listeners.keys()].length;
   }
 }
-class f extends u {
+class v extends m {
   constructor() {
     super(...arguments), this.pluginTables = /* @__PURE__ */ new Map(), this.strategyTables = /* @__PURE__ */ new Map();
   }
@@ -169,15 +170,15 @@ class f extends u {
   install(e) {
     if (this.pluginTables.has(e.name))
       return console.warn("This plugin already exists", e.name), this;
-    const s = (t) => this.pluginTables.has(t) ? !0 : (console.error(
-      `${e.name} must install this plugin before: ${t}`
+    const t = (s) => this.pluginTables.has(s) ? !0 : (console.error(
+      `${e.name} must install this plugin before: ${s}`
     ), !1);
     if (e.deps)
       if (Array.isArray(e.deps))
-        for (const t of e.deps)
-          s(t);
+        for (const s of e.deps)
+          t(s);
       else
-        s(e.deps);
+        t(e.deps);
     return e.install(this), this.pluginTables.set(e.name, e), this;
   }
   /**
@@ -188,14 +189,14 @@ class f extends u {
   uninstall(e) {
     if (!this.pluginTables.has(e))
       return this;
-    for (const t of this.strategyTables.values())
-      t.condition.includes(e) && (console.info(
-        `engine auto rollback strategy: ${t.name} before uninstall plugin: ${e}.`
-      ), this.rollback(t.name));
-    for (const t of this.pluginTables.values())
-      t.deps && (Array.isArray(t.deps) && t.deps.includes(e) || t.deps === e) && (console.info(
-        `engine auto uninstall plugin: ${t.name} before uninstall plugin: ${e}.`
-      ), this.uninstall(t.name));
+    for (const s of this.strategyTables.values())
+      s.condition.includes(e) && (console.info(
+        `engine auto rollback strategy: ${s.name} before uninstall plugin: ${e}.`
+      ), this.rollback(s.name));
+    for (const s of this.pluginTables.values())
+      s.deps && (Array.isArray(s.deps) && s.deps.includes(e) || s.deps === e) && (console.info(
+        `engine auto uninstall plugin: ${s.name} before uninstall plugin: ${e}.`
+      ), this.uninstall(s.name));
     return this.pluginTables.get(e).dispose(this), this.pluginTables.delete(e), this;
   }
   /**
@@ -203,33 +204,36 @@ class f extends u {
    * @returns
    */
   exec(e) {
-    const s = this.strategyTables;
-    if (s.has(e.name))
+    const t = this.strategyTables;
+    if (t.has(e.name))
       return console.warn("This strategy already exists", e.name), this;
-    const t = this.pluginTables;
+    const s = this.pluginTables;
     for (const i of e.condition)
-      if (!t.has(i))
+      if (!s.has(i))
         return console.warn(
           `${e.name} does not meet the conditions for execution: ${i}`
         ), this;
-    return e.exec(this), s.set(e.name, e), this;
+    return e.exec(this), t.set(e.name, e), this;
   }
   /**
    * 回滚策略
    * @returns
    */
   rollback(e) {
-    const s = this.strategyTables;
-    return s.has(e) ? (s.get(e).rollback(this), s.delete(e), this) : this;
+    const t = this.strategyTables;
+    return t.has(e) ? (t.get(e).rollback(this), t.delete(e), this) : this;
   }
 }
-var d = /* @__PURE__ */ ((n) => (n.SETDOM = "setDom", n.SETSIZE = "setSize", n.SETCAMERA = "setCamera", n.SETSCENE = "setScene", n.RENDER = "render", n.DISPOSE = "dispose", n))(d || {});
-const o = class o extends f {
+var b = /* @__PURE__ */ ((n) => (n.SETDOM = "setDom", n.SETSIZE = "setSize", n.SETCAMERA = "setCamera", n.SETSCENE = "setScene", n.RENDER = "render", n.DISPOSE = "dispose", n))(b || {});
+const o = class o extends v {
   constructor() {
     super(), this.dom = document.createElement("div"), this.camera = new l(), this.scene = new h(), o.initFlag || o.init(), this.camera.position.set(50, 50, 50), this.camera.lookAt(0, 0, 0);
   }
   static init() {
-    c.init(), o.initFlag = !0;
+    const e = new p(
+      new c(-256, 256, 256, -256)
+    );
+    e.autoUpdate = !1, e.needsUpdate = !1, u.prototype.shadow = e, f.prototype.shadow = e, d.prototype.shadow = e, g.init(), o.initFlag = !0;
   }
   /**
    * 设置输出的dom
@@ -248,11 +252,11 @@ const o = class o extends f {
    * @param height number
    * @returns this
    */
-  setSize(e, s) {
-    var t, i;
-    return e && e <= 0 || s && s <= 0 ? (console.warn(
-      `you must be input width and height bigger then zero, width: ${e}, height: ${s}`
-    ), this) : (!e && (e = ((t = this.dom) == null ? void 0 : t.offsetWidth) || window.innerWidth), !s && (s = ((i = this.dom) == null ? void 0 : i.offsetHeight) || window.innerHeight), this.dispatchEvent({ type: "setSize", width: e, height: s }), this);
+  setSize(e, t) {
+    var s, i;
+    return e && e <= 0 || t && t <= 0 ? (console.warn(
+      `you must be input width and height bigger then zero, width: ${e}, height: ${t}`
+    ), this) : (!e && (e = ((s = this.dom) == null ? void 0 : s.offsetWidth) || window.innerWidth), !t && (t = ((i = this.dom) == null ? void 0 : i.offsetHeight) || window.innerHeight), this.dispatchEvent({ type: "setSize", width: e, height: t }), this);
   }
   /**
    * 设置当前相机
@@ -260,7 +264,7 @@ const o = class o extends f {
    * @param options
    * @returns
    */
-  setCamera(e, s) {
+  setCamera(e, t) {
     return this.dispatchEvent({
       type: "setCamera",
       camera: e,
@@ -270,7 +274,7 @@ const o = class o extends f {
           orbitControls: !0,
           transformControls: !0
         },
-        s || {}
+        t || {}
       )
     }), this.camera = e, this;
   }
@@ -310,28 +314,28 @@ const o = class o extends f {
 };
 o.initFlag = !1;
 let a = o;
-const v = function(n) {
+const E = function(n) {
   const e = new a();
-  return n.plugins && n.plugins.forEach((s) => {
-    e.install(s);
-  }), n.strategy && n.strategy.forEach((s) => {
-    e.exec(s);
+  return n.plugins && n.plugins.forEach((t) => {
+    e.install(t);
+  }), n.strategy && n.strategy.forEach((t) => {
+    e.exec(t);
   }), e;
-}, b = function(n) {
+}, T = function(n) {
   return () => n;
-}, S = function(n) {
+}, C = function(n) {
   return () => n;
-}, p = "0.7.0";
+}, w = "0.7.0";
 window.__THREE__ || console.error(
   "vis-three dependent on three.js module, pleace run 'npm i three' first."
 );
-window.__VIS__ ? console.warn("Duplicate vis-three frames are introduced") : window.__VIS__ = p;
+window.__VIS__ ? console.warn("Duplicate vis-three frames are introduced") : window.__VIS__ = w;
 export {
-  f as Base,
-  d as ENGINE_EVENT,
+  v as Base,
+  b as ENGINE_EVENT,
   a as Engine,
-  u as EventDispatcher,
-  v as defineEngine,
-  b as definePlugin,
-  S as defineStrategy
+  m as EventDispatcher,
+  E as defineEngine,
+  T as definePlugin,
+  C as defineStrategy
 };

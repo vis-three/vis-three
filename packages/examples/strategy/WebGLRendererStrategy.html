@@ -49,7 +49,7 @@
       scene.background = new THREE.Color("black");
 
       const box = new THREE.Mesh(
-        new THREE.BoxBufferGeometry(10, 10, 10),
+        new THREE.BoxGeometry(10, 10, 10),
         new THREE.MeshStandardMaterial({
           color: "rgb(255, 105, 100)",
           roughness: 0.1,
@@ -59,7 +59,7 @@
       box.position.x = 10;
       scene.add(box);
 
-      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 3, 50, 0);
+      const pointLight = new THREE.PointLight("rgb(255, 255, 255)", 3, 100, 0);
       pointLight.position.y = 30;
       scene.add(pointLight);
 

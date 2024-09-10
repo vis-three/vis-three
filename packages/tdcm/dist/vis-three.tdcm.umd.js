@@ -2417,14 +2417,14 @@
   }
   const defineEngineSupport = function(options, params = {}) {
     const engine = new EngineSupport(params);
-    if (options.modules) {
-      options.modules.forEach((module2) => {
-        engine.useModule(module2);
-      });
-    }
     if (options.plugins) {
       options.plugins.forEach((plugin) => {
         engine.install(plugin);
+      });
+    }
+    if (options.modules) {
+      options.modules.forEach((module2) => {
+        engine.useModule(module2);
       });
     }
     if (options.strategy) {

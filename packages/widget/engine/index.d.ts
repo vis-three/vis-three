@@ -1,4 +1,4 @@
-import { EngineSupport, EngineSupportOptions, EngineSupportParameters } from "@vis-three/middleware";
+import { EngineSupport, EngineSupportOptions, EngineSupportParameters } from "@vis-three/tdcm";
 import { ComponentOptions } from "../component";
 import { Widget } from "../widget";
 export declare class EngineWidget extends EngineSupport {

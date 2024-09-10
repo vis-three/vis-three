@@ -24,9 +24,9 @@ import {
 import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
 
 import { WebGLRenderer } from "three";
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
-import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
+import { CSS3DRenderer } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 import { CSS3DRendererSupportStrategy } from "@vis-three/strategy-css3d-renderer-support";
 import { WebGLRendererSupportStrategy } from "@vis-three/strategy-webgl-renderer-support";
 import { OrbitControlsSupportStrategy } from "@vis-three/strategy-orbit-controls-support";
@@ -37,12 +37,11 @@ import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
 import { OrbitRenderStrategy } from "@vis-three/strategy-orbit-render";
 import { ComposerSupportStrategy } from "@vis-three/strategy-composer-support";
 
-import * as moduleLibrary from "@vis-three/library-module";
+import { modules } from "@vis-three/library-module";
 import * as parserLibrary from "@vis-three/library-parser";
 import { MultiRendererEventStrategy } from "@vis-three/strategy-multi-renderer";
 import { SceneEngineSupport } from "@vis-three/module-scene";
 import { CameraEngineSupport } from "@vis-three/module-camera";
-import { ModuleOptions } from "@vis-three/middleware";
 
 export class DisplayEngineWidget
   extends EngineWidget
@@ -66,13 +65,6 @@ export class DisplayEngineWidget
   declare setCameraBySymbol: (camera: string) => this;
   constructor() {
     super();
-    for (const module of Object.values(moduleLibrary)) {
-      this.registModule(module as ModuleOptions<any>);
-    }
-
-    for (const parser of Object.values(parserLibrary)) {
-      this.resourceManager.addParser(new parser());
-    }
 
     this.install(
       WebGLRendererPlugin({
@@ -89,6 +81,14 @@ export class DisplayEngineWidget
       )
       .install(OrbitControlsPlugin())
       .install(CameraAdaptivePlugin());
+
+    for (const module of modules) {
+      this.useModule(module);
+    }
+
+    for (const parser of Object.values(parserLibrary)) {
+      this.resourceManager.addParser(new parser());
+    }
 
     this.exec(CSS2DRenderStrategy())
       .exec(CSS3DRenderStrategy())

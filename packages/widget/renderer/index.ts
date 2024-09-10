@@ -1,8 +1,4 @@
-import {
-  OBJECTMODULE,
-  generateConfig,
-  isObjectType,
-} from "@vis-three/middleware";
+import { OBJECT_MODULE, generateConfig, isObjectType } from "@vis-three/tdcm";
 import { EngineWidget } from "../engine";
 import { Data, ElementData, VNode, isOnProp, isVNode } from "../vnode";
 import { ObjectConfig } from "@vis-three/module-object";
@@ -73,8 +69,8 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
     // object 根据vnode el去从父级移除
     if (isObjectType(vnode.type as string)) {
       if ((<VNode<ObjectConfig>>vnode).config!.parent) {
-        const parentConfig = this.engine.getConfigfromModules<ObjectConfig>(
-          OBJECTMODULE,
+        const parentConfig = this.engine.getConfigFromModules<ObjectConfig>(
+          OBJECT_MODULE,
           (<VNode<ObjectConfig>>vnode).config!.parent
         );
 
@@ -123,11 +119,11 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
     if (isObjectType(element.type)) {
       if (!vnode.el) {
         this.engine.scene.add(
-          this.engine.getObjectfromModules(OBJECTMODULE, element.vid)!
+          this.engine.getObjectFromModules(OBJECT_MODULE, element.vid)!
         );
       } else {
-        const parent = this.engine.getConfigfromModules<ObjectConfig>(
-          OBJECTMODULE,
+        const parent = this.engine.getConfigFromModules<ObjectConfig>(
+          OBJECT_MODULE,
           vnode.el!
         );
 

@@ -407,15 +407,14 @@ export const defineEngineSupport = function <
 ) {
   const engine = new EngineSupport(params) as E;
 
-  if (options.modules) {
-    options.modules.forEach((module) => {
-      engine.useModule(module);
-    });
-  }
-
   if (options.plugins) {
     options.plugins.forEach((plugin) => {
       engine.install(plugin);
+    });
+  }
+  if (options.modules) {
+    options.modules.forEach((module) => {
+      engine.useModule(module);
     });
   }
 

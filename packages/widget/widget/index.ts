@@ -1,4 +1,4 @@
-import { createSymbol } from "@vis-three/middleware";
+import { createSymbol } from "@vis-three/tdcm";
 import { Component, ComponentOptions } from "../component";
 import { version } from "../package.json";
 import { EngineWidget } from "../engine";

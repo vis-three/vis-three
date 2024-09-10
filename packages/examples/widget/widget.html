@@ -65,7 +65,7 @@
       import { WebGLRenderStrategy } from "@vis-three/strategy-webgl-render";
       import { WebGLRendererSupportStrategy } from "@vis-three/strategy-webgl-renderer-support";
 
-      import * as ModuleLibrary from "@vis-three/library-module";
+      import { modules } from "@vis-three/library-module";
 
       import { CanvasGenerator } from "@vis-three/convenient";
 
@@ -93,7 +93,7 @@
           OrbitControlsPlugin(),
         ],
         strategy: [WebGLRenderStrategy(), WebGLRendererSupportStrategy()],
-        modules: Object.values(ModuleLibrary),
+        modules: modules,
       })
         .setDom(document.getElementById("app"))
         .setSize()

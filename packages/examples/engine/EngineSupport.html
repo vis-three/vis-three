@@ -23,7 +23,7 @@
       import {
         defineEngineSupport,
         generateConfig,
-        CONFIGTYPE,
+        CONFIG_TYPE,
         Template,
       } from "@vis-three/tdcm";
       import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
@@ -34,7 +34,7 @@
       import { WebGLRenderStrategy } from "@vis-three/strategy-webgl-render";
       import { WebGLRendererSupportStrategy } from "@vis-three/strategy-webgl-renderer-support";
 
-      import * as ModuleLibrary from "@vis-three/library-module";
+      import { modules } from "@vis-three/library-module";
 
       import { linearTime } from "@vis-three/library-animate-script";
       import EventLibrary from "@vis-three/library-event";
@@ -62,7 +62,7 @@
           GridHelperPlugin(),
         ],
         strategy: [WebGLRenderStrategy(), WebGLRendererSupportStrategy()],
-        modules: Object.values(ModuleLibrary),
+        modules: modules,
       })
         .setDom(document.getElementById("app"))
         .setSize()
@@ -91,12 +91,12 @@
         textCanvas,
       });
 
-      const defaultScene = generateConfig(CONFIGTYPE.SCENE);
+      const defaultScene = generateConfig(CONFIG_TYPE.SCENE);
 
       engine.applyConfig(defaultScene).setSceneBySymbol(defaultScene.vid);
 
       engine.applyConfig(
-        generateConfig(CONFIGTYPE.WEBGLRENDERER, {
+        generateConfig(CONFIG_TYPE.WEBGLRENDERER, {
           clearColor: "rgba(255 ,255 ,255 , 1)",
           shadowMap: {
             enabled: true,
@@ -108,30 +108,31 @@
       generateConfig.injectScene = true;
       generateConfig.autoInject = true;
 
-      generateConfig(CONFIGTYPE.POINTLIGHT, {
+      generateConfig(CONFIG_TYPE.POINTLIGHT, {
         color: "rgb(255, 255, 255)",
         position: {
           y: 30,
         },
+        intensity: 3,
       });
 
-      const commonGeometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+      const commonGeometry = generateConfig(CONFIG_TYPE.BOXGEOMETRY, {
         width: 10,
         height: 10,
         depth: 10,
       });
 
-      const canvasTexture = generateConfig(CONFIGTYPE.CANVASTEXTURE, {
+      const canvasTexture = generateConfig(CONFIG_TYPE.CANVASTEXTURE, {
         url: "textCanvas",
       });
 
-      const boxMaterial = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
+      const boxMaterial = generateConfig(CONFIG_TYPE.MESHSTANDARDMATERIAL, {
         // color: "rgb(255, 105, 100)",
         map: canvasTexture.vid,
       });
 
       const box = generateConfig(
-        CONFIGTYPE.MESH,
+        CONFIG_TYPE.MESH,
         {
           geometry: commonGeometry.vid,
           material: boxMaterial.vid,
@@ -165,7 +166,7 @@
       });
 
       generateConfig(
-        CONFIGTYPE.LINE,
+        CONFIG_TYPE.LINE,
         {
           geometry: commonGeometry.vid,
           click: [boxMoveEvent],
@@ -175,11 +176,11 @@
         }
       );
 
-      const pointsMaterial = generateConfig(CONFIGTYPE.POINTSMATERIAL, {
+      const pointsMaterial = generateConfig(CONFIG_TYPE.POINTSMATERIAL, {
         color: "rgb(255, 255, 255)",
       });
 
-      generateConfig(CONFIGTYPE.POINTS, {
+      generateConfig(CONFIG_TYPE.POINTS, {
         geometry: commonGeometry.vid,
         material: pointsMaterial.vid,
         position: {
@@ -188,7 +189,7 @@
       });
 
       generateConfig(
-        CONFIGTYPE.SCRIPTANIMATION,
+        CONFIG_TYPE.SCRIPTANIMATION,
         {
           target: box.vid,
           attribute: ".rotation.y",

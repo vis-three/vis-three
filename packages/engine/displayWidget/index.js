@@ -13,18 +13,12 @@ import { CSS3DRenderStrategy } from "@vis-three/strategy-css3d-render";
 import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
 import { OrbitRenderStrategy } from "@vis-three/strategy-orbit-render";
 import { ComposerSupportStrategy } from "@vis-three/strategy-composer-support";
-import * as moduleLibrary from "@vis-three/library-module";
+import { modules } from "@vis-three/library-module";
 import * as parserLibrary from "@vis-three/library-parser";
 import { MultiRendererEventStrategy } from "@vis-three/strategy-multi-renderer";
 export class DisplayEngineWidget extends EngineWidget {
     constructor() {
         super();
-        for (const module of Object.values(moduleLibrary)) {
-            this.registModule(module);
-        }
-        for (const parser of Object.values(parserLibrary)) {
-            this.resourceManager.addParser(new parser());
-        }
         this.install(WebGLRendererPlugin({
             antialias: true,
             alpha: true,
@@ -36,6 +30,12 @@ export class DisplayEngineWidget extends EngineWidget {
         }))
             .install(OrbitControlsPlugin())
             .install(CameraAdaptivePlugin());
+        for (const module of modules) {
+            this.useModule(module);
+        }
+        for (const parser of Object.values(parserLibrary)) {
+            this.resourceManager.addParser(new parser());
+        }
         this.exec(CSS2DRenderStrategy())
             .exec(CSS3DRenderStrategy())
             .exec(EffectRenderStrategy())

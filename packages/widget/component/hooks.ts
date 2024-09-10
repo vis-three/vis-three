@@ -1,4 +1,4 @@
-import { RenderEvent } from "@vis-three/middleware";
+import { RenderEvent } from "@vis-three/tdcm";
 import { Component } from ".";
 
 export enum LifeCycleHooks {

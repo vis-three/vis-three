@@ -6,8 +6,8 @@ import {
   HemisphereLight,
   OrthographicCamera,
   RectAreaLight,
-  LightShadow,
 } from "three";
+import { LightShadow } from "three/src/lights/LightShadow.js";
 import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
 
 import { BaseEvent } from "../eventDispatcher";
@@ -62,17 +62,17 @@ export enum ENGINE_EVENT {
 export class Engine extends Base {
   static initFlag = false;
   static init() {
-    // // 增加无用shadow，不然WebGLShadowMap会一直warning
+    // 增加无用shadow，不然WebGLShadowMap会一直warning
 
-    // const lightShadow = new LightShadow(
-    //   new OrthographicCamera(-256, 256, 256, -256)
-    // );
-    // lightShadow.autoUpdate = false;
-    // lightShadow.needsUpdate = false;
+    const lightShadow = new LightShadow(
+      new OrthographicCamera(-256, 256, 256, -256)
+    );
+    lightShadow.autoUpdate = false;
+    lightShadow.needsUpdate = false;
 
-    // AmbientLight.prototype.shadow = lightShadow as unknown as undefined;
-    // RectAreaLight.prototype.shadow = lightShadow as unknown as undefined;
-    // HemisphereLight.prototype.shadow = lightShadow as unknown as undefined;
+    AmbientLight.prototype.shadow = lightShadow as unknown as undefined;
+    RectAreaLight.prototype.shadow = lightShadow as unknown as undefined;
+    HemisphereLight.prototype.shadow = lightShadow as unknown as undefined;
 
     RectAreaLightUniformsLib.init();
     Engine.initFlag = true;

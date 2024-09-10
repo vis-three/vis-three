@@ -1,4 +1,4 @@
-import { ObjectEvent, SymbolConfig } from "@vis-three/middleware";
+import { ObjectEvent, BasicConfig } from "@vis-three/tdcm";
 import { VNode } from "../vnode";
 import { Object3D } from "three";
 declare const EVENT_SYMBOL: unique symbol;
@@ -9,7 +9,7 @@ export interface Invoker {
     (event: ObjectEvent): void;
     value: Function;
 }
-export type EventConfig = SymbolConfig & {
+export type EventConfig = BasicConfig & {
     [EVENT_SYMBOL]?: Record<string, Invoker | undefined>;
 };
 export declare const createInvoker: (fn: Function) => Invoker;
