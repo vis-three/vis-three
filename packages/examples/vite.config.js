@@ -50,6 +50,7 @@ const recursion = (parentDir) => {
   "./modifier",
   "./demo",
   "./test",
+  "./parser",
   "./shader",
 ].forEach((url) => {
   recursion(path.resolve(__dirname, url));
