@@ -1,9 +1,10 @@
 {
   "name": "vis-three",
-  "private": true,
+  "private": false,
   "version": "0.7.0",
   "description": "A web 3D development framework for assembled based on three.js",
   "main": "index.js",
+  "module": "index.js",
   "packageManager": "pnpm@8.13.1",
   "type": "module",
   "scripts": {
@@ -35,5 +36,12 @@
     "@vis-three/core": "workspace:^",
     "@vis-three/tdcm": "workspace:^",
     "@vis-three/widget": "workspace:^"
-  }
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "package.json",
+    "LICENSE",
+    "README.md"
+  ]
 }
