@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/test",
-  "version": "0.5.0",
+  "version": "0.7.0",
   "main": "",
   "module": "",
   "types": "",
@@ -26,8 +26,5 @@
     "types",
     "package.json",
     "LICENSE"
-  ],
-  "engines": {
-    "node": ">=14.15.0"
-  }
+  ]
 }

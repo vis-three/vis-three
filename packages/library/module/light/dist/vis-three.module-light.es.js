@@ -81,17 +81,17 @@ const h = function() {
     cacheMapSize: new f(),
     cacheViewportSize: new f(),
     updateShadowSize(e, o, r) {
-      const t = this.cacheMapSize, a = this.cacheViewportSize, n = e.shadow;
+      const t = this.cacheMapSize, a = this.cacheViewportSize, s = e.shadow;
       e.shadow.mapSize.set(
         o.shadow.mapSize.x,
         o.shadow.mapSize.y
-      ), t.copy(n.mapSize);
-      const s = n.getFrameExtents();
-      t.multiply(s), a.copy(n.mapSize), (t.x > r || t.y > r) && (t.x > r && (a.x = Math.floor(
-        r / s.x
-      ), t.x = a.x * s.x, n.mapSize.x = a.x), t.y > r && (a.y = Math.floor(
-        r / s.y
-      ), t.y = a.y * s.y, n.mapSize.y = a.y)), e.shadow.map.setSize(t.x, t.y);
+      ), t.copy(s.mapSize);
+      const n = s.getFrameExtents();
+      t.multiply(n), a.copy(s.mapSize), (t.x > r || t.y > r) && (t.x > r && (a.x = Math.floor(
+        r / n.x
+      ), t.x = a.x * n.x, s.mapSize.x = a.x), t.y > r && (a.y = Math.floor(
+        r / n.y
+      ), t.y = a.y * n.y, s.mapSize.y = a.y)), e.shadow.map.setSize(t.x, t.y);
     }
   },
   context() {
@@ -108,8 +108,8 @@ const h = function() {
       rotation: d,
       lookAt: d,
       shadow: {
-        mapSize({ model: e, target: o, config: r, engine: t, key: a, value: n }) {
-          o.shadow.mapSize[a] = n, e.updateShadowSize(
+        mapSize({ model: e, target: o, config: r, engine: t, key: a, value: s }) {
+          o.shadow.mapSize[a] = s, e.updateShadowSize(
             o,
             r,
             t.webGLRenderer.capabilities.maxTextureSize
@@ -121,25 +121,26 @@ const h = function() {
       }
     }
   },
-  create({ model: e, light: o, config: r, filter: t, engine: a, shadow: n }) {
-    if (o.color.copy(e.cacheColor.set(r.color)), n) {
-      const s = r, g = () => {
+  create({ model: e, light: o, config: r, filter: t, engine: a, shadow: s }) {
+    if (o.color.copy(e.cacheColor.set(r.color)), s) {
+      const n = r, g = () => {
         o.shadow.map && (e.updateShadowSize(
           o,
-          s,
+          n,
           a.webGLRenderer.capabilities.maxTextureSize
         ), a.renderManager.removeEventListener(
           u.RENDER,
           g
         ));
       };
-      a.renderManager.addEventListener(
+      if (a.renderManager.addEventListener(
         u.RENDER,
         g
-      );
-      for (const w in s.shadow.camera)
-        o.shadow.camera[w] = s.shadow.camera[w];
-      o.shadow.camera.updateProjectionMatrix();
+      ), n.shadow) {
+        for (const w in n.shadow.camera)
+          o.shadow.camera[w] = n.shadow.camera[w];
+        o.shadow.camera.updateProjectionMatrix();
+      }
     }
     i.create({
       model: e,
@@ -219,7 +220,7 @@ const h = function() {
       model: e,
       light: t,
       config: o,
-      filter: {},
+      filter: { groundColor: !0 },
       engine: r,
       shadow: !1
     }), t;

@@ -44,11 +44,11 @@
 
       const pointLight = generateConfig("PointLight", {
         position: {
-          y: 28,
+          y: 23,
         },
         distance: 20,
         color: "rgb(255, 0, 0)",
-        intensity: 0.6,
+        intensity: 2,
       });
 
       const pointLightHelper = generateConfig("ObjectHelper", {
@@ -61,7 +61,7 @@
         },
         distance: 30,
         color: "rgb(0, 0, 255)",
-        intensity: 0.6,
+        intensity: 2,
       });
 
       const spotLightHelper = generateConfig("ObjectHelper", {
@@ -96,7 +96,9 @@
         target: rectAreaLight.vid,
       });
 
-      const material = generateConfig("MeshStandardMaterial");
+      const material = generateConfig("MeshStandardMaterial", {
+        color: "rgb(255 ,255 ,255)",
+      });
 
       const geometry = generateConfig("BoxGeometry", {
         width: 20,
@@ -108,6 +110,8 @@
         material: material.vid,
         geometry: geometry.vid,
       });
+
+      window.engine = engine;
     </script>
   </body>
 </html>

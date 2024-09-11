@@ -32,7 +32,7 @@ export default defineLightModel<
       model: model as unknown as LightModel,
       light,
       config,
-      filter: {},
+      filter: { groundColor: true },
       engine,
       shadow: false,
     });

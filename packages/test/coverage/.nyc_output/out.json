@@ -1,6 +1,6 @@
 {
-  "G:\\项目\\vis-three\\cypress\\integration\\e2e\\index.spec.js": {
-    "path": "G:\\项目\\vis-three\\cypress\\integration\\e2e\\index.spec.js",
+  "G:\\项目\\vis-three\\packages\\test\\cypress\\integration\\e2e\\index.spec.js": {
+    "path": "G:\\项目\\vis-three\\packages\\test\\cypress\\integration\\e2e\\index.spec.js",
     "statementMap": {
       "0": {
         "start": {
@@ -8,7 +8,7 @@
           "column": 0
         },
         "end": {
-          "line": 33,
+          "line": 51,
           "column": 3
         }
       },
@@ -18,7 +18,7 @@
           "column": 2
         },
         "end": {
-          "line": 32,
+          "line": 50,
           "column": 5
         }
       },
@@ -28,7 +28,7 @@
           "column": 4
         },
         "end": {
-          "line": 31,
+          "line": 49,
           "column": 9
         }
       },
@@ -38,7 +38,7 @@
           "column": 8
         },
         "end": {
-          "line": 30,
+          "line": 48,
           "column": 11
         }
       },
@@ -69,7 +69,7 @@
         },
         "end": {
           "line": 10,
-          "column": 23
+          "column": 24
         }
       },
       "7": {
@@ -98,7 +98,7 @@
           "column": 23
         },
         "end": {
-          "line": 28,
+          "line": 46,
           "column": 11
         }
       },
@@ -124,81 +124,181 @@
       },
       "12": {
         "start": {
-          "line": 18,
-          "column": 12
+          "line": 19,
+          "column": 25
         },
         "end": {
-          "line": 27,
-          "column": 15
+          "line": 19,
+          "column": 35
         }
       },
       "13": {
         "start": {
-          "line": 19,
-          "column": 14
+          "line": 21,
+          "column": 12
         },
         "end": {
-          "line": 19,
-          "column": 62
+          "line": 21,
+          "column": 30
         }
       },
       "14": {
         "start": {
-          "line": 20,
-          "column": 14
+          "line": 23,
+          "column": 24
         },
         "end": {
-          "line": 20,
-          "column": 27
+          "line": 23,
+          "column": 47
         }
       },
       "15": {
         "start": {
-          "line": 21,
-          "column": 14
+          "line": 24,
+          "column": 29
         },
         "end": {
-          "line": 21,
-          "column": 28
+          "line": 24,
+          "column": 63
         }
       },
       "16": {
         "start": {
-          "line": 22,
-          "column": 14
+          "line": 26,
+          "column": 29
         },
         "end": {
-          "line": 22,
-          "column": 25
+          "line": 26,
+          "column": 43
         }
       },
       "17": {
         "start": {
-          "line": 24,
-          "column": 14
+          "line": 27,
+          "column": 31
         },
         "end": {
-          "line": 26,
-          "column": 15
+          "line": 27,
+          "column": 45
         }
       },
       "18": {
         "start": {
-          "line": 25,
-          "column": 16
+          "line": 29,
+          "column": 12
         },
         "end": {
-          "line": 25,
-          "column": 23
+          "line": 29,
+          "column": 29
         }
       },
       "19": {
         "start": {
-          "line": 29,
+          "line": 30,
+          "column": 12
+        },
+        "end": {
+          "line": 30,
+          "column": 31
+        }
+      },
+      "20": {
+        "start": {
+          "line": 32,
+          "column": 12
+        },
+        "end": {
+          "line": 45,
+          "column": 15
+        }
+      },
+      "21": {
+        "start": {
+          "line": 33,
+          "column": 14
+        },
+        "end": {
+          "line": 33,
+          "column": 62
+        }
+      },
+      "22": {
+        "start": {
+          "line": 34,
+          "column": 14
+        },
+        "end": {
+          "line": 34,
+          "column": 28
+        }
+      },
+      "23": {
+        "start": {
+          "line": 35,
+          "column": 14
+        },
+        "end": {
+          "line": 37,
+          "column": 17
+        }
+      },
+      "24": {
+        "start": {
+          "line": 38,
+          "column": 14
+        },
+        "end": {
+          "line": 38,
+          "column": 27
+        }
+      },
+      "25": {
+        "start": {
+          "line": 39,
+          "column": 14
+        },
+        "end": {
+          "line": 39,
+          "column": 28
+        }
+      },
+      "26": {
+        "start": {
+          "line": 40,
+          "column": 14
+        },
+        "end": {
+          "line": 40,
+          "column": 25
+        }
+      },
+      "27": {
+        "start": {
+          "line": 42,
+          "column": 14
+        },
+        "end": {
+          "line": 44,
+          "column": 15
+        }
+      },
+      "28": {
+        "start": {
+          "line": 43,
+          "column": 16
+        },
+        "end": {
+          "line": 43,
+          "column": 23
+        }
+      },
+      "29": {
+        "start": {
+          "line": 47,
           "column": 10
         },
         "end": {
-          "line": 29,
+          "line": 47,
           "column": 17
         }
       }
@@ -222,7 +322,7 @@
             "column": 29
           },
           "end": {
-            "line": 33,
+            "line": 51,
             "column": 1
           }
         },
@@ -246,7 +346,7 @@
             "column": 42
           },
           "end": {
-            "line": 32,
+            "line": 50,
             "column": 3
           }
         },
@@ -270,7 +370,7 @@
             "column": 18
           },
           "end": {
-            "line": 31,
+            "line": 49,
             "column": 7
           }
         },
@@ -294,7 +394,7 @@
             "column": 50
           },
           "end": {
-            "line": 30,
+            "line": 48,
             "column": 9
           }
         },
@@ -342,7 +442,7 @@
             "column": 29
           },
           "end": {
-            "line": 28,
+            "line": 46,
             "column": 11
           }
         },
@@ -352,36 +452,36 @@
         "name": "(anonymous_6)",
         "decl": {
           "start": {
-            "line": 18,
+            "line": 32,
             "column": 29
           },
           "end": {
-            "line": 18,
+            "line": 32,
             "column": 30
           }
         },
         "loc": {
           "start": {
-            "line": 18,
+            "line": 32,
             "column": 38
           },
           "end": {
-            "line": 27,
+            "line": 45,
             "column": 13
           }
         },
-        "line": 18
+        "line": 32
       }
     },
     "branchMap": {
       "0": {
         "loc": {
           "start": {
-            "line": 24,
+            "line": 42,
             "column": 14
           },
           "end": {
-            "line": 26,
+            "line": 44,
             "column": 15
           }
         },
@@ -389,11 +489,11 @@
         "locations": [
           {
             "start": {
-              "line": 24,
+              "line": 42,
               "column": 14
             },
             "end": {
-              "line": 26,
+              "line": 44,
               "column": 15
             }
           },
@@ -402,7 +502,7 @@
             "end": {}
           }
         ],
-        "line": 24
+        "line": 42
       }
     },
     "s": {
@@ -414,35 +514,45 @@
       "5": 1,
       "6": 1,
       "7": 1,
-      "8": 100,
+      "8": 94,
       "9": 1,
-      "10": 51,
-      "11": 51,
-      "12": 51,
-      "13": 50,
-      "14": 50,
-      "15": 50,
-      "16": 50,
-      "17": 50,
-      "18": 50,
-      "19": 1
+      "10": 47,
+      "11": 47,
+      "12": 47,
+      "13": 47,
+      "14": 47,
+      "15": 47,
+      "16": 47,
+      "17": 47,
+      "18": 47,
+      "19": 47,
+      "20": 47,
+      "21": 47,
+      "22": 47,
+      "23": 47,
+      "24": 47,
+      "25": 47,
+      "26": 47,
+      "27": 47,
+      "28": 46,
+      "29": 1
     },
     "f": {
       "0": 1,
       "1": 1,
       "2": 1,
       "3": 1,
-      "4": 100,
-      "5": 51,
-      "6": 50
+      "4": 94,
+      "5": 47,
+      "6": 47
     },
     "b": {
       "0": [
-        50,
-        0
+        46,
+        1
       ]
     },
     "_coverageSchema": "1a1c01bbd47fc00a2c39e90264f33305004495a9",
-    "hash": "cc421c0d1d871f74a9d78f0c882a0de19fb1ec04"
+    "hash": "be00b9acca5cde1da4454759eaf839e64f4a20d1"
   }
 }

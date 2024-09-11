@@ -148,11 +148,14 @@ export const defineLightModel = defineObjectModel.extend<
         shadowRenderFun
       );
 
-      for (const key in shadowConfig.shadow.camera) {
-        (<any>light.shadow!.camera)[key] = shadowConfig.shadow.camera[key];
+      if (shadowConfig.shadow) {
+        for (const key in shadowConfig.shadow.camera) {
+          (<any>light.shadow!.camera)[key] = shadowConfig.shadow.camera[key];
+        }
+  
+        (<any>light.shadow!.camera).updateProjectionMatrix();
       }
 
-      (<any>light.shadow!.camera).updateProjectionMatrix();
     }
 
     objectModel.create!({
