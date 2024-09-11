@@ -291,7 +291,7 @@
 
             if (visualGeometries.length) {
               const newGeom =
-                BufferGeometryUtils.mergeBufferGeometries(visualGeometries);
+                BufferGeometryUtils.mergeGeometries(visualGeometries);
               const newMesh = new THREE.Mesh(
                 newGeom,
                 new THREE.MeshStandardMaterial({

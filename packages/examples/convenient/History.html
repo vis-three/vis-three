@@ -150,7 +150,7 @@
       const scene = engine.scene;
 
       const box = new THREE.Mesh(
-        new THREE.BoxBufferGeometry(10, 10, 10),
+        new THREE.BoxGeometry(10, 10, 10),
         new THREE.MeshStandardMaterial({ color: "rgb(255, 105, 100)" })
       );
       box.position.x = 10;
@@ -158,7 +158,7 @@
       box.updateMatrixWorld();
 
       const sphere = new THREE.Mesh(
-        new THREE.SphereBufferGeometry(5, 32, 32),
+        new THREE.SphereGeometry(5, 32, 32),
         new THREE.MeshStandardMaterial({ color: "rgb(255, 205, 100)" })
       );
       sphere.position.x = -10;

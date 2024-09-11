@@ -33,7 +33,7 @@
       const scene = engine.scene;
 
       const box = new THREE.Mesh(
-        new THREE.BoxBufferGeometry(20, 10, 10),
+        new THREE.BoxGeometry(20, 10, 10),
         new THREE.MeshBasicMaterial({
           // color: 'rgb(255, 105, 100)',
           map: new THREE.TextureLoader().load(
@@ -44,7 +44,7 @@
       scene.add(box);
 
       const sphere = new THREE.Mesh(
-        new THREE.SphereBufferGeometry(7),
+        new THREE.SphereGeometry(7),
         new THREE.MeshBasicMaterial({
           wireframe: true,
           transparent: true,
