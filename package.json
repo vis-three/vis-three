@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@vis-three/core": "workspace:^",
-    "@vis-three/tdcm": "workspace:^"
+    "@vis-three/tdcm": "workspace:^",
+    "@vis-three/widget": "workspace:^"
   }
 }
