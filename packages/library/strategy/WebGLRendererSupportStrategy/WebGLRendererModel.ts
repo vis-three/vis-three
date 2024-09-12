@@ -36,6 +36,7 @@ export interface WebGLRendererConfig extends RendererConfig {
   /**@deprecated use outputColorSpace */
   outputEncoding: number;
   outputColorSpace: string;
+  /**@deprecated default */
   physicallyCorrectLights: boolean;
   shadowMap: ShadowMapConfig;
   toneMapping: number;

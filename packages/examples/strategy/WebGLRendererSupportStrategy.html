@@ -39,16 +39,23 @@
 
       import { WebGLRendererSupportStrategy } from "@vis-three/strategy-webgl-renderer-support";
 
+      import { EffectComposerPlugin } from "@vis-three/plugin-effect-composer";
+      import { EffectRenderStrategy } from "@vis-three/strategy-effect-render";
+
       const engine = defineEngineSupport({
         plugins: [
           WebGLRendererPlugin({
             antialias: true,
             alpha: true,
           }),
+
+          EffectComposerPlugin({
+            MSAA: true,
+          }),
           CameraAdaptivePlugin(),
         ],
 
-        strategy: [WebGLRenderStrategy(), WebGLRendererSupportStrategy()],
+        strategy: [EffectRenderStrategy(), WebGLRendererSupportStrategy()],
         modules: [
           sceneModule,
           meshModule,
@@ -154,6 +161,8 @@
         "THREE.ACESFilmicToneMapping": THREE.ACESFilmicToneMapping,
       });
       toneMapping.add(renderer, "toneMappingExposure", 0, 20, 1);
+
+      window.engine = engine;
     </script>
   </body>
 </html>

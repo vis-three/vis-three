@@ -15,6 +15,7 @@ export interface TextureConfig extends BasicConfig {
     matrixAutoUpdate: boolean;
     needsUpdate: boolean;
     flipY: boolean;
+    colorSpace: string;
 }
 export interface ImageTextureConfig extends TextureConfig {
     /**通过resourceManager 解析的图片资源地址 */

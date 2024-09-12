@@ -329,6 +329,7 @@ export class EngineSupport
       return this;
     }
 
+    MODULE_TYPE[options.type.toUpperCase()] = options.type;
     MODULE_TYPE[typeName] = options.type;
 
     if (options.object) {

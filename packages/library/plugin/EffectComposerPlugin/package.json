@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/plugin-effect-composer",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "",
   "main": "index.js",
   "module": "index.js",
@@ -12,8 +12,7 @@
     "build": "tsc",
     "lint": "npx eslint *.js src/**/*.ts --fix"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "dependencies": {
     "@vis-three/core": "workspace:^",
     "@vis-three/plugin-webgl-renderer": "workspace:^",

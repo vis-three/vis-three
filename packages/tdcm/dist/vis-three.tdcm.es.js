@@ -2370,6 +2370,7 @@ class EngineSupport extends Engine {
       console.warn(`Engine:module ${options.type} is already exist.`);
       return this;
     }
+    MODULE_TYPE[options.type.toUpperCase()] = options.type;
     MODULE_TYPE[typeName] = options.type;
     if (options.object) {
       OBJECT_MODULE[options.type] = true;

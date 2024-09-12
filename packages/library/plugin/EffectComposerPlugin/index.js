@@ -1,12 +1,11 @@
 import { ENGINE_EVENT, } from "@vis-three/core";
-import { RGBAFormat, Vector2, WebGLRenderTarget } from "three";
+import { HalfFloatType, RGBAFormat, Vector2, WebGLRenderTarget } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { WEBGL_RENDERER_PLUGIN, } from "@vis-three/plugin-webgl-renderer";
 import { transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
-import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
-import { CopyShader } from "three/examples/jsm/shaders/CopyShader.js";
+import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 export const EFFECT_COMPOSER_PLUGIN = transPkgName(pkgname);
 export const EffectComposerPlugin = function (params = {}) {
     let setCameraFun;
@@ -24,8 +23,8 @@ export const EffectComposerPlugin = function (params = {}) {
                 const size = renderer.getDrawingBufferSize(new Vector2());
                 composer = new EffectComposer(renderer, new WebGLRenderTarget(size.width * pixelRatio, size.height * pixelRatio, {
                     format: params.format || RGBAFormat,
-                    // @ts-ignore
                     samples: params.samples || 4,
+                    type: HalfFloatType,
                 }));
             }
             else {
@@ -34,10 +33,7 @@ export const EffectComposerPlugin = function (params = {}) {
             engine.effectComposer = composer;
             const renderPass = new RenderPass(engine.scene, engine.camera);
             composer.addPass(renderPass);
-            if (params.MSAA) {
-                const copyPass = new ShaderPass(CopyShader);
-                composer.addPass(copyPass);
-            }
+            composer.addPass(new OutputPass());
             setCameraFun = (event) => {
                 renderPass.camera = event.camera;
             };

@@ -4,6 +4,7 @@ import {
   CubeReflectionMapping,
   LinearFilter,
   LinearMipmapLinearFilter,
+  NoColorSpace,
   RGBAFormat,
   UVMapping,
 } from "three";
@@ -24,6 +25,7 @@ export interface TextureConfig extends BasicConfig {
   matrixAutoUpdate: boolean;
   needsUpdate: boolean;
   flipY: boolean;
+  colorSpace: string;
 }
 
 export interface ImageTextureConfig extends TextureConfig {
@@ -96,6 +98,7 @@ export const getTextureConfig = function (): TextureConfig {
       y: 0,
     },
     matrixAutoUpdate: true,
+    colorSpace: NoColorSpace,
     needsUpdate: false,
   });
 };

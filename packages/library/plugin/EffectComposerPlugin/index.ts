@@ -6,7 +6,7 @@ import {
   SetSceneEvent,
   SetSizeEvent,
 } from "@vis-three/core";
-import { RGBAFormat, Vector2, WebGLRenderTarget } from "three";
+import { HalfFloatType, RGBAFormat, Vector2, WebGLRenderTarget } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import {
@@ -15,8 +15,7 @@ import {
 } from "@vis-three/plugin-webgl-renderer";
 import { Optional, transPkgName } from "@vis-three/utils";
 import { name as pkgname } from "./package.json";
-import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
-import { CopyShader } from "three/examples/jsm/shaders/CopyShader.js";
+import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 export interface EffectComposerParameters {
   /**采样数 */
   samples?: number;
@@ -59,8 +58,8 @@ export const EffectComposerPlugin: Plugin<
             size.height * pixelRatio,
             {
               format: params.format || RGBAFormat,
-              // @ts-ignore
               samples: params.samples || 4,
+              type: HalfFloatType,
             }
           )
         );
@@ -72,11 +71,7 @@ export const EffectComposerPlugin: Plugin<
 
       const renderPass = new RenderPass(engine.scene, engine.camera);
       composer.addPass(renderPass);
-
-      if (params.MSAA) {
-        const copyPass = new ShaderPass(CopyShader);
-        composer.addPass(copyPass);
-      }
+      composer.addPass(new OutputPass());
 
       setCameraFun = (event) => {
         renderPass.camera = event.camera;

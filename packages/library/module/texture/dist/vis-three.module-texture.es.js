@@ -1,13 +1,13 @@
-import { UVMapping as y, ClampToEdgeWrapping as x, LinearFilter as l, LinearMipmapLinearFilter as h, RGBAFormat as C, CubeReflectionMapping as E, CanvasTexture as L, CubeTexture as H, Texture as u, RGBFormat as R } from "three";
-import { getBasicConfig as U, defineModel as b, generateConfig as w, CONFIG_TYPE as I, defineModule as v } from "@vis-three/tdcm";
-import { CanvasGenerator as V } from "@vis-three/convenient";
+import { UVMapping as y, ClampToEdgeWrapping as x, LinearFilter as g, LinearMipmapLinearFilter as h, RGBAFormat as C, NoColorSpace as E, CubeReflectionMapping as L, CanvasTexture as H, CubeTexture as R, Texture as u, RGBFormat as U } from "three";
+import { getBasicConfig as b, defineModel as w, generateConfig as I, CONFIG_TYPE as v, defineModule as V } from "@vis-three/tdcm";
+import { CanvasGenerator as A } from "@vis-three/convenient";
 import { syncObject as c } from "@vis-three/utils";
 const p = function() {
-  return Object.assign(U(), {
+  return Object.assign(b(), {
     mapping: y,
     wrapS: x,
     wrapT: x,
-    magFilter: l,
+    magFilter: g,
     minFilter: h,
     anisotropy: 1,
     format: C,
@@ -26,18 +26,19 @@ const p = function() {
       y: 0
     },
     matrixAutoUpdate: !0,
+    colorSpace: E,
     needsUpdate: !1
-  });
-}, A = function() {
-  return Object.assign(p(), {
-    url: ""
   });
 }, F = function() {
   return Object.assign(p(), {
-    url: "",
-    minFilter: l
+    url: ""
   });
 }, O = function() {
+  return Object.assign(p(), {
+    url: "",
+    minFilter: g
+  });
+}, j = function() {
   return Object.assign(p(), {
     cube: {
       nx: "",
@@ -47,19 +48,19 @@ const p = function() {
       py: "",
       pz: ""
     },
-    mapping: E,
+    mapping: L,
     flipY: !1
   });
-}, j = function() {
+}, z = function() {
   return Object.assign(p(), {
     url: "",
     needsUpdate: !1
   });
-}, z = function() {
+}, S = function() {
   return Object.assign(p(), {
     url: ""
   });
-}, g = new V({
+}, l = new A({
   width: 512,
   height: 512
 }).draw((e) => {
@@ -67,7 +68,7 @@ const p = function() {
 }).getDom(), M = function(e, t, n) {
   const r = t.resourceManager.resourceMap;
   if (!r.has(e))
-    return console.warn(`engine resourceManager can not found this url: ${e}`), g;
+    return console.warn(`engine resourceManager can not found this url: ${e}`), l;
   const s = r.get(e);
   if (Array.isArray(n)) {
     for (const a of n)
@@ -76,15 +77,15 @@ const p = function() {
     return console.warn(
       `this url mapping resource is not a texture image class: ${e}`,
       s
-    ), g;
+    ), l;
   } else
     return s instanceof n ? s : (console.warn(
       `this url mapping resource is not a texture image class: ${e}`,
       s
-    ), g);
-}, d = b.extend({
+    ), l);
+}, d = w.extend({
   shared: {
-    replaceImage: g,
+    replaceImage: l,
     getResource: M
   },
   commands: {
@@ -103,7 +104,7 @@ const p = function() {
   }
 }), Y = d(() => ({
   type: "CanvasTexture",
-  config: j,
+  config: z,
   commands: {
     set: {
       url({ model: e, target: t, value: n, engine: r }) {
@@ -116,7 +117,7 @@ const p = function() {
     }
   },
   create({ model: e, config: t, engine: n }) {
-    const r = new L(e.replaceImage);
+    const r = new H(e.replaceImage);
     return e.toAsync((s) => (r.image = e.getResource(t.url, n, [
       HTMLImageElement,
       HTMLVideoElement,
@@ -131,7 +132,7 @@ const p = function() {
   }
 })), G = d(() => ({
   type: "CubeTexture",
-  config: O,
+  config: j,
   shared: {
     imageHanlder({ model: e, target: t, index: n, value: r, engine: s }) {
       t.images[n] = e.getResource(r, s, [
@@ -202,7 +203,7 @@ const p = function() {
     }
   },
   create({ model: e, config: t, engine: n }) {
-    const r = new H(), s = t.cube, a = [
+    const r = new R(), s = t.cube, a = [
       HTMLImageElement,
       HTMLVideoElement,
       HTMLCanvasElement
@@ -223,7 +224,7 @@ const p = function() {
     e.dispose();
   }
 }));
-class S extends u {
+class $ extends u {
   constructor(t, n, r, s, a, i, o, m, f) {
     super(
       t,
@@ -238,9 +239,9 @@ class S extends u {
     );
   }
 }
-const $ = d(() => ({
+const B = d(() => ({
   type: "ImageTexture",
-  config: A,
+  config: F,
   commands: {
     set: {
       url({ model: e, target: t, value: n, engine: r }) {
@@ -253,7 +254,7 @@ const $ = d(() => ({
     }
   },
   create({ model: e, config: t, engine: n }) {
-    const r = new S(e.replaceImage);
+    const r = new $(e.replaceImage);
     return t.url && e.toAsync((s) => (r.image = e.getResource(t.url, n, [
       HTMLImageElement,
       HTMLVideoElement,
@@ -274,9 +275,9 @@ class T extends u {
     }), this.copy(t);
   }
 }
-const B = d(() => ({
+const D = d(() => ({
   type: "LoadTexture",
-  config: z,
+  config: S,
   commands: {
     set: {
       url() {
@@ -301,7 +302,7 @@ const B = d(() => ({
     e.dispose();
   }
 }));
-class D extends u {
+class N extends u {
   constructor(t, n, r, s, a, i, o, m, f) {
     super(
       t,
@@ -313,7 +314,7 @@ class D extends u {
       o,
       m,
       f
-    ), this.isVideoTexture = !0, this.format = o !== void 0 ? o : R, this.minFilter = i !== void 0 ? i : l, this.magFilter = a !== void 0 ? a : l, this.generateMipmaps = !1;
+    ), this.isVideoTexture = !0, this.format = o !== void 0 ? o : U, this.minFilter = i !== void 0 ? i : g, this.magFilter = a !== void 0 ? a : g, this.generateMipmaps = !1;
   }
   clone() {
     return new this.constructor(this.image).copy(this);
@@ -325,7 +326,7 @@ class D extends u {
 }
 const _ = d(() => ({
   type: "VideoTexture",
-  config: F,
+  config: O,
   commands: {
     set: {
       url({ model: e, target: t, value: n, engine: r }) {
@@ -334,7 +335,7 @@ const _ = d(() => ({
     }
   },
   create({ model: e, config: t, engine: n }) {
-    const r = new D(document.createElement("video"));
+    const r = new N(document.createElement("video"));
     return t.url && e.toAsync((s) => (r.image = e.getResource(t.url, n, [
       HTMLVideoElement
     ]), r.needsUpdate = !0, r.image !== e.replaceImage)), c(t, r, {
@@ -349,7 +350,7 @@ const _ = d(() => ({
 function k(e) {
   e.generateLoadTextureConfig = function(t) {
     const n = M(t, this, u);
-    return n instanceof HTMLCanvasElement ? null : w(I.LOADTEXTURE, {
+    return n instanceof HTMLCanvasElement ? null : I(v.LOADTEXTURE, {
       url: t,
       flipY: n.flipY,
       format: n.format,
@@ -359,23 +360,23 @@ function k(e) {
     });
   };
 }
-const X = v({
+const J = V({
   type: "texture",
   models: [
     Y,
     G,
-    $,
     B,
+    D,
     _
   ],
   extend: k
 });
 export {
-  X as default,
-  j as getCanvasTextureConfig,
-  O as getCubeTextureConfig,
-  A as getImageTextureConfig,
-  z as getLoadTextureConfig,
+  J as default,
+  z as getCanvasTextureConfig,
+  j as getCubeTextureConfig,
+  F as getImageTextureConfig,
+  S as getLoadTextureConfig,
   p as getTextureConfig,
-  F as getVideoTextureConfig
+  O as getVideoTextureConfig
 };
