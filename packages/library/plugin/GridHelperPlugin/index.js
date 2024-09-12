@@ -8,7 +8,7 @@ export const GridHelperPlugin = function (params = {}) {
     return {
         name: GRID_HELPER_PLUGIN,
         install(engine) {
-            const gridHelper = new GridHelper(params.range || 500, params.spacing || 50, params.axesColor || "rgb(130, 130, 130)", params.cellColor || "rgb(70, 70, 70)");
+            const gridHelper = new GridHelper(params.range || 500, params.spacing || 50, params.axesColor || "rgb(170, 170, 170)", params.cellColor || "rgb(120, 120, 120)");
             if (params.opacity !== 1) {
                 const material = gridHelper.material;
                 material.transparent = true;
