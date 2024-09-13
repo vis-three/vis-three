@@ -12,6 +12,7 @@ export default defineGeometryModel<
   ShapeGeometry,
   {
     shapeEvent?: () => void;
+    cacheShapeEvent?: () => void;
   }
 >((geometryModel) => ({
   type: "ShapeGeometry",
@@ -26,6 +27,10 @@ export default defineGeometryModel<
     const geometry = new ShapeGeometry(shape, config.curveSegments);
 
     if (shape) {
+      if (model.shapeEvent) {
+        model.cacheShapeEvent = model.shapeEvent;
+      }
+
       model.shapeEvent = () => {
         config.shape = config.shape;
       };
@@ -37,10 +42,16 @@ export default defineGeometryModel<
     return geometryModel.create!(geometry, config);
   },
   dispose({ model, config, target }) {
-    model.shapeEvent &&
+    if (model.shapeEvent) {
       model
         .toModel(config.shape)
-        ?.on(MODEL_EVENT.COMPILED_UPDATE, model.shapeEvent);
+        ?.off(MODEL_EVENT.COMPILED_UPDATE, model.shapeEvent);
+
+      if (model.cacheShapeEvent) {
+        model.shapeEvent = model.cacheShapeEvent;
+        model.cacheShapeEvent = undefined;
+      }
+    }
 
     geometryModel.dispose!(target);
   },
