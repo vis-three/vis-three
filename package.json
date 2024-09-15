@@ -5,6 +5,7 @@
   "description": "A web 3D development framework for assembled based on three.js",
   "main": "index.js",
   "module": "index.js",
+  "license": "MPL-2.0",
   "packageManager": "pnpm@8.13.1",
   "type": "module",
   "scripts": {
