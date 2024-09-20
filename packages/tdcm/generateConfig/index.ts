@@ -8,6 +8,7 @@ import {
 } from "../module";
 import { EngineSupport } from "../engine";
 import { globalOption } from "../option";
+import { JSONHandler } from "../utils";
 
 /**
  * 配置单生成的附加选项
@@ -108,7 +109,11 @@ export const generateConfig = <GenerateConfig>function <C extends BasicConfig>(
   }
 
   if (merge) {
-    delete merge.type;
+    if (typeof merge.type !== undefined) {
+      merge = JSONHandler.clone(merge);
+      delete merge.type;
+    }
+
     recursion(initConfig, merge);
   }
 

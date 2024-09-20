@@ -749,7 +749,10 @@
       initConfig.vid = globalOption.symbol.generator();
     }
     if (merge) {
-      delete merge.type;
+      if (typeof merge.type !== void 0) {
+        merge = clone$1(merge);
+        delete merge.type;
+      }
       recursion(initConfig, merge);
     }
     if (options.observer === false) {
