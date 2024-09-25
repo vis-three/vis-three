@@ -37,7 +37,7 @@ onMounted(() => {
     const tagLineParagragh = document.querySelector('div.VPHero.has-image.VPHomeHero > div > div.main > p.tagline')
     const docsReleaseTagSpan = document.createElement('samp')
     docsReleaseTagSpan.classList.add('docs-cn-github-release-tag')
-    docsReleaseTagSpan.innerText = '0.6.X'
+    docsReleaseTagSpan.innerText = '0.6.X(Waiting for update)'
     if(! document.querySelector('div.VPHero.has-image.VPHomeHero > div > div.main > p.tagline > samp')){
     tagLineParagragh.appendChild(docsReleaseTagSpan)
     }

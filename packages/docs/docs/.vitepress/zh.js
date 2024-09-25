@@ -107,13 +107,13 @@ export const zhConfig = {
         text: "主页",
         link: "https://vis-three.github.io",
       },
-    //   {
-    //     text: "版本",
-    //     items: [{ text: "0.6.x", link: "/version/0.6.x/index.html" }],
-    //   },
+      {
+        text: "版本",
+        items: [{ text: "0.6.x", link: "/version/0.6.x/zh/index.html" }],
+      },
     ],
     sidebar: {
-      "/start/": [
+      "/zh/start/": [
         {
           items: [
             { text: "介绍", link: "/zh/start/intro" },
@@ -130,7 +130,7 @@ export const zhConfig = {
           ],
         },
       ],
-      "/api/": [
+      "/zh/api/": [
         {
           text: "@vis-three/core",
           items: getAPIModules("core"),
@@ -148,7 +148,7 @@ export const zhConfig = {
           items: getAPIModules("utils"),
         },
       ],
-      "/library/": [
+      "/zh/library/": [
         {
           text: "引擎",
           items: getEnginesLibraryModules(),

@@ -10,7 +10,6 @@ export const sharedConfig = defineConfig({
   appearance: "dark",
   rewrites: {
     "zh/:md": ":md",
-    "zh/:dir/:file": ":dir/:file",
   },
   markdown: {
     attrs: { disable: true },

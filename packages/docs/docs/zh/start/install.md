@@ -6,7 +6,7 @@
 
 ## 版本
 
-`vis-three` 目前还处于快速开发迭代中。目前的大版本号为：`0.6`
+`vis-three` 目前还处于快速开发迭代中。目前的大版本号为：`0.7`
 
 ## 安装 three.js
 
@@ -18,7 +18,7 @@ npm i @types/three -D
 ```
 
 ::: tip
-目前所有示例所使用的 three.js 版本为：`^0.141.0`——`npm i three@^0.141.0`
+目前所有示例所使用的 three.js 版本为：`^0.167.1`——`npm i three@^0.167.0`
 :::
 
 ## 安装 vis-three
@@ -47,9 +47,9 @@ npm i @types/three -D
 
 ### 配置化核心
 
-`@vis-three/middleware`
+`@vis-three/tdcm`
 
-配置化核心是在引擎核心的基础上，集成了配置化的基础逻辑和 API 的底座。
+`three dimensional config model`配置化核心是在引擎核心的基础上，集成了配置化的基础逻辑和 API 的底座。
 
 ### 配置化模块
 
