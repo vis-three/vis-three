@@ -23,15 +23,32 @@ npm i @types/three -D
 
 ## 安装 vis-three
 
-`vis-three`框架的引擎功能构建方式是通过组装的形式进行，通过不同的组装集成，构建不同的引擎功能，进而服务不同的业务需要。
+`vis-three`框架的构建方式是通过组装的形式进行，通过不同的组装集成，构建不同的引擎功能，进而服务不同的业务需要。你可以根据自己的业务场景去判断使用哪种组织模式：
+
+- [原生化开发](/zh/start/native.md)
+- [配置化开发](/zh/start/config.md)
+- [组件化开发](/zh/start/widget.md)
 
 文档会通过后面的示例渐进式的引导读者了解`vis-three`的组装构建模式，下面先介绍一下`vis-three`所含的包结构与分类。
+
+## vis-three 模块介绍
 
 ### 引擎核心
 
 `@vis-three/core`
 
 引擎核心提供了组装式底层应用逻辑和 3D 引擎的基础 API，是所有包的基础依赖。
+
+### 配置化核心
+
+`@vis-three/tdcm`
+
+`three dimensional config model`配置化核心是在引擎核心的基础上，集成了配置化的基础逻辑和 API 的底座。
+
+### 组件化核心
+
+`@vis-three/widget`
+组件化核心是在配置化核心的基础上，集成了组件化的基础逻辑和 API 的底座。
 
 ### 插件
 
@@ -44,12 +61,6 @@ npm i @types/three -D
 `@vis-three/strategy-xxx`
 
 策略是联调不同的插件功能和能力去完成一项具体的事情或者具体的业务功能，官方提供的所有策略包都是以`@vis-three/strategy-`开头。
-
-### 配置化核心
-
-`@vis-three/tdcm`
-
-`three dimensional config model`配置化核心是在引擎核心的基础上，集成了配置化的基础逻辑和 API 的底座。
 
 ### 配置化模块
 

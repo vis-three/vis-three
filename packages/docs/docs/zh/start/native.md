@@ -1,8 +1,12 @@
-# 原生引擎构建
+## 开发介绍
 
-如果您已经有`three.js`相关项目的开发经验或者开发习惯，对于项目的开发需要更倾向于原生`three.js`的开发模式，本篇会引导您基于原生`three.js`的开发习惯下使用`vis-three`进行更高效的项目开发。
+原生化开发主要针对的是一些简单场景的项目，没有特别复杂的功能需求，小而精简。比如：简单的模型展示、简单的 demo 实现、理念呈现等等。
 
-> 代码案例查看：[https://vis-three.github.io/examples.html?example=engine/Engine.html](https://vis-three.github.io/examples.html?example=engine/Engine.html)
+原生化开发主要是在原生`three.js`开发的基础上，通过`vis-three`框架去规范，解耦，渐进加强整个项目。本篇会引导您基于原生`three.js`的开发习惯下使用`vis-three`进行更高效的项目开发。
+
+## 案例查看
+
+- [https://vis-three.github.io/examples.html?example=engine/Engine.html](https://vis-three.github.io/examples.html?example=engine/Engine.html)
 
 ## 引擎准备
 
@@ -69,9 +73,19 @@ const engine = defineEngine({
 <div id="app"></div>
 ```
 
+```css
+#id {
+  position: relative;
+}
+```
+
 ```js
 engine.setDom(document.getElementById("app")).setSize();
 ```
+
+:::tip
+我们需要给挂载的 `dom` 指定 `css` 的定位标准，因为`engine`的 `canvas` 与 `dom` 采用的是`position:absolute`。
+:::
 
 由于中间不需要经过其他 api，我们可以直接进行链式调用 ，两种引擎构建模式都适用：
 
