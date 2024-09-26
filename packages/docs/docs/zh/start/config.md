@@ -1,18 +1,28 @@
-# 配置化的开发优势
+# 配置化开发
 
-### 模板与组装
+## 开发介绍
 
-### 预处理和后处理
+配置化开发模式主要是针对复杂的、有持久化需求的业务场景，比如：编辑器类应用、平台类应用等等，这些业务场景既要进行 3D 的事实渲染，但更主要的是需要进行场景数据的存储与恢复。
 
-### 配置升级与逻辑升级
+`vis-three`提供的配置化开发模式有几个很实用的特性：
 
-### 持久化与运行时
+- **自定义配置化**：配置化开发模式除了使用官方预设的配置化模块之外，还具有完全的自定义配置化的能力，能够根据不同的业务需求，打造不同的配置与渲染场景。
 
-# 配置化引擎构建
+- **前后一致性**：使用了配置化模块的之后，所形成的配置，在项目运行时和持久化存储时期，是完全一致的，不管是运行时的修改还是存取时候的修改，所带来的影响也是一致的。这能很好的降低开发的心智负担。
 
-对比于原生的 three.js 和引擎构建，配置化引擎在继承了原生引擎**全部能力**的基础上，增加了配置化的全流程控制能力，配置化开发根据配置化去形成场景结构与可视化面，在运行期通过对配置的更改去影响 3D 场景，能够为复杂应用的构建保驾护航。
+- **配置存储与资源隔离**：配置化模式的一大特点就是对持久化存储空间的优化，配置化模式下的存储不再是重复的打包`three.js`的场景，而是只存储简单的配置结构，可以选择将需要使用的模型、图片等资源当成外部资源，只进行连接存储，不进行打包。这种模式下，既能节省每个应用场景的存储空间，又能够复用各种外部资源。达到空间占用最小化，资源复用最大化。
 
-> 代码案例查看：[https://vis-three.github.io/examples.html?example=engine/EngineSupport.html](https://vis-three.github.io/examples.html?example=engine/EngineSupport.html)
+- **模板化与组装**：配置化模式有模板的概念，在同一批外部资源的环境下，构建存储的各种各样的场景，能够当成模板进行复用，也就是说，不同的场景配置能够进行组合进而形成新的场景。如果业务需求中有原件、模板、可复用场景等业务需求概念，配置化模式能够很好的帮助您实现这些需求。
+
+- **预处理和后处理**：配置化模式还有一大优势就是能够进行配置的预处理和后处理，加大灵活性。预处理就是在配置应用渲染成场景之前进行处理；后处理就是在配置进行持久化保存之前进行处理。预处理能够在不影响持久化数据的前提下规范配置，进行不同业务平台功能的场景兼容；后处理能够针对同一场景，进行不同业务平台需求的规范配置与持久化分发。
+
+- **升级与版本管理**：配置化模式下进行功能的迭代，对于应用与用户来说，其实就是配置的升级，在进行升级与版本管理时，只用对比配置的更新修改即可，这大大降低了项目产品的迭代更新兼容的难度。
+
+对比于原生化开发，配置化开发在继承了原生化开发**全部能力**的基础上，增加了配置化的全流程控制能力，配置化开发根据配置化去形成场景结构与可视化场景，在运行期通过对配置的更改去影响 3D 场景，能够为复杂应用的构建保驾护航。
+
+## 案例查看
+
+- [https://vis-three.github.io/examples.html?example=engine/EngineSupport.html](https://vis-three.github.io/examples.html?example=engine/EngineSupport.html)
 
 ## 引擎准备
 
@@ -23,7 +33,7 @@ npm i three
 npm i @types/three
 
 // vis-three的配置化核心
-npm i @vis-three/middleware
+npm i @vis-three/tdcm
 
 // three.js的 WebGLRenderer相关插件
 npm i @vis-three/plugin-webgl-renderer
@@ -46,7 +56,7 @@ npm i @vis-three/strategy-webgl-render
 安装完毕之后进行引擎构建，配置化引擎构建方式同原生引擎构建一致，也提供了两种构建方式：
 
 ```js
-import { EngineSupport, defineEngineSupport } from "@vis-three/middleware";
+import { EngineSupport, defineEngineSupport } from "@vis-three/tdcm";
 import { WebGLRendererPlugin } from "@vis-three/plugin-webgl-renderer";
 import { GridHelperPlugin } from "@vis-three/plugin-grid-helper";
 import { CameraAdaptivePlugin } from "@vis-three/plugin-camera-adaptive";
@@ -80,19 +90,7 @@ const engine = defineEngineSupport({
 
 如果就此进行开发，可以支持跟原生引擎构建一样的原生开发，但是我们既然使用的是配置化引擎，我按还需要安装配置化的依赖。
 
-配置化的依赖面对不同的业务场景可以有不同的选择，我们可以先安装这部分依赖：
-
-```
-npm i @vis-three/module-light
-npm i @vis-three/module-geometry
-npm i @vis-three/module-material
-npm i @vis-three/module-line
-npm i @vis-three/module-points
-npm i @vis-three/module-mesh
-npm i @vis-three/module-scene
-```
-
-或者说上面的模块较多，我们可以直接安装模块库然后从中选取：
+我们直接安装官方预置的配置化模块库，该库提供了单个的配置化模块，又提供了所有的配置化模块集合，可以根据自己的需要选取使用：
 
 ```
 npm i @vis-three/library-module
@@ -104,21 +102,12 @@ import {
   light,
   geometry,
   material,
-  line,
-  points,
-  mesh,
-  scene,
+  // ...
+  modules,
 } from "@vis-three/library-module";
 
 // 类实例化
 const engine = new EngineSupport()
-  .registModule(light)
-  .registModule(geometry)
-  .registModule(material)
-  .registModule(line)
-  .registModule(points)
-  .registModule(mesh)
-  .registModule(scene)
   .install(
     WebGLRendererPlugin({
       antialias: true,
@@ -127,6 +116,10 @@ const engine = new EngineSupport()
   )
   .install(CameraAdaptivePlugin())
   .install(GridHelperPlugin())
+  .useModule(light)
+  .useModule(geometry)
+  .useModule(material)
+  // ...
   .exec(WebGLRenderStrategy());
 
 // 函数式
@@ -140,12 +133,12 @@ const engine = defineEngineSupport({
     GridHelperPlugin(),
   ],
   strategy: [WebGLRenderStrategy()],
-  modules: [light, geometry, material, line, points, mesh, scene],
+  modules: modules,
 });
 ```
 
 ::: warning
-如果你使用类形式的组装模式，注意最好按照`模块` -> `插件` -> `策略`的顺序进行引擎组装。
+如果你使用类形式的组装模式，注意按照`插件` -> `模块` -> `策略`的顺序进行引擎组装。因为`模块`其实是另外一种形式的`插件`。
 :::
 
 ## 页面挂载
@@ -161,54 +154,55 @@ const engine = defineEngineSupport({
 import {
   defineEngineSupport,
   generateConfig,
-  CONFIGTYPE,
-} from "@vis-three/middleware";
+  CONFIG_TYPE,
+  toSymbol,
+} from "@vis-three/tdcm";
 
 // engine code ...
 
 // 我们需要通过generateConfig生成一个支撑配置化的场景对象
-const defaultScene = generateConfig(CONFIGTYPE.SCENE);
+const defaultScene = generateConfig(CONFIG_TYPE.SCENE);
 
 // 通过调用applyConfig能够应用生成的配置
 // setSceneBySymbol可以通过配置的唯一标记vid去查找物体
-engine.applyConfig(defaultScene).setSceneBySymbol(defaultScene.vid);
+engine.applyConfig(defaultScene).setSceneBySymbol(toSymbol(defaultScene));
 
-const pointLight = generateConfig(CONFIGTYPE.POINTLIGHT, {
+const pointLight = generateConfig(CONFIG_TYPE.POINTLIGHT, {
   color: "rgb(255, 255, 255)",
   position: {
     y: 30,
   },
 });
 
-const commonGeometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+const commonGeometry = generateConfig(CONFIG_TYPE.BOXGEOMETRY, {
   width: 10,
   height: 10,
   depth: 10,
 });
 
-const boxMaterial = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
+const boxMaterial = generateConfig(CONFIG_TYPE.MESHSTANDARDMATERIAL, {
   color: "rgb(255, 105, 100)",
 });
 
-const box = generateConfig(CONFIGTYPE.MESH, {
-  geometry: commonGeometry.vid,
-  material: boxMaterial.vid,
+const box = generateConfig(CONFIG_TYPE.MESH, {
+  geometry: toSymbol(commonGeometry),
+  material: toSymbol(boxMaterial),
   position: {
     x: 10,
   },
 });
 
-const lineBox = generateConfig(CONFIGTYPE.LINE, {
-  geometry: commonGeometry.vid,
+const lineBox = generateConfig(CONFIG_TYPE.LINE, {
+  geometry: toSymbol(commonGeometry),
 });
 
-const pointsMaterial = generateConfig(CONFIGTYPE.POINTSMATERIAL, {
+const pointsMaterial = generateConfig(CONFIG_TYPE.POINTSMATERIAL, {
   color: "rgb(255, 255, 255)",
 });
 
-const pointsBox = generateConfig(CONFIGTYPE.POINTS, {
-  geometry: commonGeometry.vid,
-  material: pointsMaterial.vid,
+const pointsBox = generateConfig(CONFIG_TYPE.POINTS, {
+  geometry: toSymbol(commonGeometry),
+  material: toSymbol(pointsMaterial),
   position: {
     x: -10,
   },
@@ -224,7 +218,12 @@ engine.applyConfig(
   pointsBox
 );
 
-defaultScene.children.push(pointLight.vid, box.vid, lineBox.vid, pointsBox.vid);
+defaultScene.children.push(
+  toSymbol(pointLight),
+  toSymbol(box),
+  toSymbol(lineBox),
+  toSymbol(pointsBox)
+);
 ```
 
 通过上面的代码我们发现：
@@ -233,14 +232,14 @@ defaultScene.children.push(pointLight.vid, box.vid, lineBox.vid, pointsBox.vid);
 
 2、配置化的形式可以在生成配置的时候将所有的属性初始完成。
 
-3、每一个配置都有其独有的`vid`标记，它可以代替配置完成整个对象的使用。
+3、每一个配置都有其独有的`vid`标记，它可以代替配置完成整个对象的使用，我们可以通过`toSymbol`这个`api`进行获取。
 
 4、配置化的基本开发思路就是：生成配置`generateConfig` -> 应用配置`engine.applyConfig`
 
 ::: tip
 
 - `generateConfig`是生成配置的统一 api。
-- `CONFIGTYPE`中枚举了当下支持的所有物体配置单。
+- `CONFIG_TYPE`中枚举了当下支持的所有物体配置单。
 - 手动应用配置注意应用配置的先后顺序，比如`box`需要依赖`commonGeometry`, `boxMaterial`这两个配置，那么`box`的应用要在`commonGeometry`和`boxMaterial`之后。
   :::
 
@@ -250,9 +249,9 @@ defaultScene.children.push(pointLight.vid, box.vid, lineBox.vid, pointsBox.vid);
 
 ```js
 // other code...
-const defaultScene = generateConfig(CONFIGTYPE.SCENE);
+const defaultScene = generateConfig(CONFIG_TYPE.SCENE);
 
-engine.applyConfig(defaultScene).setSceneBySymbol(defaultScene.vid);
+engine.applyConfig(defaultScene).setSceneBySymbol(toSymbol(defaultScene));
 
 // 设置注入引擎
 generateConfig.injectEngine = engine;
@@ -261,42 +260,42 @@ generateConfig.injectScene = true;
 // 开启自动注入
 generateConfig.autoInject = true;
 
-generateConfig(CONFIGTYPE.POINTLIGHT, {
+generateConfig(CONFIG_TYPE.POINTLIGHT, {
   color: "rgb(255, 255, 255)",
   position: {
     y: 30,
   },
 });
 
-const commonGeometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+const commonGeometry = generateConfig(CONFIG_TYPE.BOXGEOMETRY, {
   width: 10,
   height: 10,
   depth: 10,
 });
 
-const boxMaterial = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
+const boxMaterial = generateConfig(CONFIG_TYPE.MESHSTANDARDMATERIAL, {
   color: "rgb(255, 105, 100)",
 });
 
-generateConfig(CONFIGTYPE.MESH, {
-  geometry: commonGeometry.vid,
-  material: boxMaterial.vid,
+generateConfig(CONFIG_TYPE.MESH, {
+  geometry: toSymbol(commonGeometry),
+  material: toSymbol(boxMaterial),
   position: {
     x: 10,
   },
 });
 
-generateConfig(CONFIGTYPE.LINE, {
-  geometry: commonGeometry.vid,
+generateConfig(CONFIG_TYPE.LINE, {
+  geometry: toSymbol(commonGeometry),
 });
 
-const pointsMaterial = generateConfig(CONFIGTYPE.POINTSMATERIAL, {
+const pointsMaterial = generateConfig(CONFIG_TYPE.POINTSMATERIAL, {
   color: "rgb(255, 255, 255)",
 });
 
-generateConfig(CONFIGTYPE.POINTS, {
-  geometry: commonGeometry.vid,
-  material: pointsMaterial.vid,
+generateConfig(CONFIG_TYPE.POINTS, {
+  geometry: toSymbol(commonGeometry),
+  material: toSymbol(commonGeometry),
   position: {
     x: -10,
   },
@@ -326,7 +325,7 @@ scene.children.pop();
 这里要注意，对于`generateConfig`生成的配置不要直接替换整个配置对象里面的引用对象，比如：
 
 ```js{2}
-const mesh = generateConfig(CONFIGTYPE.MESH);
+const mesh = generateConfig(CONFIG_TYPE.MESH);
 mesh.position = { x: 10, y: 10, z: 10 };
 ```
 
@@ -341,7 +340,7 @@ mesh.position = { x: 10, y: 10, z: 10 };
 正确处理：
 
 ```js
-const mesh = generateConfig(CONFIGTYPE.MESH);
+const mesh = generateConfig(CONFIG_TYPE.MESH);
 mesh.position.x = 10;
 mesh.position.y = 10;
 mesh.position.z = 10;
@@ -360,11 +359,6 @@ npm i @vis-three/strategy-webgl-renderer-support
 ```js
 // import code...
 
-import {
-  //...,
-  renderer,
-} from "@vis-three/library-module";
-
 import { WebGLRendererSupportStrategy } from "@vis-three/strategy-webgl-renderer-support";
 
 const engine = defineEngineSupport({
@@ -378,12 +372,11 @@ const engine = defineEngineSupport({
   strategy: [WebGLRenderStrategy(), WebGLRendererSupportStrategy()],
   modules: [
     //...
-    renderer,
   ],
 });
 
 engine.applyConfig(
-  generateConfig(CONFIGTYPE.WEBGLRENDERER, {
+  generateConfig(CONFIG_TYPE.WEBGLRENDERER, {
     clearColor: "rgba(255 ,255 ,255 , 1)",
     shadowMap: {
       enabled: true,
@@ -391,10 +384,6 @@ engine.applyConfig(
   })
 );
 ```
-
-:::tip
-就算是引入插件的配置，也需要有相应的配置化模块作为基础，比如上方的: `import {renderer} from "@vis-three/library-module";`
-:::
 
 ## 物体动画
 
@@ -410,15 +399,12 @@ engine.applyConfig(
 npm i @vis-three/library-animate-script
 ```
 
+由于配置化的脚本动画能力是来自于动画模块，所以我们可以从`@vis-three/library-module`或`@vis-three/module-animation`中获取相关的管理器，进行相关的动画注册。
+
 ```js
 // import ...
 
-import {
-  //...
-  animation,
-} from "@vis-three/library-module";
-
-import { AniScriptGeneratorManager } from "@vis-three/middleware";
+import { AniScriptGeneratorManager } from "@vis-three/library-module";
 
 import { linearTime } from "@vis-three/library-animate-script";
 
@@ -426,16 +412,12 @@ AniScriptGeneratorManager.register(linearTime);
 
 const engine = defineEngineSupport({
   //...
-  modules: [
-    // ...,
-    animation,
-  ],
 });
 
 // ...
-const box = generateConfig(CONFIGTYPE.MESH, {
-  geometry: commonGeometry.vid,
-  material: boxMaterial.vid,
+const box = generateConfig(CONFIG_TYPE.MESH, {
+  geometry: toSymbol(commonGeometry),
+  material: toSymbol(boxMaterial),
   position: {
     x: 10,
   },
@@ -444,9 +426,9 @@ const box = generateConfig(CONFIGTYPE.MESH, {
 // ...
 
 generateConfig(
-  CONFIGTYPE.SCRIPTANIMATION,
+  CONFIG_TYPE.SCRIPTANIMATION,
   {
-    target: box.vid,
+    target: toSymbol(box),
     attribute: ".rotation.y",
     script: AniScriptGeneratorManager.generateConfig("linearTime", {
       multiply: 1.5,
@@ -476,7 +458,7 @@ npm i @vis-three/library-event
 
 ```js
 // import ...
-import { EventGeneratorManager } from "@vis-three/middleware";
+import { EventGeneratorManager } from "@vis-three/library-module";
 
 import EventLibrary from "@vis-three/library-event";
 
@@ -487,9 +469,9 @@ const engine = defineEngineSupport({
 });
 
 // ...
-const box = generateConfig(CONFIGTYPE.MESH, {
-  geometry: commonGeometry.vid,
-  material: boxMaterial.vid,
+const box = generateConfig(CONFIG_TYPE.MESH, {
+  geometry: toSymbol(commonGeometry),
+  material: toSymbol(boxMaterial),
   position: {
     x: 10,
   },
@@ -497,7 +479,7 @@ const box = generateConfig(CONFIGTYPE.MESH, {
 
 const boxMoveEvent = EventGeneratorManager.generateConfig("moveSpacing", {
   params: {
-    target: box.vid,
+    target: toSymbol(box),
     spacing: {
       x: 10,
       y: 0,
@@ -507,9 +489,9 @@ const boxMoveEvent = EventGeneratorManager.generateConfig("moveSpacing", {
 });
 
 generateConfig(
-  CONFIGTYPE.LINE,
+  CONFIG_TYPE.LINE,
   {
-    geometry: commonGeometry.vid,
+    geometry: toSymbol(commonGeometry),
     click: [boxMoveEvent],
   },
   {
@@ -543,14 +525,7 @@ npm i @vis-three/library-parser
 import {
   // ...
   Template,
-} from "@vis-three/middleware";
-
-import * as ModuleLibrary from "@vis-three/library-module";
-
-const engine = defineEngineSupport({
-  //...
-  modules: Object.values(ModuleLibrary),
-});
+} from "@vis-three/tdcm";
 
 //...
 
@@ -627,18 +602,18 @@ engine.registerResources({
   textCanvas,
 });
 
-const canvasTexture = generateConfig(CONFIGTYPE.CANVASTEXTURE, {
+const canvasTexture = generateConfig(CONFIG_TYPE.CANVASTEXTURE, {
   url: "textCanvas",
 });
 
-const boxMaterial = generateConfig(CONFIGTYPE.MESHSTANDARDMATERIAL, {
+const boxMaterial = generateConfig(CONFIG_TYPE.MESHSTANDARDMATERIAL, {
   // color: "rgb(255, 105, 100)",
-  map: canvasTexture.vid,
+  map: toSymbol(canvasTexture),
 });
 
-const box = generateConfig(CONFIGTYPE.MESH, {
-  geometry: commonGeometry.vid,
-  material: boxMaterial.vid,
+const box = generateConfig(CONFIG_TYPE.MESH, {
+  geometry: toSymbol(commonGeometry),
+  material: toSymbol(boxMaterial),
   position: {
     x: 10,
   },
@@ -683,10 +658,10 @@ import { generateConfig, Template, JSONHanlder } from "@vis-three/middleware";
 const config = Template.observable(JSONHanlder.clone(jsonConfig));
 
 // 接口获取
-axios.get("url").then((res) => {
-  const config = Template.observable(JSONHanlder.clone(jsonConfig));
-});
+const res = await axios.get("url");
+const config = Template.observable(JSONHanlder.clone(res));
 
+// 应用配置
 engine.loadConfig(config, (res) => {
   // do something
 });
@@ -710,10 +685,10 @@ engine.loadConfigAsync(config).then((res) => {
 ```js
 // code...
 const box = generateConfig(
-  CONFIGTYPE.MESH,
+  CONFIG_TYPE.MESH,
   {
-    geometry: commonGeometry.vid,
-    material: boxMaterial.vid,
+    geometry: toSymbol(commonGeometry),
+    material: toSymbol(boxMaterial),
     position: {
       x: 10,
     },
@@ -746,18 +721,19 @@ console.log(box);
 
 ```js
 // ./MyModule.js
+import { defineModel, defineModule } from "@vis-three/tdcm";
 
-const boardProcessor = defineProcessor({
+const board = defineModel({
   type: "Board",
   // ...
 });
 
-export default {
+export default defineModule({
   type: "board",
   object: true,
   //...
-  processor: [boardProcessor],
-};
+  models: [board],
+});
 ```
 
 ```js
@@ -768,7 +744,7 @@ const engine = defineEngineSupport({
   modules: [MyModule],
 });
 
-const board = generateConfig(CONFIGTYPE.BOARD);
+const board = generateConfig(CONFIG_TYPE.BOARD);
 ```
 
 :::tip
