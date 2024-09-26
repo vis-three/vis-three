@@ -1,14 +1,18 @@
-# 组件化开发模式
+# 组件化开发
 
-经过长期的市场与项目验证，将 web 开发效率提升到另一个高度的组件化开发模式，也是`vis-three`有所借鉴的。`vis-three`本身具有配置化开发层，通过与热门的`vue`框架的核心`@vue/reactivity`结合，提供了类似具有`vue`组件化的开发模式，当中也添加了许多 3D 部分的特性供开发者使用。期望通过组件化的开发模式将 web3D 项目推向另一个高度。
+## 开发介绍
 
-> 代码案例查看：https://vis-three.github.io/examples.html?example=widget/widget.html
+组件化开发模式是对原生化开发和配置化开发的一种增强，增强了原生化开发的效率，提高了配置化开发的灵活度。通过与热门的`vue`框架的核心`@vue/reactivity`结合，提供了类似具有`vue`组件化的开发模式，是一种更为熟悉高效的开发模式。
 
-:::tip
+组件化开发模式在继承了配置化开发**全部能力**的基础上，增加了组件化的构建能力，它的主要特性在于拥有**更灵活的业务逻辑处理**能力，在项目进行时更为**敏捷**。
 
-- 当前版本处于 alpha 试验阶段，欢迎各位提出相关的意见与建议或者共同参与构建。
-- 当前的组件化开发为 browser runtime 版本。
-  :::
+如果我们将业务逻辑放在配置化层，在业务逻辑多变的情况下，配置层的修改会过于繁琐，组件化的开发模式能够将业务逻辑和配置层进行一个分离解耦，在业务变更时进行修改升级更为便利。
+
+组件化开发模式，也可以当成是配置化的模板增强，为配置化层提供更多的业务可能性。
+
+## 案例查看
+
+- [https://vis-three.github.io/examples.html?example=widget/widget.html](https://vis-three.github.io/examples.html?example=widget/widget.html)
 
 ## 引擎准备
 
@@ -40,10 +44,6 @@ npm i @vis-three/@vis-three/plugin-orbit-controls
 npm i @vis-three/strategy-webgl-render
 ```
 
-:::tip
-组件化引擎，是基于配置化引擎衍生而来，具有配置化引擎的**全部能力**。
-:::
-
 安装完毕之后进行引擎构建，组件化引擎构建方式同配置化引擎与原生构建一致，也提供了两种构建方式：
 
 ```js
@@ -57,14 +57,16 @@ import { OrbitControlsPlugin } from "@vis-three/plugin-orbit-controls";
 
 import { WebGLRenderStrategy } from "@vis-three/strategy-webgl-render";
 
-import * as ModuleLibrary from "@vis-three/library-module";
+import {
+  light,
+  geometry,
+  material,
+  // ...
+  modules,
+} from "@vis-three/library-module";
 
 // 类实例
 const engine = new EngineWidget()
-  .registModule(ModuleLibrary.light)
-  .registModule(ModuleLibrary.geometry)
-  .registModule(ModuleLibrary.material)
-  //...
   .install(
     WebGLRendererPlugin({
       antialias: true,
@@ -73,6 +75,10 @@ const engine = new EngineWidget()
   )
   .install(CameraAdaptivePlugin())
   .install(GridHelperPlugin())
+  .useModule(light)
+  .useModule(geometry)
+  .useModule(material)
+  //...
   .exec(WebGLRenderStrategy());
 
 // 函数式
@@ -87,13 +93,13 @@ const engine = new defineEngineWidget({
     OrbitControlsPlugin(),
   ],
   strategy: [WebGLRenderStrategy(), WebGLRendererSupportStrategy()],
-  modules: Object.values(ModuleLibrary),
+  modules: modules,
 });
 ```
 
 ## 页面挂载
 
-页面挂载的方式和[原生引擎](./native.md)构建一致。这里我们加多一部，就是直接进行组件的渲染。
+页面挂载的方式和[原生引擎](./native.md)构建一致。这里我们加多一步，就是直接进行组件的渲染。
 
 ```js
 engine.play();
