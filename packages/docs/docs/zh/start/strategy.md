@@ -1,8 +1,10 @@
 # 自定义策略
 
-`vis-three`提供了可拔插的插件支持功能，但是当我们的插件丰富起来之后，插件之间的工作协调会遇到问题，比如我们有一个`WebGLRendererPlugin`这个是管理`WebGL`渲染的插件，又有一个`RenderManagerPlugin`插件，这个是管理所有渲染逻辑的插件，那么我们该如何让这两个插件协调工作？
+## 策略介绍
 
-这个时候我们就需要策略去进行插件之间的功能协调，因为策略是讲究条件的，策略会以某一个插件，或者某几个插件为条件，去完成功能。
+策略是一种联调插件的模块，可以作为一种插件的兼容和功能增强的模块。当插件丰富起来后，插件之间的工作协调会遇到问题，比如我们有一个`WebGLRendererPlugin`这个是管理`WebGL`渲染的插件，又有一个`RenderManagerPlugin`插件，这个是管理所有渲染逻辑的插件，那么我们该如何让这两个插件协调工作？
+
+这个时候我们就需要策略去进行插件之间的功能协调，因为策略是讲究条件的，策略会以某一个插件，或者某几个插件为条件，去完成一些功能。
 
 > 本文使用的是 ts 进行策略编写。
 
@@ -26,8 +28,8 @@ export interface StrategyOptions<E extends Engine> {
 
 ```ts
 import { Strategy } from "@vis-three/core";
-import { RenderManagerEngine } from "@vis-three/render-manager-plugin";
-import { WebGLRendererEngine } from "@vis-three/webgl-renderer-plugin";
+import { RenderManagerEngine } from "@vis-three/plugin-render-manager";
+import { WebGLRendererEngine } from "@vis-three/plugin-webgl-renderer";
 
 export interface WebGLRenderEngine
   extends WebGLRendererEngine,
@@ -43,7 +45,7 @@ export const WebGLRendererStrategy: Strategy<WebGLRenderEngine> = function () {
 };
 ```
 
-## 策略执行，回滚功能编写
+## 策略执行，回滚
 
 我们的策略除了安装之外，是支持策略的回滚的，也就是跟插件的可拔插机制一致，所以我们需要组织好策略执行和策略回滚时候的功能逻辑。
 
@@ -52,8 +54,8 @@ import { Strategy } from "@vis-three/core";
 import {
   RenderManagerEngine,
   RENDER_EVENT,
-} from "@vis-three/render-manager-plugin";
-import { WebGLRendererEngine } from "@vis-three/webgl-renderer-plugin";
+} from "@vis-three/plugin-render-manager";
+import { WebGLRendererEngine } from "@vis-three/plugin-webgl-renderer";
 
 export interface WebGLRenderEngine
   extends WebGLRendererEngine,
@@ -97,8 +99,8 @@ import { Strategy } from "@vis-three/core";
 import {
   RenderManagerEngine,
   RENDER_EVENT,
-} from "@vis-three/render-manager-plugin";
-import { WebGLRendererEngine } from "@vis-three/webgl-renderer-plugin";
+} from "@vis-three/plugin-render-manager";
+import { WebGLRendererEngine } from "@vis-three/plugin-webgl-renderer";
 
 export interface WebGLRendererParameters {
   // ...

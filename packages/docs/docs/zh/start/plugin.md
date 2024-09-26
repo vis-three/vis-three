@@ -1,6 +1,10 @@
 # 自定义插件
 
-为了满足各式各样的引擎功能需求，`vis-three`提供了可拔插的插件支持功能，我们通过`WebGLRendererPlugin`插件带大家了解实现以下插件化的过程。
+## 插件介绍
+
+插件就是为`engine`提供各种各样的能力模块，更简单的理解就是提供各式各样的`api`。
+
+`vis-three`提供了可拔插的插件支持功能，我们通过`WebGLRendererPlugin`插件带大家了解实现以下插件化的过程。
 
 > 本文使用的是 ts 进行插件编写。
 
@@ -32,7 +36,7 @@ export interface WebGLRendererEngine extends Engine {
 }
 ```
 
-## 插件安装，销毁功能编写
+## 插件安装，销毁
 
 当上面相关声明准备完成之后，我们需要对插件功能进行编写，由于我们的插件化是可拔插的，所以我们需要组织好插件安装和插件销毁时候的功能逻辑。
 
@@ -110,17 +114,18 @@ export const WebGLRendererPlugin: Plugin<WebGLRendererEngine, WebGLRendererParam
   params: WebGLRendererParameters
 ) {
   return {
-    name: "WebGLRendererPlugin",
-    install(engine: WebGLRendererEngine) {
-      engine.webGLRenderer = new WebGLRenderer(params);
+      name: "WebGLRendererPlugin",
+      install(engine: WebGLRendererEngine) {
+        engine.webGLRenderer = new WebGLRenderer(params);
+        // do something
+      },
+      dispose(
+        engine: Optional<WebGLRendererEngine, "webGLRenderer" | "getScreenshot">
+      ) {
       // do something
-    },
-    dispose(
-      engine: Optional<WebGLRendererEngine, "webGLRenderer" | "getScreenshot">
-    ) {
-    // do something
+    };
   };
-};
+}
 ```
 
 ## 插件依赖
