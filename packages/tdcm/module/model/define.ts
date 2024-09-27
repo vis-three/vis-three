@@ -12,15 +12,20 @@ export interface ModelOption<
   Eg extends EngineSupport = EngineSupport,
   Cpl extends Compiler<Eg> = Compiler<Eg>
 > {
+  /**模型类型 */
   type: string;
+  /**模型的配置结构 */
   config: () => Cf;
+  /**模型实例的共享属性方法 */
   shared?: Srd;
+  /**模型实例的特有属性方法 */
   context?: (
     this: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx,
     params: {
       model: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx;
     }
   ) => Ctx;
+  /**模型的命令链 */
   commands?: ModelCommands<
     Cf,
     Obj,
@@ -28,6 +33,7 @@ export interface ModelOption<
     Cpl,
     Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx
   >;
+  /**模型的生成方法 */
   create: (
     this: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx,
     params: {
@@ -37,6 +43,7 @@ export interface ModelOption<
       compiler: Cpl;
     }
   ) => Obj;
+  /**模型的销毁方法 */
   dispose: (
     this: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx,
     params: {
@@ -48,6 +55,7 @@ export interface ModelOption<
       compiler: Cpl;
     }
   ) => void;
+  /**该模型应用时对其他模型产生的扩展 */
   expand?: [
     {
       models: string | string[] | RegExp;

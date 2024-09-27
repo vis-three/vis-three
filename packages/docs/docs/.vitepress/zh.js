@@ -124,6 +124,7 @@ export const zhConfig = {
             { text: "自定义插件", link: "/zh/start/plugin" },
             { text: "自定义策略", link: "/zh/start/strategy" },
             { text: "自定义配置化模块", link: "/zh/start/module" },
+            { text: "自定义配置化模型", link: "/zh/start/model" },
             { text: "配置化框架结合", link: "/zh/start/combine" },
             { text: "设计与原理", link: "/zh/start/design" },
             { text: "不只是three.js", link: "/zh/start/more" },

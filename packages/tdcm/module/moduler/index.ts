@@ -9,13 +9,20 @@ export interface ModuleOptions<
   E extends EngineSupport = EngineSupport,
   O extends Compiler<E> = Compiler<E>
 > {
+  /** 模块类型 */
   type: string;
+  /** 模块的编译器 */
   compiler?: new (...args) => O;
+  /** 模块的编译规则 */
   rule?: Rule[];
+  /** 模块所包含的模型 */
   models: ModelOption<any, any, any, any, E, O>[];
   resources?: LoadUnit[];
+  /** 是否为一个物体模块 */
   object?: boolean;
+  /** 安装该模块对engine产生的扩展 */
   extend?: (engine: E) => void;
+  /** 模块的生命周期顺序 */
   lifeOrder?: number;
 }
 
