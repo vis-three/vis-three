@@ -107,10 +107,13 @@ export const zhConfig = {
         text: "主页",
         link: "https://vis-three.github.io",
       },
-      {
-        text: "版本",
-        items: [{ text: "0.6.x", link: "/version/0.6.x/zh/index.html" }],
-      },
+      // {
+      //   text: "版本",
+      //   items: [
+      //     { text: "0.7.x", link: "/zh/index.html" },
+      //     { text: "0.6.x", link: "/version/0.6.x/zh/index.html" },
+      //   ],
+      // },
     ],
     sidebar: {
       "/zh/start/": [

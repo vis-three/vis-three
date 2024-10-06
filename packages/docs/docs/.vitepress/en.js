@@ -107,10 +107,10 @@ export const enConfig = {
         text: "Homepage",
         link: "https://vis-three.github.io",
       },
-      {
-        text: "version",
-        items: [{ text: "0.6.x", link: "/version/0.6.x/en/index.html" }],
-      },
+      // {
+      //   text: "version",
+      //   items: [{ text: "0.6.x", link: "/version/0.6.x/en/index.html" }],
+      // },
     ],
     sidebar: {
       "/en/start/": [

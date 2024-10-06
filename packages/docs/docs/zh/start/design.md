@@ -1,6 +1,24 @@
+# 设计与原理
+
+## 整体架构
+
+`vis-three`虽然是组装式的`web3D`框架，但是在可组装的插件策略等部分，在设计实现的过程中有一定的侧重点。
+
+当前`vis-three`框架整体上划分为 3 个层次，分别对应于[原生化开发](./native.md)、[配置化开发](./config.md)、[组件化开发](./widget.md)。
+
+- **原生化开发-> native/browser**:相当于最原始的浏览器环境或者原生的环境，在这层下提供各种各样的 `3D` 相关的能力与 api。
+
+- **配置化开发-> tdcm**: `tdcm`全名叫：`three-dimensional config model`，这层可以类比为`DOM`层，在这层下将各种原生的`3D`能力封装为一个个配置模型。
+
+- **组件化开发 -> Component**: 这层相当于当下前端使用的组件化开发框架，渐进式的开发各种应用。
+
+`vis-three`的三个层次，都是完全的可定制，可控制，他们都属于运行时的集成，没有进行打包和编译，不依赖于任何的打包环境和编译环境。
+
+![/image/start/framework.png](/image/start/framework.png)
+
 ## 配置化原理
 
-介绍自定义配置化构建之前先来简单介绍一下配置化原理：
+简单介绍一下配置化原理：
 
 - **响应式配置**：通过`generateConfig`生成的配置，在函数内部会生成配置对象对应的观察者对象，然后将通过`proxy`代理过的对象抛出，这个抛出对象会对所有的对象操作进行拦截。
 
@@ -8,5 +26,5 @@
 
 - **规则翻译与执行**：抛出的所有通知会经过`rule`规则函数，通过`rule`将规则进行处理翻译，比如哪种通知可以忽略，哪种通知是需要执行`compiler`操作。
 
-- **编译器与处理器调用**：编译器`compiler`是一个带有状态和内存空间的对象，一般只指定宏观的操作与调度，但是具体的操作执行`compiler`会交给每个`config`对应的处理器`processor`进行执行。
-  ![/image/start/middleware-principle.png](/image/start/middleware-principle.png)
+- **编译器与模型调用**：编译器`compiler`是一个带有状态和内存空间的对象，一般只指定宏观的操作与调度，但是具体的操作执行会交给每个`config`对应的处理器`model`进行执行。
+  ![/image/start/tdcm-principle.png](/image/start/tdcm-principle.png)

@@ -10,10 +10,10 @@ hero:
   actions:
     - theme: brand
       text: 开始
-      link: /zh/start/intro
+      link: /version/0.6.x/zh/start/intro
     - theme: alt
       text: github
-      link: https://github.com/Shiotsukikaedesari/vis-three
+      link: https://github.com/vis-three/vis-three
 features:
   - icon: 🛠️
     title: 功能插件化

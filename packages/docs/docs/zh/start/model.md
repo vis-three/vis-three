@@ -1,8 +1,12 @@
 # 自定义配置化模型
 
+## 配置化模型介绍
+
+配置化模型是将配置与`3D`对象联系起来的模型对象，每当配置变更，或者新增、删除配置时，与之对应的 `3D` 对象都会完成真实的操作或者对应的业务功能。在响应配置变化的基础上，还集成了许多额外的便利功能去增强配置化的优势。
+
 ## 案例引导
 
-我们通过一个需求案例来属性整个自定义配置化模型流程，比如我们当下有这样一个需求：
+我们通过一个需求案例来熟悉整个自定义配置化模型流程，比如我们当下有这样一个需求：
 
 - 需要一个木板配置模块
 
@@ -15,6 +19,8 @@
 - 木板可以设置他的位置，旋转
 
 ## 配置化模型选项
+
+配置化模型选项是最终定义这个模型的选项单，可以使用下面的`defineModel`进行定义。
 
 ```ts
 export interface ModelOption<
@@ -78,10 +84,6 @@ export interface ModelOption<
   ];
 }
 ```
-
-## 定义木板模型
-
-木板模型实际上就是 3D 的配置化模型，在这个模型内处理各种配置对应的 3D 物体的变化，包括出生、销毁、更改等等。
 
 ## 定义模型配置结构
 
@@ -200,7 +202,7 @@ export default defineModel<
 
     return board;
   },
-  dispose(target) {
+  dispose({ target }) {
     target.removeFromParent();
     target.geometry.dispose();
     target.material.dispose();
@@ -373,19 +375,54 @@ defineModel({
 
 生成`create`与销毁`dispose`是在相关配置加入与移出配置单所对应的操作，它包括对真实对象的初始构建与真实对象的内存销毁方法。
 
+```ts
+export default defineModel<BoardConfig, Mesh>({
+  create({ model, config, engine }) {
+    const geometry = new BoxGeometry();
+
+    const material = new MeshBasicMaterial({
+      color: model.transColor(config.style),
+    });
+    const board = new Mesh(geometry, material);
+
+    model.changeSize(config.size, board);
+
+    board.position.set(config.position.x, config.position.y, config.position.z);
+    board.rotation.set(config.rotation.x, config.rotation.y, config.rotation.z);
+
+    return board;
+  },
+  dispose({ target }) {
+    target.removeFromParent();
+    target.geometry.dispose();
+    target.material.dispose();
+  },
+});
+```
+
+:::tip
+在生成方法中需要将生成的目标物体进行`return`。
+:::
+
 ## 模型拓展
 
-我们还有部分需求是，当我们增加一些模块的时候，希望能够拓展其他配置模块的配置属性和对应的处理方法，这里我们可以使用处理器拓展属性。
+我们还有部分需求是，当我们增加一些模块的时候，希望能够拓展其他配置模块的配置属性和对应的处理方法，这里我们可以在定义模型时使用拓展属性。
 
 举个例子，比如我们有个辅助模块，当辅助模块应用之后我们希望给对应的模块配置加上辅助模块的配置标识，方便快速查找这个模块的对应辅助模块,但是我们不需要对该辅助操作进行相关响应。
 
 ```ts
-export default {
+export default defineModel({
   type: "helper",
   expand: [
     {
-      processors: ["Board", "Mesh"],
-      command: {
+      // 这个模型会去影响哪些模型配置
+      models: new RegExp("Mesh|Light|Line|Points|Group|Object3D"),
+      //会对这些模型配置做进行什么属性的更新
+      config: () => ({
+        helper: "",
+      }),
+      // 新增的配置对应的命令链
+      commands: {
         add: {
           helper() {},
         },
@@ -395,170 +432,234 @@ export default {
       },
     },
   ],
-};
+});
 ```
 
-:::warning
-此 API 目前属于试验阶段。
-:::
+## 模块触发器
 
-## 模块触发
+模块触发器是当规定的相关模块加载完成后，统一触发的一种钩子方法。目前配置化层的模块触发器内置了一个物体模块触发器，当所有的物体模块加载完成后，会触发这个触发器事先添加的方法函数。
 
-## 异步执行
-
-全局防抖器是一个增加额外处理线路的工具，主要是在区别于`lifeOrder`加载时间线的使用，目的是用来兼容无法通过`lifeOrder`区分前后的属性功能的辅助工具。
-
-什么情况下会用到防抖器呢？也就是你无法确定该功能需要对象的加载时间，或者说是模块与模块间`lifeOrder`确定后，与模块内属性所需要的资源或者对象加载需要不符合的时候。
-
-举个例子，顺便来看看防抖器的工作原理。
-
-只要是符合`three.js`的`Object3D`对象，都有`children`这个属性，我们在划分模块的时候，划分了`mesh`、`line`、`light`、`scene`等等的物体模块，按照`three.js`的功能来讲，只要是物体模块，都能够往`children`对象下添加物体，而且是没有限制的，也就是在这个情况下，我们对于物体模块的`children`是无法推测出模块的先后顺序，这个时候我们就要用到防抖器了。
-
-![/image/start/global-anti-shake.png](/image/start/global-anti-shake.png)
-
-### 调用激活
-
-一般情况下，都是在`processor`编写中，对需要的属性进行防抖兼容，拿上面`children`举例。我们只要调用`globalAntiShake.exec`就会自动激活防抖器开始工作。
+下面是一个在`skinnedMesh`生成时，会等待所有物体模块执行完成后，进行骨架的绑定。
 
 ```ts
-import { globalAntiShake } from "@vis-three/middleware";
+export default defineModel({
+  create({ model, config }) {
+    const skinnedMesh = new SkinnedMesh();
 
-const commands = {
-  add: {
-    children({ target, config, value, engine }) {
-      globalAntiShake.exec((finish) => {
-        const childrenConfig = engine.getConfigBySymbol(value) as ObjectConfig;
-        if (!childrenConfig) {
-          if (finish) {
-            console.warn(` can not foud object config in engine: ${value}`);
-          }
-          return false;
-        }
+    model.toTrigger("object", () => {
+      if (config.bindMatrix.length) {
+        const matrix = new Matrix4();
+        matrix.elements = (<number[]>[]).concat(
+          config.bindMatrix
+        ) as unknown as Matrix4Tuple;
+        skinnedMesh.bind(skeleton, matrix);
+      } else {
+        skinnedMesh.bind(skeleton, skinnedMesh.matrixWorld);
+      }
 
-        const childrenObject = engine.compilerManager.getObjectfromModules(
-          OBJECTMODULE,
-          value
-        ) as Object3D;
-
-        if (!childrenObject) {
-          if (finish) {
-            console.warn(`can not found this vid in engine: ${value}.`);
-          }
-          return false;
-        }
-
-        target.add(childrenObject);
-
-        childrenObject.updateMatrixWorld(true);
-
-        return true;
-      });
-    },
-  },
-};
-```
-
-### 执行与自动延迟
-
-调用`exec`后，`globalAntiShake`会阻塞执行一次里面的方法，如果执行后返回的结果为`true`，这个方法就已经完成了，不会加入后面的过程。
-
-如果执行为`false`，`globalAntiShake`会将该方法缓存进一个`list`中，等待下一个`timer`周期开始时再按顺序执行。
-
-### 重试与自动排序
-
-在`timer`按顺序执行缓存的方法中，如果这个方法在此次执行返回为`true`，就会被移出缓存`list`。在一个周期完成时，剩下的方法会形成新的`list`进入下一个`timer`周期。
-
-### 失败与结束
-
-在一个`timer`周期中，只要有一个方法的返回为`true`，`globalAntiShake`就会重新组织未完成的方法进入下一个`timer`周期。
-
-如果一个`timer`周期中所有的方法返回值都是`false`，或者说已经完成了所有方法，`globalAntiShake`就会结束循环。
-
-:::tip
-`AntiShake`的 API 请查看 API 文档。
-:::
-
-## 模型事件
-
-`vis-three`采用的是非侵入式的编程方式，尽可能的不会影响改变`three.js`对象的方法属性，我们知道，`three.js`的大多数对象都继承了`three.js`内部的`EventDispatcher`也就是事件派发器。这个事件派发器能够让我们直接通过`three.js`对象去发布相关事件。
-
-但是`vis-three`特别是内部的`middleware`配置化模块的方法和事件派发都不会去使用`three.js`对象的事件派发器。这是为什么？
-
-- **很容易造成事件冲突**：如果插件，配置化模块，运行时的各种方法都去使用同一个事件派发器，当模块插件功能复制起来之后，命名问题是一个很头疼的问题。
-
-- **不能区分运行期与编译期事件**：如果使用同一个事件派发器去调度所有的发布订阅方法，什么事件是运行期间的事件，什么事件又是编译期的事件？这个不好区分。
-
-- **不是所有的`three.js`对象都继承了事件派发器**：`three.js`有很多的类没有继承事件派发器，这个时候该怎么办。
-
-`@vis-three/middleware`模块提供了事件总线的类`Bus`，这个类可以不入侵原本的对象，通过外链的形式发布订阅各种事件方法。
-
-`@vis-three/middleware`内部预置了编译期的事件总线实例`compilerEvent`，将所有配置化模块需要的发布订阅通过该实例进行发布，对原本的对象进行了很好的隔离。
-
-### compiler 自动发布事件
-
-如果我们继承了默认的`compiler`类，在配置化运行期间的所有操作都会通过`compilerEvent`发布相关的事件。我们只要按照需要订阅即可。
-
-下面是一个只要该 mesh 材质配置做出变化，mesh 的 x 位置会自动+1 的示例。
-
-```ts
-import { Mesh } from "three";
-import { Bus, COMPILER_EVENT } from "@vis-three/middleware";
-
-export default defineProcessor({
-  create(config, engine) {
-    const material = engine.getObjectBySymbol(config.material);
-    const mesh = new Mesh(undefiend, material);
-
-    Bus.compilerEvent.on(material, COMPILER_EVENT.UPDATE, () => {
-      mesh.position.x += 1;
+      return false;
     });
 
-    return mesh;
+    return skinnedMesh;
   },
 });
 ```
 
-:::tip
-默认`compiler`发布的事件请查看 API 文档。
-:::
+## 异步执行
 
-### 自定义事件派发
+异步执行是一个增加额外处理线路的工具，主要是在区别于`lifeOrder`加载时间线的使用，目的是用来兼容无法通过`lifeOrder`区分前后的属性功能的辅助工具。
 
-在有些情况下，我们希望在自己所写的配置化模块中，自己根据需要发布一些事件。
+什么情况下会用到异步执行呢？无法确定该功能需要对象的加载时间，或者说是模块与模块间`lifeOrder`确定后，与模块内属性所需要的资源或者对象加载需要不符合的时候。
+
+### 调用激活
+
+我们可以调用`model.toAsync`这个方法，就会自动激活异步执行开始工作。
 
 ```ts
-import { Mesh } from "three";
-import { Bus, COMPILER_EVENT } from "@vis-three/middleware";
-
-export default defineProcessor({
+export default defineModel({
   commands: {
-    set: {
-      position: {
-        x({ target, value }) {
-          Bus.compilerEvent.emit(target, "position-dispatch", {
-            key: "x",
-            value,
-          });
-        },
-        y({ target, value }) {
-          Bus.compilerEvent.emit(target, "position-dispatch", {
-            key: "y",
-            value,
-          });
-        },
-        z({ target, value }) {
-          Bus.compilerEvent.emit(target, "position-dispatch", {
-            key: "z",
-            value,
-          });
-        },
+    add: {
+      children({ model, target, config, value, engine }) {
+        model.toAsync((finish) => {
+          const childrenConfig = engine.getConfigBySymbol(
+            value
+          ) as ObjectConfig;
+          if (!childrenConfig) {
+            if (finish) {
+              console.warn(` can not foud object config in engine: ${value}`);
+            }
+            return false;
+          }
+
+          const childrenObject = engine.compilerManager.getObjectfromModules(
+            OBJECTMODULE,
+            value
+          ) as Object3D;
+
+          if (!childrenObject) {
+            if (finish) {
+              console.warn(`can not found this vid in engine: ${value}.`);
+            }
+            return false;
+          }
+
+          target.add(childrenObject);
+
+          childrenObject.updateMatrixWorld(true);
+
+          return true;
+        });
       },
     },
   },
 });
+```
 
-// 使用
-Bus.compilerEvent.on(target, "position-dispatch", (event) => {
-  console.log(event);
+### 执行与自动延迟
+
+调用` model.toAsync`后，会同步执行一次里面的方法，如果执行后返回的结果为`true`，这个方法就已经完成了，不会加入异步队列进行后面的过程。
+
+如果执行返回为`false`，该方法就会缓存加入异步队列中，等待下一个`timer`周期开始时再按顺序执行。
+
+### 重试与自动排序
+
+在`timer`按顺序执行异步队列的方法中，如果这个方法在此次执行返回为`true`，就会被移出异步队列。在一个周期完成时，剩下的方法会形成新的异步队列进入下一个`timer`周期。
+
+### 失败与结束
+
+在一个`timer`周期中，只要有一个方法的返回为`true`，异步执行就会重新组织未完成的方法进入下一个`timer`周期。
+
+如果一个`timer`周期中所有的方法返回值都是`false`，或者说已经完成了所有方法，异步执行就会结束。
+
+## 模型事件
+
+模型在执行对应的配置转为 3D 对象业务操作时，会形成相关的操作事件，这能够让我们完成一些监听同步变更的业务。我们可以通过`model.on`，`model.off`，去进行相关模型事件的新增和销毁。
+
+比如在`PathGeometry`的相关`path`配置变化的时候，我们怎么去更新`PathGeometry`让他进行一个同步的运算：
+
+```ts
+export default defineModel({
+  type: "PathGeometry",
+  config: () => ({
+    path: "",
+    divisions: 128,
+    space: false,
+  }),
+  context() {
+    return {
+      pathEvent: () => {},
+    };
+  },
+  create({ model, config, engine }) {
+    const path =
+      (engine.compilerManager.getObjectFromModule(
+        MODULE_TYPE.PATH,
+        config.path
+      ) as Path) || undefined;
+
+    const geometry = new PathGeometry(path, config.divisions, config.space);
+
+    if (path) {
+      model.pathEvent = () => {
+        config.path = config.path;
+      };
+      model.toModel(config.path)?.on(MODEL_EVENT.COMPILED_UPDATE, pathEvent);
+    }
+
+    return PathGeometry;
+  },
+  dispose({ model, config, target }) {
+    model
+      .toModel(config.path)
+      ?.off(MODEL_EVENT.COMPILED_UPDATE, model.pathEvent);
+
+    target.dispose();
+  },
 });
 ```
+
+### 配置更新事件
+
+配置更新事件时在我们`config`进行变化后就会触发的事件，很多时候`config`的变化并不一定会去触发`3D`对象的业务更新，但是这个变化又有对应的业务需求，我们可以通过`MODEL_EVENT.NOTICED`进行。
+
+### 物体编译事件
+
+物体编译事件是在我们`config`变化，进而影响到`3D`对象更新所触发的事件，它包括：
+
+- `MODEL_EVENT.COMPILED_ADD`: 配置加入后的事件。
+- `MODEL_EVENT.COMPILED_REMOVE`: 配置被移除后的事件。
+- `MODEL_EVENT.COMPILED_ATTR`: 配置的某一个属性更新后的事件名前置，比如我们物体的`position.x`进行了更新，可以这样进行监听`${MODEL_EVENT.COMPILED_ATTR}:position.x`
+- `MODEL_EVENT.COMPILED_UPDATE`: 配置编译后的事件，所有配置属性更新都会触发。
+- `MODEL_EVENT.COMPILED`:配置编译后的事件，包括前面的四个事件触发后，都会触发这个。
+
+## 模型继承
+
+当我们有很多模型存在公共的属性，方法，命令链等的时候，我们可以通过`defineModel.extend`定义一个公共的模型定义函数，将公共的属性方法等内容进行一个提取，将最终的配置化模型进行一个继承定义，进行一个便捷开发和优化。
+
+比如我们可以定义一个公共的木板定义函数，这个函数里面有公共的位移、选择、销毁方法：
+
+```ts
+const defineBoardModel = defineModel.extend({
+  shared: {
+    syncPostion(target, value) {
+      target.position.set(value, value, value);
+    },
+  },
+  commands: {
+    set: {
+      position({ model, value, target }) {
+        model.syncPostion(target, value);
+      },
+      rotation({ value, target }) {
+        target.rotation.x = value;
+      },
+    },
+  },
+  dispose({ target }) {
+    target.removeFromParent();
+    target.material.dispose();
+    target.geometry.dispose();
+  },
+});
+```
+
+后面我们就可以通过这个方法去定义相关的木板配置化模型：
+
+```ts
+const WoodenModel = defineBoardModel((boardModel) => {
+  type: "Wooden",
+  create({model, config}) {
+
+    const wooden = new Mesh(new BoxGeometry(100, 50, 20))
+
+    model.syncPosition(wooden, config.position.x)
+    // ...
+    return wooden
+  },
+  dispose({target}) {
+    boardModel.dispose({target});
+    target.parent.position.set(0, 0, 0)
+  }
+});
+```
+
+:::tip
+
+- 通过继承模型方法定义的模型，对于`create`，`dispose`属性不会直接进行继承，而是提供了一种比较灵活的方式，按照需要进行方法的调用。
+
+- 其他的属性都可以通过继承进行合并，如果父级的属性与当下的需求属性冲突，可以进行覆盖。
+
+```ts
+const WoodenModel = defineBoardModel((boardModel) => {
+  type: "Wooden",
+  commands: {
+    set: {
+      position() {
+        // do...
+      }
+    }
+  }
+});
+```
+
+:::

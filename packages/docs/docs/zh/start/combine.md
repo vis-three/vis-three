@@ -10,11 +10,11 @@
 
 ### 定义全局代理拓展选项
 
-全局代理拓展选项，会在`@vis-three/middleware`的`generateConfig`调用时，将相关的拓展方法注入到生成的配置中，最后生成的相关配置既会有`vis-three`的特性，也会有`vue2`的特性。
+全局代理拓展选项，会在`@vis-three/tdcm`的`generateConfig`调用时，将相关的拓展方法注入到生成的配置中，最后生成的相关配置既会有`vis-three`的特性，也会有`vue2`的特性。
 
 ```js
 import Vue from "vue";
-import { defineOption } from "@vis-three/middleware";
+import { defineOption } from "@vis-three/tdcm";
 
 defineOption({
   proxy: {
@@ -52,21 +52,21 @@ defineOption({
 </template>
 
 <script>
-import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
+import { generateConfig, CONFIG_TYPE } from "@vis-three/tdcm";
 import { engine, defaultScene } from "./engine.js";
 
 export default {
   data() {
-    const geometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+    const geometry = generateConfig(CONFIG_TYPE.BOXGEOMETRY, {
       width: 10,
       height: 10,
       depth: 10,
     });
-    const material = generateConfig(CONFIGTYPE.MESHBASICMATERIAL, {
+    const material = generateConfig(CONFIG_TYPE.MESHBASICMATERIAL, {
       color: "rgb(255, 0, 0)",
     });
 
-    const box = generateConfig(CONFIGTYPE.MESH, {
+    const box = generateConfig(CONFIG_TYPE.MESH, {
       geometry: geometry.vid,
       material: material.vid,
     });
@@ -108,14 +108,14 @@ export default {
 ```js
 // camera.js
 import Vue from "vue";
-import { MODULETYPE } from "@vis-three/middleware";
+import { MODULE_TYPE } from "@vis-three/tdcm";
 import { engine } from "./engine.js";
 
 export const module = {
   namespaced: true,
   state: {
     target: engine.dataSupportManager
-      .getDataSupport(MODULETYPE.CAMERA)
+      .getDataSupport(MODULE_TYPE.CAMERA)
       .getData(),
   },
   getters: {
@@ -137,11 +137,11 @@ export const module = {
 
 ### 定义全局代理拓展选项
 
-全局代理拓展选项，会在`@vis-three/middleware`的`generateConfig`调用时，将相关的拓展方法注入到生成的配置中，最后生成的相关配置既会有`vis-three`的特性，也会有`vue3`的特性。
+全局代理拓展选项，会在`@vis-three/tdcm`的`generateConfig`调用时，将相关的拓展方法注入到生成的配置中，最后生成的相关配置既会有`vis-three`的特性，也会有`vue3`的特性。
 
 ```js
 import { reactive, toRaw } from "vue";
-import { defineOption } from "@vis-three/middleware";
+import { defineOption } from "@vis-three/tdcm";
 
 defineOption({
   proxy: {
@@ -180,21 +180,21 @@ defineOption({
 
 <script>
 import { defineComponent, onMounted, watch, computed, ref } from "vue";
-import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
+import { generateConfig, CONFIG_TYPE } from "@vis-three/tdcm";
 import { engine, defaultScene } from "./engine.js";
 
 export default defineComponent({
   setup() {
-    const geometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+    const geometry = generateConfig(CONFIG_TYPE.BOXGEOMETRY, {
       width: 10,
       height: 10,
       depth: 10,
     });
-    const material = generateConfig(CONFIGTYPE.MESHBASICMATERIAL, {
+    const material = generateConfig(CONFIG_TYPE.MESHBASICMATERIAL, {
       color: "rgb(255, 0, 0)",
     });
 
-    const box = generateConfig(CONFIGTYPE.MESH, {
+    const box = generateConfig(CONFIG_TYPE.MESH, {
       geometry: geometry.vid,
       material: material.vid,
     });
@@ -269,27 +269,27 @@ config.children.pop();
 
 ```js
 import { defineComponent, onMounted, watch, computed, ref } from "vue";
-import { generateConfig, CONFIGTYPE } from "@vis-three/middleware";
+import { generateConfig, CONFIG_TYPE, toSymbol } from "@vis-three/tdcm";
 import { engine, defaultScene } from "./engine.js";
 
 export default defineComponent({
   setup() {
-    const geometry = generateConfig(CONFIGTYPE.BOXGEOMETRY, {
+    const geometry = generateConfig(CONFIG_TYPE.BOXGEOMETRY, {
       width: 10,
       height: 10,
       depth: 10,
     });
-    const material = generateConfig(CONFIGTYPE.MESHBASICMATERIAL, {
+    const material = generateConfig(CONFIG_TYPE.MESHBASICMATERIAL, {
       color: "rgb(255, 0, 0)",
     });
 
-    const box = generateConfig(CONFIGTYPE.MESH, {
-      geometry: geometry.vid,
-      material: material.vid,
+    const box = generateConfig(CONFIG_TYPE.MESH, {
+      geometry: toSymbol(geometry),
+      material: toSymbol(material),
     });
 
     engine.applyConfig(geometry, material, box);
-    defaultScene.children.push(box.vid);
+    defaultScene.children.push(toSymbol(box));
 
     const vertNum = ref(0);
 
