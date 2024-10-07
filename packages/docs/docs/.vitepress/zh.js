@@ -138,7 +138,11 @@ export const zhConfig = {
       "/zh/api/": [
         {
           text: "@vis-three/core",
-          items: getAPIModules("core"),
+          items: [
+            { text: "Plugin", link: "/zh/api/core/plugin" },
+            { text: "Strategy", link: "/zh/api/core/strategy" },
+            { text: "EventDispatcher", link: "/zh/api/core/EventDispatcher" },
+          ],
         },
         {
           text: "@vis-three/middleware",

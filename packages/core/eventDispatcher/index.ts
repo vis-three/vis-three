@@ -15,9 +15,9 @@ export class EventDispatcher {
   private listeners: Map<string, Array<Function>> = new Map();
 
   /**
-   * 添加事件
-   * @param type
-   * @param listener
+   * 订阅一个事件
+   * @param type 事件类型
+   * @param listener 触发该类型时的执行函数
    * @returns
    */
   addEventListener<C extends BaseEvent>(
@@ -40,10 +40,10 @@ export class EventDispatcher {
   }
 
   /**
-   * 是否有此事件
-   * @param type
-   * @param listener
-   * @returns
+   * 判断该事件类型下是否有相关方法
+   * @param type 事件类型
+   * @param listener 事件方法
+   * @returns true or false
    */
   hasEventListener<C extends BaseEvent>(
     type: string,
