@@ -1,25 +1,25 @@
-# 基座
+# Three.js 基础引擎
 
-`vis-three`的底层逻辑基座，集成了插件的安装销毁逻辑与策略的执行回滚辑，可以直接使用或通过继承供其他环境使用。
+通过继承基座，并提供`three.js`的最基础设置和`api`的`engine`，进而可以开展相关的渲染工作。
 
 ## 示例
 
 ```ts
-class CesiumEngine extends Base {}
-
-const engine = new CesiumEngine();
+const engine = new Engine();
 
 engine
-  .install(CesiumRendererPlugin())
+  .install(WebGLRendererPlugin())
   .install(RenderManagerPlugin())
-  .exec(CesiumRenderStrategy());
+  .exec(WebGLRenderStrategy());
 
-engine.rollback("CesiumRenderStrategy");
+engine.scene.add(new Mesh(new BoxGeometry(), new MeshBasicMaterial()));
+
+engine.render();
 ```
 
 ## 继承
 
-[EventDispatcher](./EventDispatcher.md)
+[Base](./Base.md)
 
 ## 构造
 
@@ -27,7 +27,7 @@ engine.rollback("CesiumRenderStrategy");
 
 ## 属性
 
-### pluginTables
+### dom
 
 安装的插件集合。
 
@@ -37,7 +37,17 @@ engine.rollback("CesiumRenderStrategy");
 Map<string, PluginOptions<Base>>;
 ```
 
-### strategyTables
+### camera
+
+安装的策略集合。
+
+- **类型**
+
+```ts
+Map<string, StrategyOptions<Base>>;
+```
+
+### scene
 
 安装的策略集合。
 
@@ -49,7 +59,7 @@ Map<string, StrategyOptions<Base>>;
 
 ## 方法
 
-### install
+### setDom
 
 - **详情**
 
@@ -74,7 +84,7 @@ engine.install(
 );
 ```
 
-### uninstall
+### setSize
 
 - **详情**
 
@@ -95,7 +105,7 @@ const engine = new Base();
 engine.uninstall("CesiumRendererPlugin");
 ```
 
-### exec
+### setCamera
 
 - **详情**
 
@@ -116,7 +126,49 @@ const engine = new Base();
 engine.exec(CesiumRenderStrategy());
 ```
 
-### rollback
+### setScene
+
+- **详情**
+
+```ts
+/**
+ * 回滚策略
+ * @param name 策略名称
+ * @returns this
+ */
+rollback(name: string): this
+```
+
+- **示例**
+
+```ts
+const engine = new Base();
+
+engine.rollback("CesiumRenderStrategy");
+```
+
+### render
+
+- **详情**
+
+```ts
+/**
+ * 回滚策略
+ * @param name 策略名称
+ * @returns this
+ */
+rollback(name: string): this
+```
+
+- **示例**
+
+```ts
+const engine = new Base();
+
+engine.rollback("CesiumRenderStrategy");
+```
+
+### dispose
 
 - **详情**
 

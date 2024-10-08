@@ -8,8 +8,8 @@ export class Base extends EventDispatcher {
 
   /**
    * 安装插件
-   * @param plugin
-   * @returns
+   * @param plugin 插件选项对象
+   * @returns this
    */
   install<E extends Base>(plugin: PluginOptions<E>): E {
     if (this.pluginTables.has(plugin.name)) {
@@ -50,8 +50,8 @@ export class Base extends EventDispatcher {
 
   /**
    * 卸载插件
-   * @param plugin
-   * @returns
+   * @param name 插件名称
+   * @returns this
    */
   uninstall(name: string): this {
     if (!this.pluginTables.has(name)) {
@@ -93,7 +93,8 @@ export class Base extends EventDispatcher {
 
   /**
    * 执行策略
-   * @returns
+   * @param strategy 策略选项对象
+   * @returns this
    */
   exec<E extends Base>(strategy: StrategyOptions<E>): E {
     const tables = this.strategyTables;
@@ -121,7 +122,8 @@ export class Base extends EventDispatcher {
 
   /**
    * 回滚策略
-   * @returns
+   * @param name 策略名称
+   * @returns this
    */
   rollback(name: string): this {
     const tables = this.strategyTables;
