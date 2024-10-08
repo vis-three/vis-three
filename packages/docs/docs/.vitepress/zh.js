@@ -8,7 +8,7 @@ export const META_DESCRIPTION =
 
 const getAPIModules = function (url) {
   const apiPath = path.resolve(__dirname, "../zh/api");
-  const targetPath = path.resolve(apiPath, `./${url}/modules`);
+  const targetPath = path.resolve(apiPath, `./${url}`);
   const list = [];
 
   const files = fs.readdirSync(targetPath);
@@ -18,7 +18,7 @@ const getAPIModules = function (url) {
 
     list.push({
       text: name,
-      link: `/zh/api/${url}/modules/${name}.md`,
+      link: `/zh/api/${url}/${name}.md`,
     });
   });
 
@@ -101,7 +101,7 @@ export const zhConfig = {
     nav: [
       { text: "首页", link: "/zh/" },
       { text: "开始", link: "/zh/start/intro" },
-      { text: "API", link: "/zh/api/core/modules/engine" },
+      { text: "API", link: "/zh/api/core/Base" },
       { text: "库", link: "/zh/library/engines/engine-display" },
       {
         text: "主页",
@@ -138,24 +138,20 @@ export const zhConfig = {
       "/zh/api/": [
         {
           text: "@vis-three/core",
-          items: [
-            { text: "Plugin", link: "/zh/api/core/plugin" },
-            { text: "Strategy", link: "/zh/api/core/strategy" },
-            { text: "EventDispatcher", link: "/zh/api/core/EventDispatcher" },
-          ],
+          items: getAPIModules("core"),
         },
-        {
-          text: "@vis-three/middleware",
-          items: getAPIModules("middleware"),
-        },
-        {
-          text: "@vis-three/convenient",
-          items: getAPIModules("convenient"),
-        },
-        {
-          text: "@vis-three/utils",
-          items: getAPIModules("utils"),
-        },
+        // {
+        //   text: "@vis-three/middleware",
+        //   items: getAPIModules("middleware"),
+        // },
+        // {
+        //   text: "@vis-three/convenient",
+        //   items: getAPIModules("convenient"),
+        // },
+        // {
+        //   text: "@vis-three/utils",
+        //   items: getAPIModules("utils"),
+        // },
       ],
       "/zh/library/": [
         {
