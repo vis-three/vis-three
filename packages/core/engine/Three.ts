@@ -94,8 +94,8 @@ export class Engine extends Base {
   }
 
   /**
-   * 设置输出的dom
-   * @param dom HTMLElement
+   * 设置输出的dom，调用时会发布'setDom'事件
+   * @param dom 挂载的dom对象
    * @returns this
    */
   setDom(dom: HTMLElement): this {
@@ -108,9 +108,10 @@ export class Engine extends Base {
   }
 
   /**
-   * 设置引擎整体尺寸
-   * @param width number
-   * @param height number
+   * 设置渲染窗口的整体尺寸，单位为px，调用时会发布'setSize'事件。
+   * 不传时会自动获取当前挂载dom对象的宽高。
+   * @param width 窗口宽度
+   * @param height 窗口高度
    * @returns this
    */
   setSize(width?: number, height?: number): this {
@@ -128,10 +129,10 @@ export class Engine extends Base {
   }
 
   /**
-   * 设置当前相机
-   * @param camera
-   * @param options
-   * @returns
+   * 设置当前相机，调用时会发布'setCamera'事件。
+   * @param camera 设置当前渲染的相机对象
+   * @param options 额外的选项设置，这些选项会加入到发布的'setCamera'事件中。
+   * @returns this
    */
   setCamera(camera: Camera, options?: SetCameraOptions): this {
     this.dispatchEvent({
@@ -152,9 +153,10 @@ export class Engine extends Base {
   }
 
   /**
-   * 设置渲染场景
-   * @param scene
-   * @returns
+   * 设置渲染场景，调用时会发布'setScene'事件。
+   * 事件包含上一个场景，和切换的场景。
+   * @param scene 新的场景对象
+   * @returns this
    */
   setScene(scene: Scene): this {
     this.dispatchEvent({
@@ -169,9 +171,9 @@ export class Engine extends Base {
   }
 
   /**
-   * 渲染方法
-   * @param delta
-   * @returns
+   * 渲染方法，调用时会发布'render'事件。
+   * @param delta 传入的渲染帧插值，默认为0，会加入到发布的`render`事件中。
+   * @returns this
    */
   render(delta: number = 0): this {
     this.dispatchEvent({
@@ -182,7 +184,7 @@ export class Engine extends Base {
   }
 
   /**
-   * 清除引擎缓存
+   * 清除引擎缓存，调用时会发布'dispose'事件。
    * @returns this
    */
   dispose(): this {
