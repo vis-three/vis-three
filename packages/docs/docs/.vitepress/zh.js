@@ -140,10 +140,10 @@ export const zhConfig = {
           text: "@vis-three/core",
           items: getAPIModules("core"),
         },
-        // {
-        //   text: "@vis-three/middleware",
-        //   items: getAPIModules("middleware"),
-        // },
+        {
+          text: "@vis-three/tdcm",
+          items: getAPIModules("tdcm"),
+        },
         // {
         //   text: "@vis-three/convenient",
         //   items: getAPIModules("convenient"),

@@ -154,6 +154,11 @@ export class Ruler {
   }
 }
 
+/**
+ * 定义规则链
+ * @param rules 规则链
+ * @returns rules
+ */
 export const defineRule = function (rules: Rule[]) {
   return rules;
 };

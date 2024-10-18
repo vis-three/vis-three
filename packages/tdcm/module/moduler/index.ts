@@ -9,13 +9,13 @@ export interface ModuleOptions<
   E extends EngineSupport = EngineSupport,
   O extends Compiler<E> = Compiler<E>
 > {
-  /** 模块类型 */
+  /** 模块类型 建议为小驼峰*/
   type: string;
   /** 模块的编译器 */
   compiler?: new (...args) => O;
   /** 模块的编译规则 */
   rule?: Rule[];
-  /** 模块所包含的模型 */
+  /** 模块所包含的配置化模型 */
   models: ModelOption<any, any, any, any, E, O>[];
   resources?: LoadUnit[];
   /** 是否为一个物体模块 */
@@ -68,6 +68,11 @@ export class Moduler<
   }
 }
 
+/**
+ * 定义一个模块
+ * @param module 模块选项moduleOptions
+ * @returns
+ */
 export const defineModule = function <
   E extends EngineSupport = EngineSupport,
   O extends Compiler<E> = Compiler<E>

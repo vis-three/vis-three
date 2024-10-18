@@ -4,6 +4,7 @@ import { BasicConfig } from "../common";
 import { Compiler } from "../compiler";
 import { Model, ModelCommands } from "./Model";
 
+/**模型选项 */
 export interface ModelOption<
   Cf extends BasicConfig = BasicConfig,
   Obj extends object = object,
@@ -65,6 +66,11 @@ export interface ModelOption<
   ];
 }
 
+/**
+ * 定义一个模型
+ * @param option 模型选项ModelOption
+ * @returns
+ */
 export const defineModel = function <
   Cf extends BasicConfig = BasicConfig,
   Obj extends object = object,
@@ -101,6 +107,11 @@ export interface AbstractModelOption<
   dispose?: Dsp;
 }
 
+/**
+ * 定义模型的拓展方法，相当于定义一个父类
+ * @param abstract 父类的抽象方法
+ * @returns defineModel((abstract) => ModelOptions)
+ */
 defineModel.extend = function <
   Cf extends BasicConfig = BasicConfig,
   Obj extends object = object,
