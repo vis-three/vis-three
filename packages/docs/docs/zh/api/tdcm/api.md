@@ -592,3 +592,30 @@ defineOption({
   },
 });
 ```
+
+## defineEngineSupport()
+
+- **详情**
+
+```ts
+/**
+ * 定义一个配置化引擎
+ * @param options 定义引擎的选项
+ * @param params 引擎的参数
+ * @returns engine extends EngineSupport
+ */
+const defineEngineSupport: <E extends EngineSupport = EngineSupport>(
+  options: EngineSupportOptions,
+  params?: Partial<EngineSupportParameters>
+) => E;
+```
+
+- **示例**
+
+```ts
+const engine = defineEngineSupport({
+  plugins: [WebGLRendererPlugin(), EffectComposerPlugin()],
+  strategys: [EffectRenderPlugin()],
+  modules: [GeometryModule, MaterialModule, MeshModule],
+});
+```

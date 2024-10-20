@@ -193,6 +193,10 @@ export class EngineSupport
       .exec(CompilerSupportStrategy());
   }
 
+  /**
+   * 导入配置的生命周期执行方法
+   * @param config 配置
+   */
   private loadLifeCycle(config: Omit<EngineSupportLoadOptions, "assets">) {
     const dataSupportManager = this.dataSupportManager;
     const triggers = this.triggers;
@@ -207,6 +211,10 @@ export class EngineSupport
     }
   }
 
+  /**
+   * 移除配置时的生命周期执行方法
+   * @param config 配置
+   */
   private removeLifeCycle(config: EngineSupportLoadOptions) {
     const dataSupportManager = this.dataSupportManager;
 
@@ -226,6 +234,12 @@ export class EngineSupport
     });
   }
 
+  /**
+   * 加载一个配置
+   * @param config 配置单
+   * @param callback 加载完成后的回调
+   * @returns this
+   */
   loadConfig(
     config: EngineSupportLoadOptions,
     callback?: (event?: MappedEvent) => void
@@ -267,6 +281,12 @@ export class EngineSupport
     return this;
   }
 
+  /**
+   * 异步的加载一个配置
+   * @param config 配置单
+   * @param pretreat 配置单预处理
+   * @returns Promise<MappedEvent>
+   */
   loadConfigAsync(
     config: EngineSupportLoadOptions,
     pretreat?: (c: EngineSupportLoadOptions) => EngineSupportLoadOptions
@@ -307,10 +327,19 @@ export class EngineSupport
     });
   }
 
+  /**
+   * 移除一个配置单
+   * @param config 配置单
+   */
   removeConfig(config: EngineSupportLoadOptions) {
     this.removeLifeCycle(config);
   }
 
+  /**
+   * 获取一个对象的配置结构
+   * @param object 物体对象
+   * @returns 配置 | null
+   */
   getObjectConfig<O, C extends BasicConfig>(object: O): C | null {
     const symbol = this.getObjectSymbol(object);
 
@@ -321,6 +350,11 @@ export class EngineSupport
     }
   }
 
+  /**
+   * 使用一个配置化模块
+   * @param options 配置化模块选项
+   * @returns this
+   */
   useModule(options: ModuleOptions<any, any>): this {
     const typeName = emunDecamelize(options.type);
 
@@ -359,6 +393,12 @@ export class EngineSupport
     return this;
   }
 
+  /**
+   * 添加一个触发器
+   * @param name 触发器名称或者标识
+   * @param trigger 触发器对象
+   * @returns this
+   */
   addTrigger(name: string, trigger: Trigger) {
     if (!this.triggers[name]) {
       this.triggers[name] = trigger;
@@ -372,6 +412,11 @@ export class EngineSupport
     return this;
   }
 
+  /**
+   * 获取一个触发器
+   * @param name 触发器名称
+   * @returns Trigger
+   */
   getTrigger(name: string) {
     if (!this.triggers[name]) {
       console.warn(
@@ -400,6 +445,12 @@ export interface EngineSupportOptions extends EngineOptions {
   modules: ModuleOptions<any>[];
 }
 
+/**
+ * 定义一个配置化引擎
+ * @param options 定义引擎的选项
+ * @param params 引擎的参数
+ * @returns engine extends EngineSupport
+ */
 export const defineEngineSupport = function <
   E extends EngineSupport = EngineSupport
 >(
