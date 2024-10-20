@@ -102,10 +102,32 @@ export class Model<
   compiler: O;
   commands?: ModelCommands<C, P, E, O>;
 
+  /**
+   * 该配置化模型的对象生成方法。对应defineModel.create
+   * @param this model本身
+   * @param params 参数对象
+   * params.model model本身
+   * params.config model对应的配置
+   * params.engine model使用的enigne
+   * params.compiler model使用的compiler
+   * @returns puppet 通过配置单生成的目标对象
+   */
   createPuppet!: (
     this: any,
     params: { model: any; config: C; engine: E; compiler: O }
   ) => P;
+
+  /**
+   * 该配置化模型的对象销毁方法。对应defineModel.dispose
+   * @param this model本身
+   * @param params 参数对象
+   * params.model model本身
+   * params.target model.puppet
+   * params.puppet model.puppet
+   * params.config model对应的配置
+   * params.engine model使用的enigne
+   * params.compiler model使用的compiler
+   */
   disposePuppet!: (
     this: any,
     params: {
@@ -125,10 +147,20 @@ export class Model<
     this.compiler = params.compiler;
   }
 
+  /**
+   * 转化为目标配置
+   * @param vid vid标识
+   * @returns Config | null
+   */
   toConfig<CO extends BasicConfig>(vid: string): CO | null {
     return this.engine.getConfigBySymbol<CO>(vid);
   }
 
+  /**
+   * 转化为目标模型
+   * @param vid vid标识或者 目标对象
+   * @returns model | null
+   */
   toModel<MO extends Model<any, any, any>>(vid: string | object) {
     if (typeof vid === "string") {
       return this.engine.compilerManager.getModelBySymbol<MO>(vid);
@@ -143,22 +175,45 @@ export class Model<
     }
   }
 
+  /**
+   * 转化为目标物体
+   * @param vid vid标识
+   * @returns object
+   */
   toObject<OB extends object>(vid: string) {
     return this.engine.getObjectBySymbol(vid) as OB;
   }
 
+  /**
+   * 转化为目标物体
+   * @param vid vid标识
+   * @returns object
+   */
   toPuppet<OB extends object>(vid: string) {
     return this.toObject<OB>(vid);
   }
 
+  /**
+   * 转化为异步执行
+   * @param fun 所需要执行的函数方法
+   */
   toAsync(fun: (finish: boolean) => boolean) {
     AsyncScheduler.exec(fun);
   }
 
+  /**
+   * 将函数方法加入到下一个异步队列中
+   * @param fun 函数方法
+   */
   asyncNextTick(fun: () => boolean) {
     AsyncScheduler.nextTick(fun);
   }
 
+  /**
+   * 转化为触发器触发
+   * @param name 触发器名称
+   * @param fun 需要触发器触发的函数方法
+   */
   toTrigger(name: string, fun: (immediate: boolean) => boolean) {
     const trigger = this.engine.getTrigger(name);
     if (trigger) {
@@ -166,6 +221,11 @@ export class Model<
     }
   }
 
+  /**
+   * 通用的处理方法
+   * @param params 操作通知参数
+   * @returns
+   */
   process(params: CtnNotice) {
     const modelParams = {
       ...params,
@@ -222,6 +282,11 @@ export class Model<
     this[params.operate](modelParams);
   }
 
+  /**
+   * 通用的操作添加方法
+   * @param params 操作通知参数
+   * @returns
+   */
   private add(params: ModelNotice) {
     let target = this.puppet;
 
@@ -236,7 +301,11 @@ export class Model<
 
     target[params.key] = params.value;
   }
-
+  /**
+   * 通用的操作设置方法
+   * @param params 操作通知参数
+   * @returns
+   */
   private set(params: ModelNotice) {
     let target = this.puppet;
 
@@ -251,7 +320,11 @@ export class Model<
 
     target[params.key] = params.value;
   }
-
+  /**
+   * 通用的操作删除方法
+   * @param params 操作通知参数
+   * @returns
+   */
   private delete(params: ModelNotice) {
     let target = this.puppet;
 
@@ -267,6 +340,9 @@ export class Model<
     target[params.key] = params.value;
   }
 
+  /**
+   * 模型生成方法内部会调用createPuppet
+   */
   create() {
     this.config[Symbol.for(SYMBOL_MODEL)] = this;
     this.puppet = this.createPuppet.call(this, {
@@ -277,6 +353,9 @@ export class Model<
     });
   }
 
+  /**
+   * 模型销毁方法内部会调用disposePuppet
+   */
   dispose() {
     this.disposePuppet.call(this, {
       model: this,
