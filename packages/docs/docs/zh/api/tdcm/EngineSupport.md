@@ -38,13 +38,19 @@ const engine = new EngineSupport({
 });
 ```
 
+## 继承
+
+[Engine](../core/Engine.md)
+
 ## 集成插件
 
 - [LoaderManagerPlugin](../../library/plugins/plugin-loader-manager.md)
 - [PointerManagerPlugin](../../library/plugins/plugin-pointer-manager.md)
 - [EventManagerPlugin](../../library/plugins/plugin-event-manager.md)
 - [RenderManagerPlugin](../../library/plugins/plugin-render-manager.md)
-- [support-plugins](./plugin.md)
+- [CompilerManagerPlugin](./plugin-compiler-manager.md)
+- [DataSupportManagerPlugin](./plugin-data-support-manager.md)
+- [ResourceManagerPlugin](./plugin-resource-manager.md)
 
 ## 集成策略
 

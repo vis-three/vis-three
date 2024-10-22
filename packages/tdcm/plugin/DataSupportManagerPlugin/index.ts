@@ -4,19 +4,27 @@ import { BasicConfig } from "../../module/common";
 import { DataSupportManager, LoadOptions } from "./DataSupportManager";
 
 export interface DataSupportEngine extends Engine {
+  /**转换器管理器 */
   dataSupportManager: DataSupportManager;
+  /**应用配置 */
   applyConfig: (...args: BasicConfig[]) => DataSupportEngine;
+  /**通过vid标识获取配置 */
   getConfigBySymbol: <C extends BasicConfig = any>(vid: string) => C | null;
+  /**通过vid标识移除配置 */
   removeConfigBySymbol: (...args: string[]) => DataSupportEngine;
-  getConfigfromModule: <C extends BasicConfig = any>(
+  /**从一个模块中通过vid标识获取配置*/
+  getConfigFromModule: <C extends BasicConfig = any>(
     module: string,
     vid: string
   ) => C | null;
-  getConfigfromModules: <C extends BasicConfig = any>(
+  /**从多个模块中通过vid标识获取配置*/
+  getConfigFromModules: <C extends BasicConfig = any>(
     modules: string[] | Record<string, any>,
     vid: string
   ) => C | null;
+  /**导出为json */
   toJSON: () => string;
+  /**导出为js对象 */
   exportConfig: () => LoadOptions;
 }
 
@@ -48,14 +56,14 @@ export const DataSupportManagerPlugin: Plugin<
         return dataSupportManager.getConfigBySymbol<C>(vid);
       };
 
-      engine.getConfigfromModule = function <C extends BasicConfig = any>(
+      engine.getConfigFromModule = function <C extends BasicConfig = any>(
         module: string,
         vid: string
       ) {
         return dataSupportManager.getConfigfromModule<C>(module, vid);
       };
 
-      engine.getConfigfromModules = function <C extends BasicConfig = any>(
+      engine.getConfigFromModules = function <C extends BasicConfig = any>(
         modules: string[] | Record<string, any>,
         vid: string
       ) {

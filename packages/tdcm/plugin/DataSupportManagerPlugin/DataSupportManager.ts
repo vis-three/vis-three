@@ -13,8 +13,9 @@ export class DataSupportManager extends EventDispatcher {
   }
 
   /**
-   * 编译器扩展
-   * @param compiler
+   * 转换器拓展
+   * @param dataSupport 转换器
+   * @param focus 是否强制覆盖
    */
   extend(dataSupport: Converter<any, any>, focus: boolean = false) {
     if (this.dataSupportMap.has(dataSupport.MODULE)) {
@@ -32,7 +33,7 @@ export class DataSupportManager extends EventDispatcher {
   }
 
   /**
-   * 获取该模块下的支持插件
+   * 获取该模块下的转换器
    * @param type MODULETYPE
    * @returns Converter
    */
@@ -76,6 +77,12 @@ export class DataSupportManager extends EventDispatcher {
     return this.getConfigFromModule<T>(module, vid);
   }
 
+  /**
+   * 从一个模块中通过vid标识获取配置
+   * @param module 模块类型
+   * @param vid vid标识
+   * @returns 配置
+   */
   getConfigFromModule<T extends BasicConfig>(
     module: string,
     vid: string
@@ -102,6 +109,12 @@ export class DataSupportManager extends EventDispatcher {
     return this.getConfigFromModules<T>(modules, vid);
   }
 
+  /**
+   * 从多个模块中通过vid标识获取配置
+   * @param modules 模块类型
+   * @param vid vid标识
+   * @returns 配置
+   */
   getConfigFromModules<T extends BasicConfig>(
     modules: string[] | Record<string, any>,
     vid: string

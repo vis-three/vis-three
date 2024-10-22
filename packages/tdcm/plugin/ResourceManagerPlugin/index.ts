@@ -8,7 +8,9 @@ export interface ResourceManagerPluginParameters {
 }
 
 export interface ResourceManagerEngine extends Engine {
+  /**资源管理器 */
   resourceManager: ResourceManager;
+  /**注册资源 */
   registerResources: (
     resourceMap: Record<string, unknown>
   ) => ResourceManagerEngine;

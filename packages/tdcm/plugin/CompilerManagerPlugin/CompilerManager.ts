@@ -11,8 +11,9 @@ export class CompilerManager extends EventDispatcher {
   }
 
   /**
-   * 编译器扩展
-   * @param compiler
+   * 编译器拓展
+   * @param compiler 拓展的编译器
+   * @param focus 强制覆盖
    */
   extend<C extends Compiler<any>>(compiler: C, focus: boolean = false) {
     if (this.compilerMap.has(compiler.MODULE)) {
@@ -26,6 +27,11 @@ export class CompilerManager extends EventDispatcher {
     }
   }
 
+  /**
+   * 获取编译器
+   * @param module 编译器所属的模块
+   * @returns compiler | null
+   */
   getCompiler<D extends Compiler<any> = Compiler<EngineSupport>>(
     module: string
   ) {
@@ -68,7 +74,11 @@ export class CompilerManager extends EventDispatcher {
     return null;
   }
 
-  // TODO: getModelBySymbol
+  /**
+   * 通过vid标识获取相应的配置化模型
+   * @param vid vid标识
+   * @returns model
+   */
   getModelBySymbol<M extends Model<any, any, any> = Model<any, any, any>>(
     vid: string
   ): M | null {
@@ -91,6 +101,12 @@ export class CompilerManager extends EventDispatcher {
     return this.getObjectFromModule(module, vid);
   }
 
+  /**
+   * 从一个模块中通过vid获取物体对象
+   * @param module 指定模块
+   * @param vid vid标识
+   * @returns object | null
+   */
   getObjectFromModule(module: string, vid: string) {
     if (!this.compilerMap.has(module)) {
       console.warn(`compiler manager can not found this module: ${module}`);
@@ -114,6 +130,12 @@ export class CompilerManager extends EventDispatcher {
     return this.getObjectFromModules<O>(modules, vid);
   }
 
+  /**
+   * 从多个模块中通过vid获取物体
+   * @param modules 指定的多个模块
+   * @param vid vid标识
+   * @returns object | null
+   */
   getObjectFromModules<O extends object = object>(
     modules: string[] | Record<string, any>,
     vid: string
@@ -137,7 +159,10 @@ export class CompilerManager extends EventDispatcher {
 
     return null;
   }
-
+  /**
+   * 整个编译器的销毁方法
+   * @returns this
+   */
   dispose(): this {
     for (const compiler of this.compilerMap.values()) {
       compiler.dispose();
