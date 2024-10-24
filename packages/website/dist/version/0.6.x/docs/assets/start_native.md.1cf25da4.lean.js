@@ -1,0 +1,1 @@
+import{_ as s,o as n,c as a,O as l}from"./chunks/framework.b643d968.js";const u=JSON.parse('{"title":"原生引擎构建","description":"","frontmatter":{},"headers":[],"relativePath":"start/native.md","filePath":"start/native.md"}'),p={name:"start/native.md"},o=l("",68),e=[o];function t(c,r,E,y,i,d){return n(),a("div",null,e)}const F=s(p,[["render",t]]);export{u as __pageData,F as default};

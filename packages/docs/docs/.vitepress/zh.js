@@ -99,7 +99,7 @@ export const zhConfig = {
   outlineTitle: "本页目录",
   themeConfig: {
     nav: [
-      { text: "首页", link: "/zh/" },
+      { text: "首页", link: "/" },
       { text: "开始", link: "/zh/start/intro" },
       { text: "API", link: "/zh/api/core/Base" },
       { text: "库", link: "/zh/library/engines/engine-display" },
@@ -107,13 +107,13 @@ export const zhConfig = {
         text: "主页",
         link: "https://vis-three.github.io",
       },
-      // {
-      //   text: "版本",
-      //   items: [
-      //     { text: "0.7.x", link: "/zh/index.html" },
-      //     { text: "0.6.x", link: "/version/0.6.x/zh/index.html" },
-      //   ],
-      // },
+      {
+        text: "版本",
+        items: [
+          { text: "0.7.x", link: "/zh/index.html" },
+          { text: "0.6.x", link: "https://vis-three.github.io/version/0.6.x/docs/index.html" },
+        ],
+      },
     ],
     sidebar: {
       "/zh/start/": [

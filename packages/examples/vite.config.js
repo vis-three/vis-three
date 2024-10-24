@@ -32,7 +32,7 @@ const recursion = (parentDir) => {
       menusJson.push({
         name,
         url: `${name}.html`,
-        poster: `poster/${name}.jpg`,
+        poster: `poster/${name}.png`,
       });
     }
   });

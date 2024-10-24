@@ -1,2 +1,0 @@
-/* empty css              */import{m as n}from"./Antdv.414c4eb5.js";var e=a=>(n.loading({content:"\u6B63\u5728\u52A0\u8F7D3D\u8D44\u6E90\uFF1A0%",key:"loading",duration:0}),a.loaderManager.addEventListener("loading",o=>{n.loading({content:`\u6B63\u5728\u52A0\u8F7D3D\u8D44\u6E90\uFF1A${parseInt((o.loadSuccess/o.loadTotal*100).toString())}
-  %`,key:"loading",duration:0})}),a.loaderManager.addEventListener("loaded",o=>{n.success({content:"\u52A0\u8F7D\u5B8C\u6210\uFF01",key:"loading",duration:1})}),a);export{e as l};

@@ -3,7 +3,7 @@
     <div class="ui">
       <div class="title-header">
         <span class="title">VIS-THREE</span>
-        <span class="version">0.6.X</span>
+        <span class="version">0.7.X</span>
       </div>
       <div class="intro">
         A web 3D development framework for assembled based on three.js

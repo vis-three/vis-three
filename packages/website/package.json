@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/website",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "vis-three website includes docs and examples",
   "main": "index.js",
   "author": "Shiotsuki_",
@@ -52,7 +52,8 @@
     "@ant-design/icons-vue": "^6.1.0",
     "@vis-three/engine-display-support": "workspace:^",
     "@vis-three/library-animate-script": "workspace:^",
-    "@vis-three/middleware": "workspace:^",
+    "@vis-three/library-module": "workspace:^",
+    "@vis-three/tdcm": "workspace:^",
     "ant-design-vue": "^3.2.6",
     "axios": "^0.27.2",
     "nprogress": "^0.2.0",

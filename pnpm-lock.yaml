@@ -2307,9 +2307,12 @@ importers:
       '@vis-three/library-animate-script':
         specifier: workspace:^
         version: link:../library/aniScript
-      '@vis-three/middleware':
+      '@vis-three/library-module':
         specifier: workspace:^
-        version: link:../middleware
+        version: link:../library/module
+      '@vis-three/tdcm':
+        specifier: workspace:^
+        version: link:../tdcm
       ant-design-vue:
         specifier: ^3.2.6
         version: 3.2.20(vue@3.4.38)
@@ -5144,7 +5147,7 @@ packages:
       vue: ^3.2.25
     dependencies:
       vite: 2.9.18(less@4.2.0)
-      vue: 3.4.38(typescript@5.1.6)
+      vue: 3.4.38(typescript@5.5.4)
     dev: true
 
   /@vitejs/plugin-vue@5.1.4(vite@5.4.10)(vue@3.5.12):
@@ -5332,7 +5335,7 @@ packages:
     dependencies:
       '@vue/compiler-ssr': 3.4.38
       '@vue/shared': 3.4.38
-      vue: 3.4.38(typescript@5.1.6)
+      vue: 3.4.38(typescript@5.5.4)
 
   /@vue/server-renderer@3.5.12(vue@3.5.12):
     resolution: {integrity: sha512-I3QoeDDeEPZm8yR28JtY+rk880Oqmj43hreIBVTicisFTx/Dl7JpG72g/X7YF8hnQD3IFhkky5i2bPonwrTVPg==}
@@ -10474,6 +10477,7 @@ packages:
       '@vue/server-renderer': 3.4.38(vue@3.4.38)
       '@vue/shared': 3.4.38
       typescript: 5.1.6
+    dev: true
 
   /vue@3.4.38(typescript@5.5.4):
     resolution: {integrity: sha512-f0ZgN+mZ5KFgVv9wz0f4OgVKukoXtS3nwET4c2vLBGQR50aI8G0cqbFtLlX9Yiyg3LFGBitruPHt2PxwTduJEw==}

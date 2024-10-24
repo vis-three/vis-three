@@ -3,14 +3,14 @@ import np from "nprogress";
 import { ref } from "vue";
 import message, { MessageType } from "ant-design-vue/lib/message";
 import { DisplayEngineSupport } from "@vis-three/engine-display-support";
+import { AniScriptGeneratorManager } from "@vis-three/library-module";
 import {
-  AniScriptGeneratorManager,
   BeforeLoadEvent,
-  CONFIGTYPE,
+  CONFIG_TYPE,
   LoadedEvent,
   LoadingEvent,
   generateConfig,
-} from "@vis-three/middleware";
+} from "@vis-three/tdcm";
 import { linearTime } from "@vis-three/library-animate-script";
 
 import { WebGLRendererConfig } from "@vis-three/strategy-webgl-renderer-support";
@@ -31,6 +31,8 @@ import { MeshConfig } from "@vis-three/module-mesh";
 import { ScriptAnimationConfig } from "@vis-three/module-animation";
 
 export const engine = new DisplayEngineSupport();
+
+console.log(engine);
 
 AniScriptGeneratorManager.register(linearTime);
 
@@ -63,15 +65,15 @@ engine.loaderManager.addEventListener<LoadedEvent>("loaded", (event) => {
   generateConfig.injectScene = true;
 
   // 引擎配置
-  generateConfig<WebGLRendererConfig>(CONFIGTYPE.WEBGLRENDERER, {
+  generateConfig<WebGLRendererConfig>(CONFIG_TYPE.WEBGLRENDERER, {
     clearColor: "rgba(10, 2, 10, 1)",
     physicallyCorrectLights: true,
     toneMapping: ReinhardToneMapping,
-    toneMappingExposure: 3,
+    toneMappingExposure: 1,
   });
 
   // 控制器
-  generateConfig<OrbitControlsConfig>(CONFIGTYPE.ORBITCONTROLS, {
+  generateConfig<OrbitControlsConfig>(CONFIG_TYPE.ORBITCONTROLS, {
     autoRotate: true,
     autoRotateSpeed: 0.5,
     enableDamping: true,
@@ -83,13 +85,13 @@ engine.loaderManager.addEventListener<LoadedEvent>("loaded", (event) => {
   });
 
   // 场景
-  const scene = generateConfig<SceneConfig>(CONFIGTYPE.SCENE);
+  const scene = generateConfig<SceneConfig>(CONFIG_TYPE.SCENE);
 
   engine.setSceneBySymbol(scene.vid);
 
   // 相机
   const camera = generateConfig<PerspectiveCameraConfig>(
-    CONFIGTYPE.PERSPECTIVECAMERA,
+    CONFIG_TYPE.PERSPECTIVECAMERA,
     {
       far: 10000,
       near: 0.01,
@@ -117,26 +119,29 @@ engine.loaderManager.addEventListener<LoadedEvent>("loaded", (event) => {
   ]);
 
   // 环境贴图
-  const envTexture = generateConfig<CubeTextureConfig>(CONFIGTYPE.CUBETEXTURE, {
-    cube: {
-      px: "/skyBox/lightblue/px.png",
-      py: "/skyBox/lightblue/py.png",
-      pz: "/skyBox/lightblue/pz.png",
-      nx: "/skyBox/lightblue/nx.png",
-      ny: "/skyBox/lightblue/ny.png",
-      nz: "/skyBox/lightblue/nz.png",
-    },
-  });
+  const envTexture = generateConfig<CubeTextureConfig>(
+    CONFIG_TYPE.CUBETEXTURE,
+    {
+      cube: {
+        px: "/skyBox/lightblue/px.png",
+        py: "/skyBox/lightblue/py.png",
+        pz: "/skyBox/lightblue/pz.png",
+        nx: "/skyBox/lightblue/nx.png",
+        ny: "/skyBox/lightblue/ny.png",
+        nz: "/skyBox/lightblue/nz.png",
+      },
+    }
+  );
 
   scene.background = envTexture.vid;
   scene.environment = envTexture.vid;
 
   // 光源
-  generateConfig<AmbientLightConfig>(CONFIGTYPE.AMBIENTLIGHT, {
+  generateConfig<AmbientLightConfig>(CONFIG_TYPE.AMBIENTLIGHT, {
     intensity: 1,
   });
 
-  generateConfig<DirectionalLightConfig>(CONFIGTYPE.DIRECTIONALLIGHT, {
+  generateConfig<DirectionalLightConfig>(CONFIG_TYPE.DIRECTIONALLIGHT, {
     color: "rgb(255, 255, 255)",
     position: {
       x: -10,
@@ -146,7 +151,7 @@ engine.loaderManager.addEventListener<LoadedEvent>("loaded", (event) => {
     intensity: 1000 * 4 * Math.PI,
   });
 
-  generateConfig<DirectionalLightConfig>(CONFIGTYPE.DIRECTIONALLIGHT, {
+  generateConfig<DirectionalLightConfig>(CONFIG_TYPE.DIRECTIONALLIGHT, {
     color: "rgb(255, 255, 255)",
     position: {
       x: 10,
@@ -161,7 +166,7 @@ engine.loaderManager.addEventListener<LoadedEvent>("loaded", (event) => {
 
   // three logo
   const geometry = generateConfig<LoadGeometryConfig>(
-    CONFIGTYPE.LOADGEOMETRY,
+    CONFIG_TYPE.LOADGEOMETRY,
     Object.assign(
       Object.values(resourceConfig["/model/three.obj"].geometry!)[0],
       {
@@ -183,7 +188,7 @@ engine.loaderManager.addEventListener<LoadedEvent>("loaded", (event) => {
   );
 
   const material = generateConfig<MeshStandardMaterialConfig>(
-    CONFIGTYPE.MESHSTANDARDMATERIAL,
+    CONFIG_TYPE.MESHSTANDARDMATERIAL,
     {
       color: "white",
       metalness: 1,
@@ -192,14 +197,14 @@ engine.loaderManager.addEventListener<LoadedEvent>("loaded", (event) => {
     }
   );
 
-  const threeMesh = generateConfig<MeshConfig>(CONFIGTYPE.MESH, {
+  const threeMesh = generateConfig<MeshConfig>(CONFIG_TYPE.MESH, {
     geometry: geometry.vid,
     material: material.vid,
   });
 
   // vis logo
   const visGeometry = generateConfig<LoadGeometryConfig>(
-    CONFIGTYPE.LOADGEOMETRY,
+    CONFIG_TYPE.LOADGEOMETRY,
     Object.assign(
       Object.values(
         resourceConfig["/model/vis.obj"].geometry!
@@ -215,14 +220,14 @@ engine.loaderManager.addEventListener<LoadedEvent>("loaded", (event) => {
   );
 
   const visColorTexture = generateConfig<ImageTextureConfig>(
-    CONFIGTYPE.IMAGETEXTURE,
+    CONFIG_TYPE.IMAGETEXTURE,
     {
       url: "/texture/vis/colorMap.png",
     }
   );
 
   const visMaterial = generateConfig<MeshStandardMaterialConfig>(
-    CONFIGTYPE.MESHSTANDARDMATERIAL,
+    CONFIG_TYPE.MESHSTANDARDMATERIAL,
     {
       map: visColorTexture.vid,
       metalness: 1,
@@ -232,14 +237,14 @@ engine.loaderManager.addEventListener<LoadedEvent>("loaded", (event) => {
     }
   );
 
-  const visMesh = generateConfig<MeshConfig>(CONFIGTYPE.MESH, {
+  const visMesh = generateConfig<MeshConfig>(CONFIG_TYPE.MESH, {
     geometry: visGeometry.vid,
     material: visMaterial.vid,
   });
 
   // 动画
   generateConfig<ScriptAnimationConfig>(
-    CONFIGTYPE.SCRIPTANIMATION,
+    CONFIG_TYPE.SCRIPTANIMATION,
     {
       target: threeMesh.vid,
       attribute: ".rotation.z",
@@ -253,7 +258,7 @@ engine.loaderManager.addEventListener<LoadedEvent>("loaded", (event) => {
   );
 
   generateConfig<ScriptAnimationConfig>(
-    CONFIGTYPE.SCRIPTANIMATION,
+    CONFIG_TYPE.SCRIPTANIMATION,
     {
       target: visMesh.vid,
       attribute: ".rotation.y",

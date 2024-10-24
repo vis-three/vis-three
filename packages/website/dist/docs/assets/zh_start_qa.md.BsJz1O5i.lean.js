@@ -1,0 +1,1 @@
+import{_ as a,c as e,o,a2 as t}from"./chunks/framework.BjUghlZR.js";const u=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"zh/start/qa.md","filePath":"zh/start/qa.md"}'),c={name:"zh/start/qa.md"},r=t("",8),d=[r];function s(n,l,i,_,h,p){return o(),e("div",null,d)}const f=a(c,[["render",s]]);export{u as __pageData,f as default};

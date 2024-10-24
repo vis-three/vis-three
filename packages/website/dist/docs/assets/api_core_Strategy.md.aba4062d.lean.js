@@ -1,1 +1,0 @@
-import{_ as e,o as t,c as a}from"./chunks/framework.c4814614.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"api/core/Strategy.md","filePath":"api/core/Strategy.md"}'),r={name:"api/core/Strategy.md"};function o(c,s,n,p,i,_){return t(),a("div")}const f=e(r,[["render",o]]);export{m as __pageData,f as default};
