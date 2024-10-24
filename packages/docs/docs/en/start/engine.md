@@ -410,7 +410,7 @@ const engine = defineEngine({
 ```
 
 ::: tip
-For information on writing plugins, please refer to the [Custom Plugins](/start/plugin) section.
+For information on writing plugins, please refer to the [Custom Plugins](./plugin.md) section.
 :::
 
 ### Engine Strategy Assembly
@@ -475,5 +475,5 @@ const engine = defineEngine({
 ```
 
 ::: tip
-For information on writing strategies, please refer to the [Custom Strategies](/start/strategy) section.
+For information on writing strategies, please refer to the [Custom Strategies](strategy.md) section.
 :::

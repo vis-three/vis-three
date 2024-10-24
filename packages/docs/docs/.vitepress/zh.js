@@ -144,14 +144,18 @@ export const zhConfig = {
           text: "@vis-three/tdcm",
           items: getAPIModules("tdcm"),
         },
-        // {
-        //   text: "@vis-three/convenient",
-        //   items: getAPIModules("convenient"),
-        // },
-        // {
-        //   text: "@vis-three/utils",
-        //   items: getAPIModules("utils"),
-        // },
+        {
+          text: "@vis-three/widget",
+          // items: getAPIModules("tdcm"),
+        },
+        {
+          text: "@vis-three/convenient",
+          // items: getAPIModules("convenient"),
+        },
+        {
+          text: "@vis-three/utils",
+          // items: getAPIModules("utils"),
+        },
       ],
       "/zh/library/": [
         {

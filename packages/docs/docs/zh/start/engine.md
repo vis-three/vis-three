@@ -410,7 +410,7 @@ const engine = defineEngine({
 ```
 
 ::: tip
-关于插件的编写请参考[自定义插件](/start/plugin)部分。
+关于插件的编写请参考[自定义插件](./plugin.md)部分。
 :::
 
 ### 引擎策略组装
@@ -475,5 +475,5 @@ const engine = defineEngine({
 ```
 
 ::: tip
-关于策略的编写请参考[自定义策略](/start/strategy)部分。
+关于策略的编写请参考[自定义策略](./strategy.md)部分。
 :::

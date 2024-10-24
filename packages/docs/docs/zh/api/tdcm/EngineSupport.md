@@ -54,7 +54,9 @@ const engine = new EngineSupport({
 
 ## 集成策略
 
-- [support-strategys](./strategy.md)
+- [CompilerSupportStrategy](./strategy-compiler-support.md)
+- [LoaderDataSupportStrategy](./strategy-loader-data-support.md)
+- [LoaderMappingStrategy](./strategy-loader-mapping.md)
 
 ## 属性
 

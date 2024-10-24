@@ -20,11 +20,11 @@ This is a virtual public module and serves as a base module for other object mod
 
 ### Type Parameters
 
-| Name | Type                                    |
-| :--- | :-------------------------------------- |
+| Name | Type                                     |
+| :--- | :--------------------------------------- |
 | `E`  | extends `ObjectCompiler`<`C`, `O`, `E`\> |
-| `C`  | extends `ObjectConfig`                  |
-| `O`  | extends `Object3D`<`Event`, `O`\>       |
+| `C`  | extends `ObjectConfig`                   |
+| `O`  | extends `Object3D`<`Event`, `O`\>        |
 
 ### Parameters
 
@@ -39,7 +39,6 @@ This is a virtual public module and serves as a base module for other object mod
 `void`
 
 ### Usage
-
 
 ```ts
 import { ProxyNotice } from "@vis-three/middleware";
@@ -91,7 +90,7 @@ export class Object3DCompiler extends ObjectCompiler<Object3DConfig, Object3D> {
 
 ### Object Commands Chain - ObjectCommands
 
-**ObjectCommands**<`C`, `T`\>: `ProcessorCommands`<`C`, `T`, `EngineSupport`, [`ObjectCompiler`](../classes/ObjectCompiler.ObjectCompiler.md)<`C`, `T`\>\>
+**ObjectCommands**<`C`, `T`\>: `ProcessorCommands`<`C`, `T`, `EngineSupport`
 
 Used as a public object command chain module, and can also be used for some of its commands.
 
@@ -103,7 +102,6 @@ Used as a public object command chain module, and can also be used for some of i
 | `T`  | extends `Object3D`     |
 
 #### Preview
-
 
 ```ts
 export const objectCommands: ObjectCommands<ObjectConfig, Object3D> = {
@@ -201,7 +199,7 @@ export default defineProcessor<
 
 | Name             | Type                                                                                                                    |
 | :--------------- | :---------------------------------------------------------------------------------------------------------------------- |
-| `«destructured»` | `ProcessParams`<`C`, `O`, `EngineSupport`, [`ObjectCompiler`](../classes/ObjectCompiler.ObjectCompiler.md)<`C`, `O`\>\> |
+| `«destructured»` | `ProcessParams`<`C`, `O`, `EngineSupport`, `ObjectCompiler`<`C`, `O`\>\> |
 
 #### Return Value
 
@@ -222,7 +220,7 @@ export default defineProcessor<
 
 | Name             | Type                                                                                                                    |
 | :--------------- | :---------------------------------------------------------------------------------------------------------------------- |
-| `«destructured»` | `ProcessParams`<`C`, `O`, `EngineSupport`, [`ObjectCompiler`](../classes/ObjectCompiler.ObjectCompiler.md)<`C`, `O`\>\> |
+| `«destructured»` | `ProcessParams`<`C`, `O`, `EngineSupport`, `ObjectCompiler`<`C`, `O`\>\> |
 
 #### Return Value
 
@@ -245,7 +243,7 @@ export default defineProcessor<
 
 | Name             | Type                                                                                                                    |
 | :--------------- | :---------------------------------------------------------------------------------------------------------------------- |
-| `«destructured»` | `ProcessParams`<`C`, `O`, `EngineSupport`, [`ObjectCompiler`](../classes/ObjectCompiler.ObjectCompiler.md)<`C`, `O`\>\> |
+| `«destructured»` | `ProcessParams`<`C`, `O`, `EngineSupport`, `ObjectCompiler`<`C`, `O`\>\> |
 
 #### Return Value
 
@@ -309,46 +307,46 @@ export default defineProcessor<
 
 ```ts
 export interface ObjectConfig extends SymbolConfig {
-    /** Whether to cast shadows */
-    castShadow: boolean;
-    /** Whether to receive shadows */
-    receiveShadow: boolean;
-    /** Target identifier for look-at */
-    lookAt: string;
-    /** Position of the object in local matrix */
-    position: Vector3Config;
-    /** Rotation of the object in local matrix */
-    rotation: Vector3Config;
-    /** Scale of the object in local matrix */
-    scale: Vector3Config;
-    /** Up direction of the object */
-    up: Vector3Config;
-    /** Whether the object is visible */
-    visible: boolean;
-    /** Whether the object automatically updates its world matrix */
-    matrixAutoUpdate: boolean;
-    /** Render order of the object */
-    renderOrder: number;
-    /** Parent identifier for the object */
-    parent: string;
-    /** Child identifiers for the object */
-    children: string[];
-    /** List of mouse down events */
-    pointerdown: BasicEventConfig[];
-    /** List of mouse move events */
-    pointermove: BasicEventConfig[];
-    /** List of mouse up events */
-    pointerup: BasicEventConfig[];
-    /** List of mouse enter events */
-    pointerenter: BasicEventConfig[];
-    /** List of mouse leave events */
-    pointerleave: BasicEventConfig[];
-    /** List of mouse click events */
-    click: BasicEventConfig[];
-    /** List of mouse double click events */
-    dblclick: BasicEventConfig[];
-    /** List of mouse right-click events */
-    contextmenu: BasicEventConfig[];
+  /** Whether to cast shadows */
+  castShadow: boolean;
+  /** Whether to receive shadows */
+  receiveShadow: boolean;
+  /** Target identifier for look-at */
+  lookAt: string;
+  /** Position of the object in local matrix */
+  position: Vector3Config;
+  /** Rotation of the object in local matrix */
+  rotation: Vector3Config;
+  /** Scale of the object in local matrix */
+  scale: Vector3Config;
+  /** Up direction of the object */
+  up: Vector3Config;
+  /** Whether the object is visible */
+  visible: boolean;
+  /** Whether the object automatically updates its world matrix */
+  matrixAutoUpdate: boolean;
+  /** Render order of the object */
+  renderOrder: number;
+  /** Parent identifier for the object */
+  parent: string;
+  /** Child identifiers for the object */
+  children: string[];
+  /** List of mouse down events */
+  pointerdown: BasicEventConfig[];
+  /** List of mouse move events */
+  pointermove: BasicEventConfig[];
+  /** List of mouse up events */
+  pointerup: BasicEventConfig[];
+  /** List of mouse enter events */
+  pointerenter: BasicEventConfig[];
+  /** List of mouse leave events */
+  pointerleave: BasicEventConfig[];
+  /** List of mouse click events */
+  click: BasicEventConfig[];
+  /** List of mouse double click events */
+  dblclick: BasicEventConfig[];
+  /** List of mouse right-click events */
+  contextmenu: BasicEventConfig[];
 }
 ```
 

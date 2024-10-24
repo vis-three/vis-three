@@ -144,6 +144,29 @@ const obConfig = Template.observable(config);
 const obConfig = Template.observable(config, (c) => Vue.observable(c));
 ```
 
+## toSymbol()
+
+- **详情**
+
+```ts
+/**
+ * 获取配置的唯一标识
+ * @param config 配置
+ * @returns vid
+ */
+const toSymbol: <C extends BasicConfig = BasicConfig>(config: C) => string;
+```
+
+- **示例**
+
+```ts
+const geometry = generateConfig("BoxGeometry");
+
+const mesh = generateConfig("Mesh", {
+  geometry: toSymbol(geometry),
+});
+```
+
 ## createSymbol()
 
 - **详情**

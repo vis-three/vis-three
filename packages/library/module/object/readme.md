@@ -90,7 +90,7 @@ export class Object3DCompiler extends ObjectCompiler<Object3DConfig, Object3D> {
 
 ### 物体命令链-ObjectCommands
 
-**ObjectCommands**<`C`, `T`\>: `ProcessorCommands`<`C`, `T`, `EngineSupport`, [`ObjectCompiler`](../classes/ObjectCompiler.ObjectCompiler.md)<`C`, `T`\>\>
+**ObjectCommands**<`C`, `T`\>: `ProcessorCommands`<`C`, `T`, `EngineSupport`, `ObjectCompiler`<`C`, `T`\>\>
 
 作为公共的物体命令链模块使用，也可以使用其中的部分命令。
 
@@ -195,7 +195,7 @@ export default defineProcessor<
 
 | Name             | Type                                                                                                                    |
 | :--------------- | :---------------------------------------------------------------------------------------------------------------------- |
-| `«destructured»` | `ProcessParams`<`C`, `O`, `EngineSupport`, [`ObjectCompiler`](../classes/ObjectCompiler.ObjectCompiler.md)<`C`, `O`\>\> |
+| `«destructured»` | `ProcessParams`<`C`, `O`, `EngineSupport`, `ObjectCompiler`<`C`, `O`\>\> |
 
 #### 返回值
 
@@ -216,7 +216,7 @@ export default defineProcessor<
 
 | Name             | Type                                                                                                                    |
 | :--------------- | :---------------------------------------------------------------------------------------------------------------------- |
-| `«destructured»` | `ProcessParams`<`C`, `O`, `EngineSupport`, [`ObjectCompiler`](../classes/ObjectCompiler.ObjectCompiler.md)<`C`, `O`\>\> |
+| `«destructured»` | `ProcessParams`<`C`, `O`, `EngineSupport`, `ObjectCompiler`<`C`, `O`\>\> |
 
 #### 返回值
 
@@ -239,7 +239,7 @@ export default defineProcessor<
 
 | Name             | Type                                                                                                                    |
 | :--------------- | :---------------------------------------------------------------------------------------------------------------------- |
-| `«destructured»` | `ProcessParams`<`C`, `O`, `EngineSupport`, [`ObjectCompiler`](../classes/ObjectCompiler.ObjectCompiler.md)<`C`, `O`\>\> |
+| `«destructured»` | `ProcessParams`<`C`, `O`, `EngineSupport`, `ObjectCompiler`<`C`, `O`\>\> |
 
 #### 返回值
 

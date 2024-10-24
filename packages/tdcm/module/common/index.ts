@@ -65,4 +65,15 @@ export const createSymbol = function () {
   return globalOption.symbol.generator();
 };
 
+/**
+ * 获取配置的唯一标识
+ * @param config 配置
+ * @returns vid
+ */
+export const toSymbol = function <C extends BasicConfig = BasicConfig>(
+  config: C
+) {
+  return config.vid;
+};
+
 export const emptyHandler = function () {};

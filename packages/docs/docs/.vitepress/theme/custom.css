@@ -1,7 +1,7 @@
 :root {
-  --c-yellow-1: #F54E824C;
-  --c-yellow-2: #FFC5174C;
-  --c-green-1: #D60050FF;
+  --c-yellow-1: #f54e824c;
+  --c-yellow-2: #ffc5174c;
+  --c-green-1: #d60050ff;
   --c-green-2: #f4a000;
   --vp-c-white: #ffffff;
   --vp-c-white-soft: #f9f9f9;
@@ -80,6 +80,8 @@
   --theme-color-darker: rgba(209, 25, 49, 0.7);
   --theme-hover-color: rgb(255, 131, 170);
   --theme-hover-dark-color: rgba(236, 65, 118, 0.5);
+
+  --vp-c-brand-1: var(--theme-color);
 }
 
 /**
@@ -216,7 +218,7 @@
   --vp-code-font-size: 0.875em;
 
   --vp-code-block-color: var(--vp-c-text-dark-1);
-  --vp-code-block-bg: #292d3e;
+  --vp-code-block-bg: rgb(250, 250, 250);
 
   --vp-code-line-highlight-color: rgba(0, 0, 0, 0.5);
   --vp-code-line-number-color: var(--vp-c-text-dark-3);
@@ -387,11 +389,18 @@
 
 :root {
   --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: linear-gradient(292deg, var(--c-green-1) 50%, var(--c-green-2));
-  --vp-home-hero-image-background-image: linear-gradient(30deg, var(--c-yellow-1) 65%, var(--c-yellow-2) 30%);
+  --vp-home-hero-name-background: linear-gradient(
+    292deg,
+    var(--c-green-1) 50%,
+    var(--c-green-2)
+  );
+  --vp-home-hero-image-background-image: linear-gradient(
+    30deg,
+    var(--c-yellow-1) 65%,
+    var(--c-yellow-2) 30%
+  );
   --vp-home-hero-image-filter: blur(55px);
 }
-
 
 /**
  * Component: Badge

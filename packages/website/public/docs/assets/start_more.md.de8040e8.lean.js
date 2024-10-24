@@ -1,1 +1,0 @@
-import{_ as e,o,c as t,O as c}from"./chunks/framework.c4814614.js";const f=JSON.parse('{"title":"不只是 three.js","description":"","frontmatter":{},"headers":[],"relativePath":"start/more.md","filePath":"start/more.md"}'),r={name:"start/more.md"},a=c("",4),d=[a];function s(_,n,h,i,p,l){return o(),t("div",null,d)}const j=e(r,[["render",s]]);export{f as __pageData,j as default};

@@ -27,7 +27,7 @@ Before introducing custom configurable construction, let's briefly go over the p
   specifying macro operations and scheduling. However, specific operations are executed by processors `processor`
   assigned to each `config`.
 
-![Configuration Middleware Principle](/image/start/middleware-principle.png)
+![Configuration Middleware Principle](/image/start/tdcm-principle.png)
 
 ## Configurable Module Options
 
@@ -36,19 +36,19 @@ options to register and extend the module.
 
 ```ts
 export interface ModuleOptions<C extends Compiler<any, any>> {
-    type: string; // Module type
-    compiler: new () => C; // Compiler class for this module
-    rule: Rule<C>; // Module rule function
-    processors: Processor<any, any, any, C>[]; // Array of processors under the module
-    object?: boolean; // Whether the corresponding 3D object of this module will act as a 3D body
-    extend?: <E extends EngineSupport>(engine: E) => void; // Extension method for the engine by the module
-    lifeOrder?: number; // Life cycle position of the module
-    // @Experimental - Experimental properties
-    expand?: {
-        // How installing this module will extend other modules
-        processors: string[] | RegExp;
-        command: ProcessorCommands<any, any, any, any>;
-    }[];
+  type: string; // Module type
+  compiler: new () => C; // Compiler class for this module
+  rule: Rule<C>; // Module rule function
+  processors: Processor<any, any, any, C>[]; // Array of processors under the module
+  object?: boolean; // Whether the corresponding 3D object of this module will act as a 3D body
+  extend?: <E extends EngineSupport>(engine: E) => void; // Extension method for the engine by the module
+  lifeOrder?: number; // Life cycle position of the module
+  // @Experimental - Experimental properties
+  expand?: {
+    // How installing this module will extend other modules
+    processors: string[] | RegExp;
+    command: ProcessorCommands<any, any, any, any>;
+  }[];
 }
 ```
 
@@ -130,13 +130,13 @@ extend the methods within the compiler as needed.
 
 ```ts
 // compiler.ts
-import {Mesh} from "three";
-import {CompileNotice, Compiler} from "@vis-three/middleware";
+import { Mesh } from "three";
+import { CompileNotice, Compiler } from "@vis-three/middleware";
 
 export class BoardCompiler extends Compiler<BoardConfig, Mesh> {
-    constructor() {
-        super();
-    }
+  constructor() {
+    super();
+  }
 }
 ```
 
@@ -153,21 +153,21 @@ needed.
 
 ```ts
 // rule.ts
-import {ProxyNotice, Rule} from "@vis-three/middleware";
-import {BoardCompiler} from "./Compiler";
+import { ProxyNotice, Rule } from "@vis-three/middleware";
+import { BoardCompiler } from "./Compiler";
 
 // Define a conversion rule for the BoardCompiler
 export const BoardRule: Rule<BoardCompiler> = function (
-    notice: ProxyNotice,
-    compiler: BoardCompiler
+  notice: ProxyNotice,
+  compiler: BoardCompiler
 ) {
-    // Skip parent properties because they are influenced by operations on parent objects.
-    // Therefore, they can be ignored in this compilation.
-    if (notice.key === "parent") {
-        return;
-    }
+  // Skip parent properties because they are influenced by operations on parent objects.
+  // Therefore, they can be ignored in this compilation.
+  if (notice.key === "parent") {
+    return;
+  }
 
-    Rule(notice, compiler);
+  Rule(notice, compiler);
 };
 ```
 
@@ -177,9 +177,9 @@ For detailed information on notifications, please refer to the API documentation
 
 ## Defining the Configuration Processor
 
-The configuration processor is responsible for handling property changes in the current configuration, including *
-*addition, deletion, and modification**. The processor **does not maintain state** and generally **does not store
-configurations, objects, or properties**. Instead, it processes the configuration based on the attributes of the
+The configuration processor is responsible for handling property changes in the current configuration, including \*
+\*addition, deletion, and modification**. The processor **does not maintain state** and generally **does not store
+configurations, objects, or properties\*\*. Instead, it processes the configuration based on the attributes of the
 passed-in objects.
 
 ### Configuration Type
@@ -204,11 +204,11 @@ object. For example:
 
 ```js
 const config = {
-    position: {
-        x: 0,
-        y: 0,
-        z: 0,
-    },
+  position: {
+    x: 0,
+    y: 0,
+    z: 0,
+  },
 };
 
 const mesh = new Mesh();
@@ -230,18 +230,18 @@ Here is an example of a custom command that restricts the object's position `x` 
 
 ```js
 const commands = {
-    set: {
-        position: {
-            x({target, config, key, value}) {
-                if (value > 100) {
-                    config.position.x = 100;
-                } else {
-                    target.position.x = value;
-                    target.updateMatrixWorld();
-                }
-            },
-        },
+  set: {
+    position: {
+      x({ target, config, key, value }) {
+        if (value > 100) {
+          config.position.x = 100;
+        } else {
+          target.position.x = value;
+          target.updateMatrixWorld();
+        }
+      },
     },
+  },
 };
 ```
 
@@ -252,17 +252,17 @@ Here is an example of a custom command that automatically updates special proper
 
 ```js
 const commands = {
-    set: {
-        $reg: [
-            {
-                reg: new RegExp("transparent|sizeAttenuation"),
-                handler({target, key, value}) {
-                    target[key] = value;
-                    target.needsUpdate = true;
-                },
-            },
-        ],
-    },
+  set: {
+    $reg: [
+      {
+        reg: new RegExp("transparent|sizeAttenuation"),
+        handler({ target, key, value }) {
+          target[key] = value;
+          target.needsUpdate = true;
+        },
+      },
+    ],
+  },
 };
 ```
 
@@ -285,71 +285,71 @@ How should we write the processor for the case study we listed above?
 
 ```ts
 // processor.ts
-import {defineProcessor, EngineSupport} from "@vis-three/middleware";
-import {Mesh} from "three";
-import {BoardCompiler} from "./compiler";
-import {getBoardConfig, BoardConfig} from "./config";
+import { defineProcessor, EngineSupport } from "@vis-three/middleware";
+import { Mesh } from "three";
+import { BoardCompiler } from "./compiler";
+import { getBoardConfig, BoardConfig } from "./config";
 
 const transColor = function (
-    style: "elegant-black" | "light-brown" | "milky-white"
+  style: "elegant-black" | "light-brown" | "milky-white"
 ) {
-    return style === "elegant-black"
-        ? "rgb(0, 0, 0)"
-        : style === "light-brown"
-            ? "rgb(200, 200, 0)"
-            : "rgb(255, 255, 255)";
+  return style === "elegant-black"
+    ? "rgb(0, 0, 0)"
+    : style === "light-brown"
+    ? "rgb(200, 200, 0)"
+    : "rgb(255, 255, 255)";
 };
 
-const updateGeometry = function ({config: BoardConfig, target: Mesh}) {
-    const newGeometry = new BoxBufferGeometry(
-        config.width,
-        config.height,
-        config.depth
-    );
-    target.geometry.copy(newGeometry);
-    newGeometry.dispose();
+const updateGeometry = function ({ config: BoardConfig, target: Mesh }) {
+  const newGeometry = new BoxBufferGeometry(
+    config.width,
+    config.height,
+    config.depth
+  );
+  target.geometry.copy(newGeometry);
+  newGeometry.dispose();
 };
 
 export default defineProcessor<BoardConfig, Mesh, EngineSupport, BoardCompiler>(
-    {
-        type: "Board",
-        config: getBoardConfig,
-        commands: {
-            set: {
-                width: updateGeometry,
-                height: updateGeometry,
-                depth: updateGeometry,
-                style({target, value}) {
-                    target.material.color.setHex(new Color(transColor(value)).getHex());
-                },
-            },
+  {
+    type: "Board",
+    config: getBoardConfig,
+    commands: {
+      set: {
+        width: updateGeometry,
+        height: updateGeometry,
+        depth: updateGeometry,
+        style({ target, value }) {
+          target.material.color.setHex(new Color(transColor(value)).getHex());
         },
-        create(config, engine) {
-            const geometry = new BoxBufferGeometry(
-                config.width,
-                config.height,
-                config.depth
-            );
+      },
+    },
+    create(config, engine) {
+      const geometry = new BoxBufferGeometry(
+        config.width,
+        config.height,
+        config.depth
+      );
 
-            const material = new MeshBasicMaterial({
-                color: transColor(config.style),
-            });
-            const board = new Mesh(geometry, material);
+      const material = new MeshBasicMaterial({
+        color: transColor(config.style),
+      });
+      const board = new Mesh(geometry, material);
 
-            board.position.set(
-                config.position.x,
-                config.position.y,
-                config.position.z
-            );
+      board.position.set(
+        config.position.x,
+        config.position.y,
+        config.position.z
+      );
 
-            return board;
-        },
-        dispose(target) {
-            target.removeFromParent();
-            target.geometry.dispose();
-            target.material.dispose();
-        },
-    }
+      return board;
+    },
+    dispose(target) {
+      target.removeFromParent();
+      target.geometry.dispose();
+      target.material.dispose();
+    },
+  }
 );
 ```
 
@@ -363,18 +363,18 @@ Once the module components are prepared, you can define and export the module fo
 
 ```ts
 //module.ts
-import {SUPPORT_LIFE_CYCLE} from "@vis-three/middleware";
-import {BoardCompiler} from "./compiler";
+import { SUPPORT_LIFE_CYCLE } from "@vis-three/middleware";
+import { BoardCompiler } from "./compiler";
 import BoardProcessor from "./processor";
-import {BoardRule} from "./rule";
+import { BoardRule } from "./rule";
 
 export default {
-    type: "board",
-    object: true,
-    compiler: BoardCompiler,
-    rule: BoardRule,
-    processors: [BoardProcessor],
-    lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
+  type: "board",
+  object: true,
+  compiler: BoardCompiler,
+  rule: BoardRule,
+  processors: [BoardProcessor],
+  lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
 };
 ```
 
@@ -382,25 +382,25 @@ Usage in the Engine.
 
 ```ts
 // engine.ts
-import {defineEngineSupport, generateConfig} from "@vis-three/middleware";
+import { defineEngineSupport, generateConfig } from "@vis-three/middleware";
 import BoardModule from "./module";
 
 const engine = defineEngineSupport({
-    plugins: [
-        //...
-    ],
-    strategy: [
-        //...
-    ],
-    modules: [BoardModule],
+  plugins: [
+    //...
+  ],
+  strategy: [
+    //...
+  ],
+  modules: [BoardModule],
 });
 
 const board = generateConfig(CONFIGTYPE.BOARD, {
-    width: 20,
-    position: {
-        y: 24
-    }
-})
+  width: 20,
+  position: {
+    y: 24,
+  },
+});
 ```
 
 ### Module Type
@@ -428,30 +428,30 @@ like this:
 
 ```ts
 //module.ts
-import {SUPPORT_LIFE_CYCLE, EngineSupport} from "@vis-three/middleware";
-import {BoardCompiler} from "./compiler";
+import { SUPPORT_LIFE_CYCLE, EngineSupport } from "@vis-three/middleware";
+import { BoardCompiler } from "./compiler";
 import BoardProcessor from "./processor";
-import {BoardRule} from "./rule";
+import { BoardRule } from "./rule";
 
 export interface BoardSupportEngine extends EngineSupport {
-    addBoard: () => void;
+  addBoard: () => void;
 }
 
 export default {
-    type: "board",
-    object: true,
-    compiler: BoardCompiler,
-    rule: BoardRule,
-    processors: [BoardProcessor],
-    lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
-    extend(engine: BoardSupportEngine) {
-        engine.addBoard = function () {
-            const boardConfig = generateConfig(CONFIGTYPE.BOARD);
-            const currentSceneConfig = this.getObjectConfig(this.scene);
-            this.applyConfig(boardConfig);
-            currentSceneConfig.children.push(boardConfig.vid);
-        };
-    },
+  type: "board",
+  object: true,
+  compiler: BoardCompiler,
+  rule: BoardRule,
+  processors: [BoardProcessor],
+  lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
+  extend(engine: BoardSupportEngine) {
+    engine.addBoard = function () {
+      const boardConfig = generateConfig(CONFIGTYPE.BOARD);
+      const currentSceneConfig = this.getObjectConfig(this.scene);
+      this.applyConfig(boardConfig);
+      currentSceneConfig.children.push(boardConfig.vid);
+    };
+  },
 };
 ```
 
@@ -467,22 +467,20 @@ module. However, we do not need to respond to this auxiliary operation.
 
 ```ts
 export default {
-    type: "helper",
-    expand: [
-        {
-            processors: ["Board", "Mesh"],
-            command: {
-                add: {
-                    helper() {
-                    },
-                },
-                set: {
-                    helper() {
-                    },
-                },
-            },
+  type: "helper",
+  expand: [
+    {
+      processors: ["Board", "Mesh"],
+      command: {
+        add: {
+          helper() {},
         },
-    ],
+        set: {
+          helper() {},
+        },
+      },
+    },
+  ],
 };
 ```
 
@@ -514,40 +512,40 @@ Typically, you will need to make the necessary properties compatible with deboun
 Using the `children` example above, simply calling `globalAntiShake.exec` will automatically activate the debouncer.
 
 ```ts
-import {globalAntiShake} from "@vis-three/middleware";
+import { globalAntiShake } from "@vis-three/middleware";
 
 const commands = {
-    add: {
-        children({target, config, value, engine}) {
-            globalAntiShake.exec((finish) => {
-                const childrenConfig = engine.getConfigBySymbol(value) as ObjectConfig;
-                if (!childrenConfig) {
-                    if (finish) {
-                        console.warn(` can not foud object config in engine: ${value}`);
-                    }
-                    return false;
-                }
+  add: {
+    children({ target, config, value, engine }) {
+      globalAntiShake.exec((finish) => {
+        const childrenConfig = engine.getConfigBySymbol(value) as ObjectConfig;
+        if (!childrenConfig) {
+          if (finish) {
+            console.warn(` can not foud object config in engine: ${value}`);
+          }
+          return false;
+        }
 
-                const childrenObject = engine.compilerManager.getObjectfromModules(
-                    OBJECTMODULE,
-                    value
-                ) as Object3D;
+        const childrenObject = engine.compilerManager.getObjectfromModules(
+          OBJECTMODULE,
+          value
+        ) as Object3D;
 
-                if (!childrenObject) {
-                    if (finish) {
-                        console.warn(`can not found this vid in engine: ${value}.`);
-                    }
-                    return false;
-                }
+        if (!childrenObject) {
+          if (finish) {
+            console.warn(`can not found this vid in engine: ${value}.`);
+          }
+          return false;
+        }
 
-                target.add(childrenObject);
+        target.add(childrenObject);
 
-                childrenObject.updateMatrixWorld(true);
+        childrenObject.updateMatrixWorld(true);
 
-                return true;
-            });
-        },
+        return true;
+      });
     },
+  },
 };
 ```
 
@@ -609,20 +607,20 @@ Here is an example where any change in the `mesh` material configuration will au
 of the mesh by 1.
 
 ```ts
-import {Mesh} from "three";
-import {Bus, COMPILER_EVENT} from "@vis-three/middleware";
+import { Mesh } from "three";
+import { Bus, COMPILER_EVENT } from "@vis-three/middleware";
 
 export default defineProcessor({
-    create(config, engine) {
-        const material = engine.getObjectBySymbol(config.material);
-        const mesh = new Mesh(undefiend, material);
+  create(config, engine) {
+    const material = engine.getObjectBySymbol(config.material);
+    const mesh = new Mesh(undefiend, material);
 
-        Bus.compilerEvent.on(material, COMPILER_EVENT.UPDATE, () => {
-            mesh.position.x += 1;
-        });
+    Bus.compilerEvent.on(material, COMPILER_EVENT.UPDATE, () => {
+      mesh.position.x += 1;
+    });
 
-        return mesh;
-    },
+    return mesh;
+  },
 });
 ```
 
@@ -635,38 +633,38 @@ For events published by the default `compiler`, please refer to the API document
 In some cases, you might want to publish custom events within your own configuration modules according to your needs.
 
 ```ts
-import {Mesh} from "three";
-import {Bus, COMPILER_EVENT} from "@vis-three/middleware";
+import { Mesh } from "three";
+import { Bus, COMPILER_EVENT } from "@vis-three/middleware";
 
 export default defineProcessor({
-    commands: {
-        set: {
-            position: {
-                x({target, value}) {
-                    Bus.compilerEvent.emit(target, "position-dispatch", {
-                        key: "x",
-                        value,
-                    });
-                },
-                y({target, value}) {
-                    Bus.compilerEvent.emit(target, "position-dispatch", {
-                        key: "y",
-                        value,
-                    });
-                },
-                z({target, value}) {
-                    Bus.compilerEvent.emit(target, "position-dispatch", {
-                        key: "z",
-                        value,
-                    });
-                },
-            },
+  commands: {
+    set: {
+      position: {
+        x({ target, value }) {
+          Bus.compilerEvent.emit(target, "position-dispatch", {
+            key: "x",
+            value,
+          });
         },
+        y({ target, value }) {
+          Bus.compilerEvent.emit(target, "position-dispatch", {
+            key: "y",
+            value,
+          });
+        },
+        z({ target, value }) {
+          Bus.compilerEvent.emit(target, "position-dispatch", {
+            key: "z",
+            value,
+          });
+        },
+      },
     },
+  },
 });
 
 // Usage
 Bus.compilerEvent.on(target, "position-dispatch", (event) => {
-    console.log(event);
+  console.log(event);
 });
 ```

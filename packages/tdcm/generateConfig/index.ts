@@ -186,9 +186,3 @@ export const generateConfig = <GenerateConfig>function <C extends BasicConfig>(
 generateConfig.autoInject = true;
 generateConfig.injectScene = false;
 generateConfig.injectEngine = null;
-
-export const toSymbol = function <C extends BasicConfig = BasicConfig>(
-  config: C
-) {
-  return config.vid;
-};

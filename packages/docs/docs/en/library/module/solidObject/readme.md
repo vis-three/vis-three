@@ -163,7 +163,7 @@ export default defineProcessor<MeshConfig, Mesh, EngineSupport, MeshCompiler>({
 | Name | Type                                                                                |
 | :--- | :---------------------------------------------------------------------------------- |
 | `C`  | extends `SolidObjectConfig`                                                         |
-| `O`  | extends [`SolidObject3D`](../interfaces/SolidObjectCompiler.SolidObject3D.md)<`O`\> |
+| `O`  | extends `SolidObject3D`<`O`\> |
 
 #### Parameters
 
@@ -186,7 +186,7 @@ export default defineProcessor<MeshConfig, Mesh, EngineSupport, MeshCompiler>({
 | Name | Type                                                                                |
 | :--- | :---------------------------------------------------------------------------------- |
 | `C`  | extends `SolidObjectConfig`                                                         |
-| `O`  | extends [`SolidObject3D`](../interfaces/SolidObjectCompiler.SolidObject3D.md)<`O`\> |
+| `O`  | extends `SolidObject3D`<`O`\> |
 
 #### Parameters
 
@@ -209,7 +209,7 @@ export default defineProcessor<MeshConfig, Mesh, EngineSupport, MeshCompiler>({
 | Name | Type                                                                                |
 | :--- | :---------------------------------------------------------------------------------- |
 | `C`  | extends `SolidObjectConfig`                                                         |
-| `O`  | extends [`SolidObject3D`](../interfaces/SolidObjectCompiler.SolidObject3D.md)<`O`\> |
+| `O`  | extends `SolidObject3D`<`O`\> |
 
 #### Parameters
 
@@ -232,7 +232,7 @@ export default defineProcessor<MeshConfig, Mesh, EngineSupport, MeshCompiler>({
 
 | Name | Type                                                                                |
 | :--- | :---------------------------------------------------------------------------------- |
-| `O`  | extends [`SolidObject3D`](../interfaces/SolidObjectCompiler.SolidObject3D.md)<`O`\> |
+| `O`  | extends `SolidObject3D`<`O`\> |
 
 #### Parameters
 
