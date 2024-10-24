@@ -1,0 +1,1 @@
+import{_ as e,o as t,c as a}from"./chunks/framework.b643d968.js";const d=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"api/core/Optimize.md","filePath":"api/core/Optimize.md"}'),i={name:"api/core/Optimize.md"};function r(o,c,p,s,n,m){return t(),a("div")}const f=e(i,[["render",r]]);export{d as __pageData,f as default};
