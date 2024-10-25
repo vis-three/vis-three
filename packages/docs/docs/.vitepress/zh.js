@@ -111,7 +111,10 @@ export const zhConfig = {
         text: "版本",
         items: [
           { text: "0.7.x", link: "/zh/index.html" },
-          { text: "0.6.x", link: "https://vis-three.github.io/version/0.6.x/docs/index.html" },
+          {
+            text: "0.6.x",
+            link: "https://vis-three.github.io/version/0.6.x/docs/index.html",
+          },
         ],
       },
     ],
@@ -146,15 +149,15 @@ export const zhConfig = {
         },
         {
           text: "@vis-three/widget",
-          // items: getAPIModules("tdcm"),
+          items: getAPIModules("widget"),
         },
         {
           text: "@vis-three/convenient",
-          // items: getAPIModules("convenient"),
+          items: getAPIModules("convenient"),
         },
         {
           text: "@vis-three/utils",
-          // items: getAPIModules("utils"),
+          // items: getAPIModules("utils"),  collapsed: true,
         },
       ],
       "/zh/library/": [

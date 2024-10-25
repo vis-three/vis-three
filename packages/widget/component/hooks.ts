@@ -10,11 +10,19 @@ export enum LifeCycleHooks {
   SCENE_CHANGE = "sceneCHange",
 }
 
+/**
+ * 组件挂载完成后的钩子函数
+ * @param fn 函数方法
+ */
 export const onMounted = function (fn: Function = () => {}) {
   Component.currentComponent &&
     Component.currentComponent.on(LifeCycleHooks.MOUNTED, (event) => fn());
 };
 
+/**
+ * 组件销毁之前的钩子函数
+ * @param fn 函数方法
+ */
 export const onBeforeDistory = function (fn: Function = () => {}) {
   Component.currentComponent &&
     Component.currentComponent.on(LifeCycleHooks.BEFORE_DISTORY, (event) =>
@@ -22,6 +30,10 @@ export const onBeforeDistory = function (fn: Function = () => {}) {
     );
 };
 
+/**
+ * 组件在每帧渲染时的钩子函数
+ * @param fn 函数方法
+ */
 export const onFrame = function (fn: Function = () => {}) {
   Component.currentComponent &&
     Component.currentComponent.on<RenderEvent>(LifeCycleHooks.FRAME, (event) =>

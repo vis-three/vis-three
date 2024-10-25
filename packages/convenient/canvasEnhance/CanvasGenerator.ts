@@ -1,6 +1,9 @@
 export interface CanvasGeneratorParameters {
+  /**画布宽 */
   width?: number;
+  /**画布高 */
   height?: number;
+  /**画布的背景色 */
   bgColor?: string;
 }
 

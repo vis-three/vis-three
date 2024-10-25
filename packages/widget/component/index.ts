@@ -39,15 +39,25 @@ export interface ComponentOptions<
   RawBindings extends object = any,
   Resources extends object = any
 > {
+  /**组件名 */
   name?: string;
+  /**组件的事件列表 */
   emits?: Emit;
+  /**父组件的传入 */
   props?: PropsOptions<Props>;
+  /**注册的子组件 */
   components?: Record<string, ComponentOptions>;
+  /**组件使用的engine */
   engine: Engine;
+  /**组件挂载的位置 */
   el: string;
+  /**组件需要加载的外部资源 */
   load: Record<string, string>;
+  /**组件可以使用的资源 */
   resources?: () => Resources;
+  /**组件的响应式对象和业务逻辑的位置 */
   setup?: (params: SetupParams<Engine, Props>) => RawBindings;
+  /**组件渲染的目标 */
   render: (params: RenderParams<Resources>) => VNode | VNode[];
 }
 export class Component<

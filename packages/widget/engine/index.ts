@@ -11,6 +11,11 @@ export class EngineWidget extends EngineSupport {
     super(params);
   }
 
+  /**
+   * 创建一个小部件
+   * @param component 组件
+   * @returns Widget
+   */
   createWidget<Props extends object = {}, RawBindings extends object = {}>(
     component: ComponentOptions<typeof this, Props, RawBindings>
   ) {
@@ -29,7 +34,7 @@ export const defineEngineWidget = function <
 
   if (options.modules) {
     options.modules.forEach((module) => {
-      engine.registModule(module);
+      engine.useModule(module);
     });
   }
 

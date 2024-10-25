@@ -28,6 +28,12 @@ export class Widget<
     this.renderer = new Renderer(this);
   }
 
+  /**
+   * 注册布局全局组件
+   * @param name 组件名
+   * @param component 组件选项
+   * @returns
+   */
   component(name: string | ComponentOptions, component?: ComponentOptions) {
     if (typeof name === "object") {
       component = name as ComponentOptions;
@@ -58,6 +64,10 @@ export class Widget<
     this.components[name as string] = component;
   }
 
+  /**
+   * 部件挂载
+   * @returns this
+   */
   mount() {
     const vnode = createVNode(this.root as ComponentOptions);
 
@@ -68,10 +78,17 @@ export class Widget<
     return this;
   }
 
+  /**
+   * 获取根组件的状态对象
+   * @returns any
+   */
   getState() {
     return this.instance?.getState(true);
   }
 
+  /**
+   * 解除部件绑定
+   */
   unmount() {
     this.instance?.distory();
   }

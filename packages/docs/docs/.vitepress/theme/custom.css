@@ -124,6 +124,10 @@
   --vp-c-brand-darker: var(--theme-color-darker);
 
   --vp-c-sponsor: #fd1d7c;
+
+  --shiki-light: var(--vp-c-gray-dark-4);
+
+  --vp-code-bg: var(--vp-c-white-soft);
 }
 
 .dark {
