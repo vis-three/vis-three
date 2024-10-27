@@ -24,16 +24,88 @@ export interface CanvasGeneratorParameters {
 
 ### canvas
 
-## 方法
+生成的`canvas`对象。
 
-### get
+- **类型**
+
+```ts
+HTMLCanvasElement;
+```
+
+## 方法
 
 ### getDom
 
+- **详情**
+
+```ts
+/**
+ * 获取canvas dom
+ * @returns HTMLCanvasElement
+ */
+getDom(): HTMLCanvasElement
+```
+
 ### clear
+
+- **详情**
+
+```ts
+  /**
+   * 清空画布，不传参默认全部清除
+   * @param x position x px
+   * @param y  position z px
+   * @param width width px
+   * @param height height px
+   * @returns this
+   */
+clear(x?: number, y?: number, width?: number, height?: number): this
+```
 
 ### draw
 
+- **详情**
+
+```ts
+/**
+ * canvas绘制
+ * @param fun callback(ctx)
+ * @returns this
+ */
+draw(fun: (ctx: CanvasRenderingContext2D) => void): this
+```
+
 ### preview
 
+- **详情**
+
+```ts
+/**
+ * canvas预览
+ * @param parameters style position
+ * @returns this
+ */
+preview(parameters?: PreviewParameters): this
+
+interface PreviewParameters {
+  top?: string;
+  left?: string;
+  bottom?: string;
+  right?: string;
+  scale?: string;
+}
+```
+
 ### setSize
+
+- **详情**
+
+```ts
+/**
+ * 设置canvas画布大小
+ * @param width
+ * @param height
+ * @returns
+ */
+setSize(width: number, height: number): this
+```
