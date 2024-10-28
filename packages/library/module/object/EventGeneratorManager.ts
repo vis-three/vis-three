@@ -19,6 +19,12 @@ export class EventGeneratorManager {
     EventGenerator<any>
   >();
 
+  /**
+   * 注册配置
+   * @param config 配置模板
+   * @param generator 生成器
+   * @returns this
+   */
   static register = function <C extends BasicEventConfig>({
     config,
     generator,
@@ -42,6 +48,12 @@ export class EventGeneratorManager {
     return EventGeneratorManager;
   };
 
+  /**
+   * 生成配置
+   * @param name 配置名
+   * @param merge 配置的预设
+   * @returns BasicEventConfig
+   */
   static generateConfig<C extends BasicEventConfig = BasicEventConfig>(
     name: string,
     merge: DeepPartial<C>
@@ -91,6 +103,11 @@ export class EventGeneratorManager {
     );
   }
 
+  /**
+   * 判断管理器中是否注册该事件
+   * @param name 事件名
+   * @returns boolean
+   */
   static has(name: string): boolean {
     return EventGeneratorManager.configLibrary.has(name);
   }

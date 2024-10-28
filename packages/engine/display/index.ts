@@ -93,7 +93,7 @@ export class DisplayEngine
       .install(CSS3DRendererPlugin())
       .install(
         EffectComposerPlugin({
-          WebGLMultisampleRenderTarget: true,
+          MSAA: true,
         })
       )
       .install(OrbitControlsPlugin())

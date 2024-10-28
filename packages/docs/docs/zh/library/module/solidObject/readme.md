@@ -16,257 +16,93 @@
 实体物体也就是这个物体既有`geometry`又有`material`。
 :::
 
-## 模块规则
+## 拓展定义模块
 
-### SolidObjectRule
-
-此规则目前仅作为`ts`的声明拓展使用。
+- **详情**
 
 ```ts
-import { Rule } from "@vis-three/middleware";
-import { SolidObject3D, SolidObjectCompiler } from "./SolidObjectCompiler";
-import { SolidObjectConfig } from "./SolidObjectConfig";
-
-export type SolidObjectRule<
-  E extends SolidObjectCompiler<C, O>,
-  C extends SolidObjectConfig,
-  O extends SolidObject3D
-> = Rule<E>;
-```
-
-### 使用
-
-```ts
-import { ProxyNotice } from "@vis-three/middleware";
-import { ObjectRule } from "@vis-three/module-object";
-import { SolidObjectRule } from "@vis-three/module-solid-object";
-import { Mesh } from "three";
-
-import { MeshCompiler } from "./MeshCompiler";
-import { MeshConfig } from "./MeshConfig";
-
-export type MeshRule = SolidObjectRule<MeshCompiler, MeshConfig, Mesh>;
-
-export const MeshRule: MeshRule = function (
-  notice: ProxyNotice,
-  compiler: MeshCompiler
-) {
-  ObjectRule(notice, compiler);
-};
-```
-
-## 模块编译器
-
-```ts
-export abstract class SolidObjectCompiler<
-  C extends SolidObjectConfig,
-  O extends SolidObject3D
-> extends ObjectCompiler<C, O> {
-  constructor() {
-    super();
-  }
-}
-```
-
-### 使用
-
-```ts
-import { SolidObjectCompiler } from "@vis-three/module-solid-object";
-import { Mesh } from "three";
-import { MeshConfig } from "./MeshConfig";
-
-export class MeshCompiler extends SolidObjectCompiler<MeshConfig, Mesh> {
-  constructor() {
-    super();
-  }
-}
-```
-
-## 模块处理器
-
-### 实体物体命令链-SolidObjectCommands
-
-Ƭ **SolidObjectCommands**<`C`, `T`\>: `ObjectCommands`<`C`, `T`\>
-
-作为公共的实体物体命令链模块使用，也可以使用其中的部分命令。
-
-#### 类型参数
-
-| Name | Type                        |
-| :--- | :-------------------------- |
-| `C`  | extends `SolidObjectConfig` |
-| `T`  | extends `SolidObject3D`     |
-
-#### 预览
-
-```ts
-export const solidObjectCommands: SolidObjectCommands<
+export const defineSolidObjectModel = defineObjectModel.extend<
   SolidObjectConfig,
-  SolidObject3D
-> = {
-  add: {
-    material: materialHandler,
-    ...(<SolidObjectCommands<SolidObjectConfig, SolidObject3D>>(
-      objectCommands.add
-    )),
+  Object3D,
+  {},
+  SolidObjectShared,
+  EngineSupport,
+  Compiler<EngineSupport>,
+  <O extends Object3D, C extends SolidObjectConfig>(params: {
+    model: SolidObjectModel;
+    target: O;
+    config: C;
+    filter: IgnoreAttribute<C>;
+    engine: EngineSupport;
+  }) => void,
+  <O extends Object3D>(params: { target: O }) => void
+>((objectModel) => ({
+  shared: {
+    replaceMaterial: new ShaderMaterial({
+      fragmentShader: `
+      void main () {
+        gl_FragColor = vec4(0.5, 0.5, 0.5, 1.0);
+      }
+      `,
+    }),
+    replaceGeometry: new BoxGeometry(10, 10, 10),
   },
-  set: {
-    geometry: geometryHandler,
-    material: materialHandler,
-    ...(<SolidObjectCommands<SolidObjectConfig, SolidObject3D>>(
-      objectCommands.set
-    )),
+  commands: {
+    add: {
+      material: materialHandler,
+    },
+    set: {
+      geometry: geometryHandler,
+      material: materialHandler,
+    },
+    delete: {
+      material: materialHandler,
+    },
   },
-  delete: {
-    material: materialHandler,
-    ...(<SolidObjectCommands<SolidObjectConfig, SolidObject3D>>(
-      objectCommands.delete
-    )),
+  create({ model, target, config, filter, engine }) {
+    if (!filter.geometry) {
+      (<Mesh>(<unknown>target)).geometry.dispose();
+
+      geometryHandler.call(model, {
+        model,
+        target,
+        value: config.geometry,
+        engine,
+      } as unknown as SolidObjectCommandParameters);
+    }
+
+    if (!filter.material) {
+      materialHandler.call(model, {
+        model,
+        target,
+        config,
+        engine,
+      } as unknown as SolidObjectCommandParameters);
+    }
+
+    objectModel.create!({
+      model: model as unknown as ObjectModel,
+      target,
+      config,
+      filter: {
+        material: true,
+        geometry: true,
+        ...filter,
+      },
+      engine,
+    });
   },
-};
+
+  dispose({ target }) {
+    objectModel.dispose!({ target });
+  },
+}));
 ```
 
-### 使用
+- **使用**
 
 ```ts
-import { defineProcessor, EngineSupport } from "@vis-three/middleware";
-import {
-  solidObjectCommands,
-  SolidObjectCommands,
-  solidObjectCreate,
-  solidObjectDispose,
-} from "@vis-three/module-solid-object";
-import { Mesh } from "three";
-
-import { MeshCompiler } from "../MeshCompiler";
-import { getMeshConfig, MeshConfig } from "../MeshConfig";
-
-export default defineProcessor<MeshConfig, Mesh, EngineSupport, MeshCompiler>({
-  type: "Mesh",
-  config: getMeshConfig,
-  commands: <SolidObjectCommands<MeshConfig, Mesh>>(
-    (<unknown>solidObjectCommands)
-  ),
-  create(config: MeshConfig, engine: EngineSupport): Mesh {
-    return solidObjectCreate(new Mesh(), config, {}, engine);
-  },
-  dispose: solidObjectDispose,
+const meshModel = defineSolidObjectModel(() => {
+  type: "Mesh";
 });
 ```
-
-### geometryHandler
-
-▸ **geometryHandler**<`C`, `O`\>(`«destructured»`): `void`
-
-#### 类型参数
-
-| Name | Type                                                                                |
-| :--- | :---------------------------------------------------------------------------------- |
-| `C`  | extends `SolidObjectConfig`                                                         |
-| `O`  | extends `SolidObject3D`<`O`\> |
-
-#### 参数
-
-| Name             | Type                                               |
-| :--------------- | :------------------------------------------------- |
-| `«destructured»` | `ProcessParams`<`C`, `O`, `EngineSupport`, `any`\> |
-
-#### Returns
-
-`void`
-
----
-
-### materialHandler
-
-▸ **materialHandler**<`C`, `O`\>(`«destructured»`): `void`
-
-#### 类型参数
-
-| Name | Type                                                                                |
-| :--- | :---------------------------------------------------------------------------------- |
-| `C`  | extends `SolidObjectConfig`                                                         |
-| `O`  | extends `SolidObject3D`<`O`\> |
-
-#### 参数
-
-| Name             | Type                                               |
-| :--------------- | :------------------------------------------------- |
-| `«destructured»` | `ProcessParams`<`C`, `O`, `EngineSupport`, `any`\> |
-
-#### Returns
-
-`void`
-
----
-
-### solidObjectCreate
-
-▸ **solidObjectCreate**<`C`, `O`\>(`object`, `config`, `filter`, `engine`): `O`
-
-#### 类型参数
-
-| Name | Type                                                                                |
-| :--- | :---------------------------------------------------------------------------------- |
-| `C`  | extends `SolidObjectConfig`                                                         |
-| `O`  | extends `SolidObject3D`<`O`\> |
-
-#### 参数
-
-| Name     | Type                                                                   |
-| :------- | :--------------------------------------------------------------------- |
-| `object` | `O`                                                                    |
-| `config` | `C`                                                                    |
-| `filter` | `DeepUnion`<`DeepPartial`<`DeepRecord`<`C`, `boolean`\>\>, `boolean`\> |
-| `engine` | `EngineSupport`                                                        |
-
-#### Returns
-
-`O`
-
-### solidObjectDispose
-
-▸ **solidObjectDispose**<`O`\>(`target`): `void`
-
-#### 类型参数
-
-| Name | Type                                                                                |
-| :--- | :---------------------------------------------------------------------------------- |
-| `O`  | extends `SolidObject3D`<`O`\> |
-
-#### 参数
-
-| Name     | Type |
-| :------- | :--- |
-| `target` | `O`  |
-
-#### Returns
-
-`void`
-
-## 提供配置
-
-### 实体物体-SolidObject
-
-- **类型**：`SolidObject`
-- **配置类型**:
-
-```ts
-export interface SolidObjectConfig extends ObjectConfig {
-  material: string | string[];
-  geometry: string;
-}
-```
-
-- **默认配置**:
-
-```ts
-{
-    material: "",
-    geometry: "",
-  }
-```
-
-:::tip
-此配置供其他物体模块使用。
-:::

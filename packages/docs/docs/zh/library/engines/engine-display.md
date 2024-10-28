@@ -16,19 +16,19 @@
 
 ## 插件集
 
-- @vis-three/plugin-camera-adaptive
-- @vis-three/plugin-css2d-renderer
-- @vis-three/plugin-css3d-renderer
-- @vis-three/plugin-effect-composer
-- @vis-three/plugin-event-manager
-- @vis-three/plugin-orbit-controls
-- @vis-three/plugin-pointer-manager
-- @vis-three/plugin-render-manager
-- @vis-three/plugin-webgl-renderer
+- [@vis-three/plugin-camera-adaptive](../plugins/plugin-camera-adaptive.md)
+- [@vis-three/plugin-css2d-renderer](../plugins/plugin-css2d-renderer.md)
+- [@vis-three/plugin-css3d-renderer](../plugins/plugin-css3d-renderer.md)
+- [@vis-three/plugin-effect-composer](../plugins/plugin-effect-composer.md)
+- [@vis-three/plugin-event-manager](../plugins/plugin-event-manager.md)
+- [@vis-three/plugin-orbit-controls](../plugins/plugin-orbit-controls.md)
+- [@vis-three/plugin-pointer-manager](../plugins/plugin-pointer-manager.md)
+- [@vis-three/plugin-render-manager](../plugins/plugin-render-manager.md)
+- [@vis-three/plugin-webgl-renderer](../plugins/plugin-webgl-renderer.md)
 
 ## 策略集
 
-- @vis-three/strategy-css2d-render
-- @vis-three/strategy-css3d-render
-- @vis-three/strategy-effect-render
-- @vis-three/strategy-orbit-render
+- [@vis-three/strategy-css2d-render](../strategys/strategy-css2d-render.md)
+- [@vis-three/strategy-css3d-render](../strategys/strategy-css3d-render.md)
+- [@vis-three/strategy-effect-render](../strategys/strategy-effect-render.md)
+- [@vis-three/strategy-orbit-render](../strategys/strategy-orbit-render.md)
