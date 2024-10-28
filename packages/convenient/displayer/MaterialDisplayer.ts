@@ -19,7 +19,9 @@ import {
 } from "three";
 
 export interface MaterialDisplayerParameters {
+  /**展示的目标dom */
   dom?: HTMLElement;
+  /**展示的材质 */
   material?: Material;
 }
 
@@ -93,7 +95,11 @@ export class MaterialDisplayer {
     parameters?.dom && this.setDom(parameters.dom);
   }
 
-  // 设置展示的材质
+  /**
+   * 设置展示材质
+   * @param material 要展示的材质
+   * @returns this
+   */
   setMaterial(material: Material): this {
     this.scene.remove(this.object);
 
@@ -124,7 +130,11 @@ export class MaterialDisplayer {
     return this;
   }
 
-  // 设置目标dom对象
+  /**
+   * 设置渲染的目标dom
+   * @param dom
+   * @returns this
+   */
   setDom(dom: HTMLElement): this {
     this.dom = dom;
 
@@ -133,7 +143,12 @@ export class MaterialDisplayer {
     return this;
   }
 
-  // 设置尺寸
+  /**
+   * 设置整个展示器的尺寸，不传参默认目标dom大小
+   * @param width
+   * @param height
+   * @returns this
+   */
   setSize(width?: number, height?: number): this {
     if (width && height) {
       this.camera.aspect = width / height;
@@ -155,7 +170,9 @@ export class MaterialDisplayer {
     return this;
   }
 
-  // 渲染方法
+  /**
+   * 渲染展示器
+   */
   render() {
     this.renderer.render(this.scene, this.camera);
   }
@@ -169,7 +186,9 @@ export class MaterialDisplayer {
     return this.renderer.domElement.toDataURL(mine || "image/png");
   }
 
-  // 内存销毁
+  /**
+   * 销毁当前展示器的内存
+   */
   dispose() {
     this.renderer.dispose();
   }

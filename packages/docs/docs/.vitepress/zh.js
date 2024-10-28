@@ -157,7 +157,7 @@ export const zhConfig = {
         },
         {
           text: "@vis-three/utils",
-          // items: getAPIModules("utils"),  collapsed: true,
+          items: getAPIModules("utils"),
         },
       ],
       "/zh/library/": [

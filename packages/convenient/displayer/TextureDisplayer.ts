@@ -9,7 +9,9 @@ import {
 } from "three";
 
 export interface TextureDisplayerParameters {
+  /**展示的目标dom */
   dom?: HTMLElement;
+  /**展示的贴图 */
   texture?: Texture;
 }
 
@@ -57,7 +59,11 @@ export class TextureDisplayer {
     parameters?.dom && this.setDom(parameters.dom);
   }
 
-  // 设置贴图
+  /**
+   * 设置展示的贴图
+   * @param texture 贴图
+   * @returns this
+   */
   setTexture(texture: Texture): this {
     this.scene.background = texture;
     return this;

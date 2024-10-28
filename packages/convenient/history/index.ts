@@ -1,9 +1,16 @@
 export class Action {
+  /**
+   * 该动作的下一步方法
+   */
   next() {
     console.warn(
       `this action can not set next function: ${this.constructor.name}`
     );
   }
+
+  /**
+   * 该动作的上一步方法
+   */
   prev() {
     console.warn(
       `this action can not set prev function: ${this.constructor.name}`
@@ -55,6 +62,10 @@ export class History {
     }
   }
 
+  /**
+   * 恢复动作，执行当前动作的next
+   * @returns
+   */
   redo() {
     this.index += 1;
     if (this.index > this.actionList.length - 1) {
@@ -64,6 +75,10 @@ export class History {
     this.do("next");
   }
 
+  /**
+   * 撤销动作，执行当前动作的prev
+   * @returns
+   */
   undo() {
     if (this.index < 0) {
       return;
@@ -72,6 +87,9 @@ export class History {
     this.index -= 1;
   }
 
+  /**
+   * 清空整个历史动作缓存
+   */
   clear() {
     this.actionList = [];
   }

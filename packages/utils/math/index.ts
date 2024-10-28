@@ -5,7 +5,7 @@ import { MathUtils, Vector2, Vector3 } from "three";
  * @param number1
  * @param number2
  * @param accuracy
- * @returns
+ * @returns boolean
  */
 export function checkEqualNumber(
   number1: number,
@@ -23,7 +23,7 @@ export function checkEqualNumber(
  * @param v1
  * @param v2
  * @param accuracy
- * @returns
+ * @returns boolean
  */
 export function checkEqualVector2(v1: Vector2, v2: Vector2, accuracy = 3) {
   return (
@@ -37,7 +37,7 @@ export function checkEqualVector2(v1: Vector2, v2: Vector2, accuracy = 3) {
  * @param v1
  * @param v2
  * @param accuracy
- * @returns
+ * @returns boolean
  */
 export function checkEqualVector3(v1: Vector3, v2: Vector3, accuracy = 3) {
   return (
@@ -49,10 +49,10 @@ export function checkEqualVector3(v1: Vector3, v2: Vector3, accuracy = 3) {
 
 /**
  * 测试一个点是否在线的右侧
- * @param line1
- * @param line2
- * @param point
- * @returns
+ * @param line1 线上一点
+ * @param line2 线上另外一点
+ * @param point v2点
+ * @returns boolean
  */
 export const checkPointLeftSideLine = function (
   line1: Vector2,
@@ -70,7 +70,7 @@ export const checkPointLeftSideLine = function (
  * 测试两个vector2是否是同方向向量，夹角小于90度
  * @param vect1
  * @param vect2
- * @returns
+ * @returns boolean
  */
 export const checkSameDirecton = function (vect1: Vector2, vect2: Vector2) {
   const denominator = Math.sqrt(vect1.lengthSq() * vect2.lengthSq());
@@ -91,6 +91,13 @@ export const calcOperator = {
   "/": (a: number, b: number) => a / b,
 };
 
+/**
+ * 
+ * @param operate 
+ * @param v1 
+ * @param v2 
+ * @returns 
+ */
 export const calc = function (
   operate: keyof typeof calcOperator,
   v1: number,
