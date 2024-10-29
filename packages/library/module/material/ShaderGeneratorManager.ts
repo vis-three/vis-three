@@ -47,8 +47,9 @@ export class ShaderGeneratorManager {
 
   /**
    * 获取该着色器文件对应的配置
-   * @param name
-   * @returns
+   * @param name 作色器名
+   * @param uniforms 合并的参数
+   * @returns ShaderConfig
    */
   static generateConfig(
     name: string,
@@ -99,7 +100,7 @@ export class ShaderGeneratorManager {
   /**
    * 克隆着色器
    * @param shader
-   * @returns
+   * @returns Shader
    */
   static cloneShader(shader: Shader): Shader {
     const newShader: Shader = {

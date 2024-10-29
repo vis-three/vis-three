@@ -25,9 +25,9 @@ const getAPIModules = function (url) {
   return list;
 };
 
-const getEnginesLibraryModules = function () {
+const getLibraryModules = function (url) {
   const libraryPath = path.resolve(__dirname, "../zh/library");
-  const targetPath = path.resolve(libraryPath, `./engines`);
+  const targetPath = path.resolve(libraryPath, `./${url}`);
   const list = [];
 
   const files = fs.readdirSync(targetPath);
@@ -35,58 +35,7 @@ const getEnginesLibraryModules = function () {
   files.forEach((file) => {
     list.push({
       text: path.basename(file, path.extname(file)),
-      link: `/zh/library/engines/${file}`,
-    });
-  });
-
-  return list;
-};
-
-const getPluginsLibraryModules = function () {
-  const libraryPath = path.resolve(__dirname, "../zh/library");
-  const targetPath = path.resolve(libraryPath, `./plugins`);
-  const list = [];
-
-  const files = fs.readdirSync(targetPath);
-
-  files.forEach((file) => {
-    list.push({
-      text: path.basename(file, path.extname(file)),
-      link: `/zh/library/plugins/${file}`,
-    });
-  });
-
-  return list;
-};
-
-const getStrategysLibraryModules = function () {
-  const libraryPath = path.resolve(__dirname, "../zh/library");
-  const targetPath = path.resolve(libraryPath, `./strategys`);
-  const list = [];
-
-  const files = fs.readdirSync(targetPath);
-
-  files.forEach((file) => {
-    list.push({
-      text: path.basename(file, path.extname(file)),
-      link: `/zh/library/strategys/${file}`,
-    });
-  });
-
-  return list;
-};
-
-const getModuleLibraryModules = function () {
-  const libraryPath = path.resolve(__dirname, "../zh/library");
-  const targetPath = path.resolve(libraryPath, `./module`);
-  const list = [];
-
-  const files = fs.readdirSync(targetPath);
-
-  files.forEach((file) => {
-    list.push({
-      text: file,
-      link: `/zh/library/module/${file}/readme.md`,
+      link: `/zh/library/${url}/${file}`,
     });
   });
 
@@ -163,31 +112,33 @@ export const zhConfig = {
       "/zh/library/": [
         {
           text: "引擎",
-          items: getEnginesLibraryModules(),
+          items: getLibraryModules("engines"),
           collapsed: false,
         },
         {
           text: "插件",
-          items: getPluginsLibraryModules(),
+          items: getLibraryModules("plugins"),
           collapsed: true,
         },
         {
           text: "策略",
-          items: getStrategysLibraryModules(),
+          items: getLibraryModules("strategys"),
           collapsed: true,
         },
         {
           text: "模块",
-          items: getModuleLibraryModules(),
+          items: getLibraryModules("module"),
+          collapsed: true,
+        },
+        {
+          text: "事件",
+          items: getLibraryModules("event"),
           collapsed: true,
         },
         {
           text: "库",
           collapsed: true,
           items: [
-            {
-              text: "事件",
-            },
             {
               text: "脚本动画",
             },

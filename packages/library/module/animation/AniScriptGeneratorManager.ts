@@ -16,6 +16,12 @@ export class AniScriptGeneratorManager {
   private static configLibrary = new Map<string, unknown>();
   private static generatorLibrary = new Map<string, AniScriptGenerator<any>>();
 
+  /**
+   * 注册脚本配置动画
+   * @param config 配置模板
+   * @param generator 脚本动画生成器函数
+   * @returns this
+   */
   static register = function <C extends BasicAniScriptConfig>({
     config,
     generator,
@@ -40,6 +46,12 @@ export class AniScriptGeneratorManager {
     return AniScriptGeneratorManager;
   };
 
+  /**
+   * 生成脚本配置
+   * @param name 动画名
+   * @param merge 初始参数
+   * @returns BasicAniScriptConfig
+   */
   static generateConfig(name: string, merge: object): BasicAniScriptConfig {
     if (!AniScriptGeneratorManager.configLibrary.has(name)) {
       console.warn(`event library can not found config by name: ${name}`);
@@ -74,6 +86,14 @@ export class AniScriptGeneratorManager {
     return template;
   }
 
+  /**
+   * 生成脚本
+   * @param engine 当前使用的engine
+   * @param target 生成脚本的目标对象
+   * @param attribute 生成脚本目标对象的动画属性
+   * @param config 生成的配置单
+   * @returns fun
+   */
   static generateScript(
     engine: EngineSupport,
     target: object,
@@ -95,6 +115,11 @@ export class AniScriptGeneratorManager {
     );
   }
 
+  /**
+   * 管理器中是否已经注册了脚本
+   * @param name 脚本名
+   * @returns boolean
+   */
   static has(name: string): boolean {
     return AniScriptGeneratorManager.configLibrary.has(name);
   }

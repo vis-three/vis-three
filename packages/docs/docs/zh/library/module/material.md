@@ -528,5 +528,63 @@ export interface ShaderMaterialConfig extends MaterialConfig {
 ```
 
 :::tip
-着色器配置配通过`@vis-three/middleware`中的`ShaderGeneratorManager`获取相关预置的着色器及其配置。
+着色器配置配通过`ShaderGeneratorManager`获取相关预置的着色器及其配置。
 :::
+
+# ShaderGeneratorManager
+
+着色器配置生成器管理器。
+
+## 静态方法
+
+### register
+
+- **详情**
+
+```ts
+/**
+ * 注册着色器文件
+ * @param shader
+ */
+register: (shader: Shader) => void
+```
+
+### getShader
+
+- **详情**
+
+```ts
+/**
+ * 获取着色器文件
+ * @param name 文件名
+ * @returns shader | null
+ */
+getShader(name: string): Shader | null
+```
+
+### generateConfig
+
+- **详情**
+
+```ts
+/**
+ * 获取该着色器文件对应的配置
+ * @param name 作色器名
+ * @param uniforms 合并的参数
+ * @returns ShaderConfig
+ */
+generateConfig(name: string, uniforms?: Record<string, IUniform>):ShaderConfig;
+```
+
+### cloneShader
+
+- **详情**
+
+```ts
+/**
+ * 克隆着色器
+ * @param shader
+ * @returns Shader
+ */
+cloneShader(shader: Shader): Shader
+```
