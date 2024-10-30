@@ -1,9 +1,9 @@
 import { Shader } from "@vis-three/module-material";
 
-
 export const colorMixShader: Shader = {
   name: "colorMixShader",
   uniforms: {
+    /**颜色A */
     colorA: {
       value: {
         r: 1,
@@ -11,6 +11,7 @@ export const colorMixShader: Shader = {
         b: 0,
       },
     },
+    /**颜色B */
     colorB: {
       value: {
         r: 0,
@@ -18,6 +19,7 @@ export const colorMixShader: Shader = {
         b: 0,
       },
     },
+    /**混合百分比 */
     percent: {
       value: 0.5,
     },

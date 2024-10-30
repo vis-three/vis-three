@@ -136,25 +136,29 @@ export const zhConfig = {
           collapsed: true,
         },
         {
-          text: "库",
+          text: "脚本动画",
+          items: getLibraryModules("aniScript"),
           collapsed: true,
-          items: [
-            {
-              text: "脚本动画",
-            },
-            {
-              text: "着色器",
-            },
-            {
-              text: "解析器",
-            },
-            {
-              text: "修改器",
-            },
-            {
-              text: "约束器",
-            },
-          ],
+        },
+        {
+          text: "着色器",
+          items: getLibraryModules("shader"),
+          collapsed: true,
+        },
+        {
+          text: "解析器",
+          items: getLibraryModules("parser"),
+          collapsed: true,
+        },
+        {
+          text: "修改器",
+          items: getLibraryModules("modifier"),
+          collapsed: true,
+        },
+        {
+          text: "约束器",
+          items: getLibraryModules("constraintor"),
+          collapsed: true,
         },
       ],
     },

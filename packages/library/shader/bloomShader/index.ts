@@ -3,11 +3,17 @@ import { Shader } from "@vis-three/module-material";
 export const BloomShader: Shader = {
   name: "BloomShader",
   uniforms: {
+    /**亮度 */
     brightness: { value: 0.8 },
+    /**发光的拓展范围 */
     extend: { value: 5.0 },
+    /**衰减比例 */
     specular: { value: 0.9 },
+    /**渐变降低的值 */
     outFade: { value: 2.0 },
+    /**渐变进入的值 */
     inFade: { value: 0.3 },
+    /**发光颜色 */
     color: {
       value: {
         r: 1,

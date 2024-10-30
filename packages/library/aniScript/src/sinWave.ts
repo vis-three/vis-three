@@ -5,9 +5,13 @@ import {
 import { EngineSupport, RenderEvent } from "@vis-three/tdcm";
 
 export interface SinWave extends BasicAniScriptConfig {
+  /**波长 */
   wavelength: number;
+  /**波段整体偏移 */
   offset: number;
+  /**波的评率 */
   amplitude: number;
+  /**波的速度 */
   speed: number;
 }
 

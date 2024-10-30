@@ -1,11 +1,13 @@
 import { Shader } from "@vis-three/module-material";
 
-
 export const uvPulseShader: Shader = {
   name: "uvPulseShader",
   uniforms: {
+    /**时间 */
     time: { value: 0.0 },
+    /**冲击波的比例 */
     width: { value: 0.5 },
+    /**冲击颜色 */
     color: {
       value: {
         r: 1,
@@ -13,6 +15,7 @@ export const uvPulseShader: Shader = {
         b: 0,
       },
     },
+    /**冲击的中心 */
     center: {
       value: {
         x: 0.5,

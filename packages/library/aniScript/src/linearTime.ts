@@ -5,6 +5,7 @@ import {
 import { EngineSupport, RenderEvent } from "@vis-three/tdcm";
 
 export interface LinearTime extends BasicAniScriptConfig {
+  /**时间倍率 */
   multiply: number;
 }
 

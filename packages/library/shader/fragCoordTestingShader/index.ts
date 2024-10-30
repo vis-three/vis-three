@@ -1,9 +1,9 @@
 import { Shader } from "@vis-three/module-material";
 
-
 export const fragCoordTestingShader: Shader = {
   name: "fragCoordTestingShader",
   uniforms: {
+    /**采样尺寸 */
     resolution: {
       value: {
         x: 1920,
