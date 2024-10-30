@@ -11,10 +11,15 @@ import { ObjectConfig } from "@vis-three/module-object";
 
 export interface RotationTo extends BasicEventConfig {
   params: {
+    /**目标物体 */
     target: string;
+    /**目标角度欧拉角 */
     rotation: Vector3Config;
+    /**延迟时间 */
     delay: number;
+    /**动画持续时间 */
     duration: number;
+    /**动画变化函数 */
     timingFunction: TIMINGFUNCTION;
   };
 }

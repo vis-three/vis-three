@@ -10,17 +10,25 @@ import { timingFunction, TIMINGFUNCTION } from "./common";
 
 export interface Vector3To extends BasicEventConfig {
   params: {
+    /**目标物体 */
     target: string;
+    /**目标属性 */
     attribute: string;
+    /**属性对应的x,y,z分量 */
     props: {
       x: string;
       y: string;
       z: string;
     };
+    /**延迟时间 */
     delay: number;
+    /**动画持续时间 */
     duration: number;
+    /**目标值 */
     to: Partial<Vector3Config>;
+    /**是否同步变化后配置 */
     compiling: boolean;
+    /**动画变化函数 */
     timingFunction: TIMINGFUNCTION;
   };
 }

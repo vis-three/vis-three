@@ -9,9 +9,12 @@ import { AnimationConfig } from "@vis-three/module-animation";
 
 export interface SwitchAnimate extends BasicEventConfig {
   params: {
+    /**目标动画 */
     target: string;
+    /**自动播放，播放，关闭 */
     toggle: "auto" | "on" | "off";
-    delay: 0;
+    /**延迟时间 */
+    delay: number;
   };
 }
 

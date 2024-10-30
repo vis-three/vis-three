@@ -10,8 +10,11 @@ import { SceneEngineSupport } from "@vis-three/module-scene";
 
 export interface SetPosition extends BasicEventConfig {
   params: {
+    /**目标物体 */
     target: string;
+    /**位置信息 */
     position: Vector3Config;
+    /**延迟时间 */
     delay: number;
   };
 }

@@ -10,7 +10,9 @@ import { CameraEngineSupport } from "@vis-three/module-camera";
 
 export interface ChangeCamera extends BasicEventConfig {
   params: {
+    /**要更换的相机 */
     camera: string;
+    /**延迟时间 */
     delay: number;
   };
 }

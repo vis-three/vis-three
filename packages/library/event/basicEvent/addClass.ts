@@ -4,8 +4,11 @@ import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 
 export interface AddClass extends BasicEventConfig {
   params: {
+    /**dom物体，一个或者多个，或者engine中所有 */
     target: string | string[] | "all";
+    /**class名字 */
     className: string;
+    /**延迟时间 */
     delay: number;
   };
 }

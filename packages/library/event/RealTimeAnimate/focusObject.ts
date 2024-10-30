@@ -13,13 +13,21 @@ import { CameraConfig } from "@vis-three/module-camera";
 
 export interface FocusObject extends BasicEventConfig {
   params: {
+    /**目标物体 */
     target: string;
+    /**所使用的相机，可以不传，不传为当前的相机 */
     camera: string;
+    /**聚焦的坐标空间 */
     space: "local" | "world";
+    /**相机的偏移距离 */
     offset: Vector3Config;
+    /**延迟时间 */
     delay: number;
+    /**动画持续时间 */
     duration: number;
+    /**动画变化函数 */
     timingFunction: TIMINGFUNCTION;
+    /**是否双击自动返回 */
     back: boolean;
   };
 }

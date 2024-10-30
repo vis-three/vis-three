@@ -12,10 +12,15 @@ import { OrbitControlsEngine } from "@vis-three/plugin-orbit-controls";
 
 export interface OrbitTargetMove extends BasicEventConfig {
   params: {
+    /**目标物体 */
     target: string;
+    /**偏移量 */
     offset: Vector3Config;
+    /**延迟时间 */
     delay: number;
+    /**动画持续时间 */
     duration: number;
+    /**动画变化函数 */
     timingFunction: TIMINGFUNCTION;
   };
 }

@@ -8,6 +8,7 @@ import { BasicEventConfig, EventGenerator } from "@vis-three/module-object";
 
 export interface OpenWindow extends BasicEventConfig {
   params: {
+    /**链接地址 */
     url: string;
   };
 }

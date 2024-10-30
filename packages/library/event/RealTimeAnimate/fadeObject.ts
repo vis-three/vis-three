@@ -13,11 +13,17 @@ import { MeshConfig } from "@vis-three/module-mesh";
 
 export interface FadeObject extends BasicEventConfig {
   params: {
+    /**目标物体 */
     target: string;
+    /**渐变方向 */
     direction: "in" | "out";
+    /**延迟时间 */
     delay: number;
+    /**动画持续时间 */
     duration: number;
+    /**动画变化函数 */
     timingFunction: TIMINGFUNCTION;
+    /**是否影响visible */
     visible: boolean;
   };
 }

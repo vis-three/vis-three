@@ -12,10 +12,15 @@ import { MeshConfig } from "@vis-three/module-mesh";
 
 export interface MoveSpacing extends BasicEventConfig {
   params: {
+    /**目标物体 */
     target: string;
+    /**移动距离 */
     spacing: Vector3Config;
+    /**延迟时间 */
     delay: number;
+    /**动画持续时间 */
     duration: number;
+    /**动画变化函数 */
     timingFunction: TIMINGFUNCTION;
   };
 }

@@ -11,11 +11,17 @@ import { ObjectConfig } from "@vis-three/module-object";
 
 export interface MoveToObject extends BasicEventConfig {
   params: {
+    /**要移动的物体 */
     target: string;
+    /**参照物体 */
     to: string;
+    /**位置偏移量 */
     offset: Vector3Config;
+    /**延迟时间 */
     delay: number;
+    /**动画持续时间 */
     duration: number;
+    /**动画变化函数 */
     timingFunction: TIMINGFUNCTION;
   };
 }

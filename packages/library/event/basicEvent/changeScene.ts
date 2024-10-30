@@ -9,7 +9,9 @@ import { SceneEngineSupport } from "@vis-three/module-scene";
 
 export interface ChangeScene extends BasicEventConfig {
   params: {
+    /**当前场景 */
     scene: string;
+    /**延迟时间 */
     delay: number;
   };
 }

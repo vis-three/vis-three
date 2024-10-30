@@ -11,11 +11,17 @@ import { timingFunction, TIMINGFUNCTION } from "./common";
 
 export interface ColorChange extends BasicEventConfig {
   params: {
+    /**目标物体 */
     target: string;
+    /**目标属性 */
     attribute: string;
+    /**目标颜色rgb */
     color: string;
+    /**延迟时间 */
     delay: number;
+    /**动画持续时间 */
     duration: number;
+    /**动画变化函数 */
     timingFunction: TIMINGFUNCTION;
   };
 }

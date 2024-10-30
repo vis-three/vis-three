@@ -8,8 +8,11 @@ import { BasicEventConfig, EventGenerator } from "@vis-three/module-object";
 import { Object3D } from "three";
 export interface VisibleObject extends BasicEventConfig {
   params: {
+    /**目标物体 */
     target: string;
+    /**显示状态 */
     visible: boolean;
+    /**延迟时间 */
     delay: number;
   };
 }

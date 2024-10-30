@@ -5,8 +5,11 @@ import { SceneEngineSupport } from "@vis-three/module-scene";
 
 export interface SetParent extends BasicEventConfig {
   params: {
+    /**目标物体 */
     target: string;
+    /**父级物体 */
     parent: string;
+    /**延迟时间 */
     delay: number;
   };
 }
