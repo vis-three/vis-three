@@ -118,6 +118,7 @@ export interface MeshStandardMaterialConfig extends MaterialConfig {
   lightMapIntensity: number;
   metalness: number;
   normalMapType: number;
+  normalScale: Vector2Config;
   refractionRatio: number;
   roughness: number;
   wireframe: boolean;
@@ -151,6 +152,7 @@ export interface MeshPhongMaterialConfig extends MaterialConfig {
   flatShading: boolean;
   lightMapIntensity: number;
   normalMapType: number;
+  normalScale: Vector2Config;
   refractionRatio: number;
   wireframe: boolean;
   wireframeLinecap: string;
@@ -366,6 +368,10 @@ export const getMeshStandardMaterialConfig =
       lightMapIntensity: 1,
       metalness: 0,
       normalMapType: TangentSpaceNormalMap,
+      normalScale: {
+        x: 1,
+        y: 1,
+      },
       refractionRatio: 0.98,
       roughness: 1,
       wireframe: false,
@@ -432,6 +438,7 @@ export const getMeshPhongMaterialConfig = function (): MeshPhongMaterialConfig {
     flatShading: false,
     lightMapIntensity: 1,
     normalMapType: TangentSpaceNormalMap,
+    normalScale: { x: 1, y: 1 },
     refractionRatio: 0.98,
     wireframe: false,
     wireframeLinecap: "round",

@@ -62,6 +62,10 @@ const d = function() {
     lightMapIntensity: 1,
     metalness: 0,
     normalMapType: h,
+    normalScale: {
+      x: 1,
+      y: 1
+    },
     refractionRatio: 0.98,
     roughness: 1,
     wireframe: !1,
@@ -121,6 +125,7 @@ const d = function() {
     flatShading: !1,
     lightMapIntensity: 1,
     normalMapType: h,
+    normalScale: { x: 1, y: 1 },
     refractionRatio: 0.98,
     wireframe: !1,
     wireframeLinecap: "round",

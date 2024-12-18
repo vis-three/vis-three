@@ -107,6 +107,7 @@ export interface MeshStandardMaterialConfig extends MaterialConfig {
     lightMapIntensity: number;
     metalness: number;
     normalMapType: number;
+    normalScale: Vector2Config;
     refractionRatio: number;
     roughness: number;
     wireframe: boolean;
@@ -139,6 +140,7 @@ export interface MeshPhongMaterialConfig extends MaterialConfig {
     flatShading: boolean;
     lightMapIntensity: number;
     normalMapType: number;
+    normalScale: Vector2Config;
     refractionRatio: number;
     wireframe: boolean;
     wireframeLinecap: string;
