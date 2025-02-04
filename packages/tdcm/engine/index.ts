@@ -177,6 +177,7 @@ export class EngineSupport
   declare loadResourcesAsync: (urlList: LoadUnit[]) => Promise<MappedEvent>;
   private moduleLifeCycle: Array<{ module: string; order: number }> = [];
   private triggers: Record<string, Trigger> = { object: ObjectTrigger };
+  private modulers: Record<string, Moduler> = {};
 
   constructor(params: Partial<EngineSupportParameters> = {}) {
     super();
@@ -372,6 +373,8 @@ export class EngineSupport
 
     const moduler = new Moduler(options);
 
+    this.modulers[options.type] = moduler;
+
     moduler.compiler.useEngine(this);
 
     this.dataSupportManager.extend(moduler.converter);
@@ -429,8 +432,22 @@ export class EngineSupport
     }
   }
 
-  //TODO: module init
-  init() {}
+  /**
+   * 引擎的初始化，如果定义的模型存在外部资源需要手动调用此api。
+   */
+  async init() {
+    let allPreload: LoadUnit[] = [];
+
+    for (const moduler of Object.values(this.modulers)) {
+      allPreload.push(...moduler.preload);
+    }
+
+    allPreload = Array.from(new Set(allPreload));
+
+    await this.loadResourcesAsync(allPreload).catch((err) => {
+      console.error(`EngineSupport init err: `, err);
+    });
+  }
 
   /**
    * @deprecated

@@ -1,8 +1,9 @@
-import { objectDeepMerge } from "@vis-three/utils";
+import { KeyMappingTo, objectDeepMerge } from "@vis-three/utils";
 import { EngineSupport } from "../../engine";
 import { BasicConfig } from "../common";
 import { Compiler } from "../compiler";
 import { Model, ModelCommands } from "./Model";
+import { LoadUnit } from "@vis-three/plugin-loader-manager";
 
 /**模型选项 */
 export interface ModelOption<
@@ -11,19 +12,26 @@ export interface ModelOption<
   Ctx extends object = object,
   Srd extends object = object,
   Eg extends EngineSupport = EngineSupport,
-  Cpl extends Compiler<Eg> = Compiler<Eg>
+  Cpl extends Compiler<Eg> = Compiler<Eg>,
+  Res extends Record<string, LoadUnit> = Record<string, LoadUnit>
 > {
   /**模型类型 */
   type: string;
+  /**模型依赖的预加载外部资源 */
+  resources?: Res;
   /**模型的配置结构 */
   config: () => Cf;
   /**模型实例的共享属性方法 */
   shared?: Srd;
   /**模型实例的特有属性方法 */
   context?: (
-    this: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx,
+    this: Model<Cf, Obj, Eg, Cpl, KeyMappingTo<Res, object>> &
+      Readonly<Srd> &
+      Ctx,
     params: {
-      model: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx;
+      model: Model<Cf, Obj, Eg, Cpl, KeyMappingTo<Res, object>> &
+        Readonly<Srd> &
+        Ctx;
     }
   ) => Ctx;
   /**模型的命令链 */
@@ -32,28 +40,37 @@ export interface ModelOption<
     Obj,
     Eg,
     Cpl,
-    Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx
+    KeyMappingTo<Res, object>,
+    Model<Cf, Obj, Eg, Cpl, KeyMappingTo<Res, object>> & Readonly<Srd> & Ctx
   >;
   /**模型的生成方法 */
   create: (
-    this: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx,
+    this: Model<Cf, Obj, Eg, Cpl, KeyMappingTo<Res, object>> &
+      Readonly<Srd> &
+      Ctx,
     params: {
-      model: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx;
+      model: Model<Cf, Obj, Eg, Cpl, KeyMappingTo<Res, object>> &
+        Readonly<Srd> &
+        Ctx;
       config: Cf;
       engine: Eg;
       compiler: Cpl;
+      resources: KeyMappingTo<Res, object>;
     }
   ) => Obj;
   /**模型的销毁方法 */
   dispose: (
-    this: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx,
+    this: Model<Cf, Obj, Eg, Cpl, KeyMappingTo<Res, object>> &
+      Readonly<Srd> &
+      Ctx,
     params: {
-      model: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx;
+      model: Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx & Res;
       target: Obj;
       puppet: Obj;
       config: Cf;
       engine: Eg;
       compiler: Cpl;
+      resources: KeyMappingTo<Res, object>;
     }
   ) => void;
   /**该模型应用时对其他模型产生的扩展 */
@@ -77,8 +94,9 @@ export const defineModel = function <
   Ctx extends object = object,
   Srd extends object = object,
   Eg extends EngineSupport = EngineSupport,
-  Cpl extends Compiler<Eg> = Compiler<Eg>
->(option: ModelOption<Cf, Obj, Ctx, Srd, Eg, Cpl>) {
+  Cpl extends Compiler<Eg> = Compiler<Eg>,
+  Res extends Record<string, LoadUnit> = Record<string, LoadUnit>
+>(option: ModelOption<Cf, Obj, Ctx, Srd, Eg, Cpl, Res>) {
   return option;
 };
 
@@ -101,6 +119,7 @@ export interface AbstractModelOption<
     Obj,
     Eg,
     Cpl,
+    Record<string, object>,
     Model<Cf, Obj, Eg, Cpl> & Readonly<Srd> & Ctx
   >;
   create?: Cra;
@@ -245,6 +264,7 @@ defineModel.expand = function <
     EObj,
     EEg,
     ECpl,
+    Record<string, object>,
     Model<EC & ECf, EObj, EEg, ECpl> & Readonly<ESrd> & ECtx
   >;
 }) {

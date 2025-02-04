@@ -1,9 +1,9 @@
 import { BaseEvent, EventDispatcher } from "@vis-three/core";
-import { SymbolConfig } from "../../module/common";
+import { BasicConfig } from "../../module/common";
 import { LoadOptions } from "../DataSupportManagerPlugin";
 import { Parser, ResourceHanlder } from "./Parser";
 export interface MappedEvent extends BaseEvent {
-    configMap: Map<string, SymbolConfig>;
+    configMap: Map<string, BasicConfig>;
     resourceMap: Map<string, unknown>;
     resourceConfig: {
         [key: string]: LoadOptions;
@@ -17,7 +17,7 @@ export interface MappingOptions {
     parser?: Record<string, Parser>;
 }
 export declare class ResourceManager extends EventDispatcher {
-    configMap: Map<string, SymbolConfig>;
+    configMap: Map<string, BasicConfig>;
     resourceMap: Map<string, any>;
     private paserMap;
     private defalutParser;

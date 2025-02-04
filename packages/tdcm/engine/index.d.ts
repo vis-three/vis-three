@@ -79,17 +79,66 @@ export declare class EngineSupport extends Engine implements PointerManagerEngin
     loadResourcesAsync: (urlList: LoadUnit[]) => Promise<MappedEvent>;
     private moduleLifeCycle;
     private triggers;
+    private modulers;
     constructor(params?: Partial<EngineSupportParameters>);
+    /**
+     * 导入配置的生命周期执行方法
+     * @param config 配置
+     */
     private loadLifeCycle;
+    /**
+     * 移除配置时的生命周期执行方法
+     * @param config 配置
+     */
     private removeLifeCycle;
+    /**
+     * 加载一个配置
+     * @param config 配置单
+     * @param callback 加载完成后的回调
+     * @returns this
+     */
     loadConfig(config: EngineSupportLoadOptions, callback?: (event?: MappedEvent) => void): this;
+    /**
+     * 异步的加载一个配置
+     * @param config 配置单
+     * @param pretreat 配置单预处理
+     * @returns Promise<MappedEvent>
+     */
     loadConfigAsync(config: EngineSupportLoadOptions, pretreat?: (c: EngineSupportLoadOptions) => EngineSupportLoadOptions): Promise<MappedEvent>;
+    /**
+     * 移除一个配置单
+     * @param config 配置单
+     */
     removeConfig(config: EngineSupportLoadOptions): void;
+    /**
+     * 获取一个对象的配置结构
+     * @param object 物体对象
+     * @returns 配置 | null
+     */
     getObjectConfig<O, C extends BasicConfig>(object: O): C | null;
+    /**
+     * 使用一个配置化模块
+     * @param options 配置化模块选项
+     * @returns this
+     */
     useModule(options: ModuleOptions<any, any>): this;
+    /**
+     * 添加一个触发器
+     * @param name 触发器名称或者标识
+     * @param trigger 触发器对象
+     * @returns this
+     */
     addTrigger(name: string, trigger: Trigger): this;
+    /**
+     * 获取一个触发器
+     * @param name 触发器名称
+     * @returns Trigger
+     */
     getTrigger(name: string): Trigger | null;
-    init(): void;
+    /**
+     * 引擎的初始化，如果定义的模型存在外部资源需要手动调用此api。
+     */
+    init(): Promise<void>;
     /**
      * @deprecated
      * use useModule
@@ -99,4 +148,10 @@ export declare class EngineSupport extends Engine implements PointerManagerEngin
 export interface EngineSupportOptions extends EngineOptions {
     modules: ModuleOptions<any>[];
 }
+/**
+ * 定义一个配置化引擎
+ * @param options 定义引擎的选项
+ * @param params 引擎的参数
+ * @returns engine extends EngineSupport
+ */
 export declare const defineEngineSupport: <E extends EngineSupport = EngineSupport>(options: EngineSupportOptions, params?: Partial<EngineSupportParameters>) => E;

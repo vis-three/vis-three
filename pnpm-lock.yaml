@@ -562,6 +562,9 @@ importers:
       '@vis-three/module-modifier':
         specifier: workspace:^
         version: link:../library/module/modifier
+      '@vis-three/module-object':
+        specifier: workspace:^
+        version: link:../library/module/object
       '@vis-three/module-pass':
         specifier: workspace:^
         version: link:../library/module/pass

@@ -36,6 +36,7 @@ export class Moduler<
   converter: Converter<any, E, O>;
   compiler: O;
   ruler: Ruler;
+  preload: LoadUnit[] = [];
 
   constructor(module: ModuleOptions<E, O>) {
     this.module = module;
@@ -43,6 +44,14 @@ export class Moduler<
     this.type = module.type;
 
     this.ruler = new Ruler(module.rule);
+
+    for (const model of module.models) {
+      if (model.resources) {
+        this.preload.push(...Object.values(model.resources));
+      }
+    }
+
+    this.preload = Array.from(new Set(this.preload));
 
     this.compiler = module.compiler
       ? new module.compiler({

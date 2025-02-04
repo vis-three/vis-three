@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>preload-model</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
+      import {
+        CONFIG_TYPE,
+        SUPPORT_LIFE_CYCLE,
+        defineModel,
+        defineModule,
+        generateConfig,
+      } from "@vis-three/tdcm";
+      import { ObjectRule, getObjectConfig } from "@vis-three/module-object";
+      import * as THREE from "three";
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+
+      class Threelogo extends THREE.Object3D {
+        constructor(model) {
+          super();
+          this.three = model.children[0];
+          this.three.material = this.three.material.clone();
+
+          this.three.position.y = 8;
+          this.three.scale.set(8, 8, 8);
+          this.three.rotation.x = Math.PI / 2;
+
+          this.base = new THREE.Mesh(
+            new THREE.CylinderGeometry(5, 5, 2, 6),
+            new THREE.MeshStandardMaterial({
+              color: "rgb(20, 20, 20)",
+              roughness: 1,
+              metalness: 0.3,
+            })
+          );
+
+          this.add(this.three, this.base);
+        }
+
+        setColor(color) {
+          this.three.material.color.setStyle(color);
+        }
+      }
+
+      const threeLogo = defineModel({
+        type: "ThreeLogo",
+        config: () =>
+          Object.assign(getObjectConfig(), {
+            color: "rgb(255, 0, 0)",
+          }),
+        resources: { three: "/model/three.obj" },
+        commands: {
+          set: {
+            color({ target, value }) {
+              target.setColor(value);
+            },
+          },
+        },
+        create({ config, resources }) {
+          const logo = new Threelogo(resources.three.clone(true));
+          logo.setColor(config.color);
+          logo.position.set(
+            config.position.x,
+            config.position.y,
+            config.position.z
+          );
+          return logo;
+        },
+        dispose() {},
+      });
+
+      const logoModule = defineModule({
+        type: "logo",
+        object: true,
+        rule: ObjectRule,
+        models: [threeLogo],
+        lifeOrder: SUPPORT_LIFE_CYCLE.THREE,
+      });
+
+      const engine = new ModelingEngineSupport()
+        .useModule(logoModule)
+        .setDom(document.getElementById("app"))
+        .setStats(true)
+        .setSize()
+        .play();
+
+      engine.loaderManager.setPath(import.meta.env.BASE_URL);
+
+      engine.init().then(() => {
+        generateConfig.injectEngine = engine;
+
+        const scene = generateConfig(CONFIG_TYPE.SCENE);
+
+        engine.setSceneBySymbol(scene.vid);
+
+        generateConfig.injectScene = true;
+
+        generateConfig(CONFIG_TYPE.DIRECTIONALLIGHT, {
+          color: "rgb(255, 255, 255)",
+          position: {
+            x: -10,
+            y: 30,
+            z: 5,
+          },
+          intensity: 8,
+        });
+
+        const logo1 = generateConfig("ThreeLogo", {
+          position: {
+            x: -20,
+          },
+        });
+
+        const logo2 = generateConfig("ThreeLogo", {
+          color: "rgb(0, 255, 0)",
+          position: {
+            x: 0,
+          },
+        });
+
+        const logo3 = generateConfig("ThreeLogo", {
+          color: "rgb(0, 0, 255)",
+          position: {
+            x: 20,
+          },
+        });
+
+        const gui = new GUI();
+
+        gui.addColor(logo1, "color");
+        gui.addColor(logo2, "color");
+        gui.addColor(logo3, "color");
+      });
+
+      window.engine = engine;
+    </script>
+  </body>
+</html>

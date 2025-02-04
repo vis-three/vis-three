@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/tdcm",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "vis-three three-dimensional config model ",
   "main": "dist/vis-three.tdcm.umd.js",
   "module": "dist/vis-three.tdcm.es.js",

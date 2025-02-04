@@ -18,7 +18,7 @@ export interface CompilerParameters<E extends EngineSupport = EngineSupport> {
   /**所属的模块类型 */
   module: string;
   /**可用的配置化模型 */
-  models: ModelOption<any, any, any, any, E>[];
+  models: ModelOption<any, any, any, any, E, any>[];
 }
 
 export interface Builder<
@@ -104,6 +104,18 @@ export class Compiler<E extends EngineSupport = EngineSupport> {
           engine: this.engine,
           compiler: this as Compiler<E>,
         });
+
+    if (option.resources) {
+      model.resources = {};
+      const engine = this.engine;
+      for (const key in option.resources) {
+        model.resources[key] = engine.loaderManager.getResource(
+          typeof option.resources[key] === "object"
+            ? option.resources[key].url
+            : option.resources[key]
+        ) as object;
+      }
+    }
 
     if (option.context) {
       Object.assign(model, option.context({ model }));

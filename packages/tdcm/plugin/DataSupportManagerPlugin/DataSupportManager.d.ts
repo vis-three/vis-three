@@ -6,12 +6,13 @@ export declare class DataSupportManager extends EventDispatcher {
     dataSupportMap: Map<string, Converter<any, any>>;
     constructor();
     /**
-     * 编译器扩展
-     * @param compiler
+     * 转换器拓展
+     * @param dataSupport 转换器
+     * @param focus 是否强制覆盖
      */
     extend(dataSupport: Converter<any, any>, focus?: boolean): void;
     /**
-     * 获取该模块下的支持插件
+     * 获取该模块下的转换器
      * @param type MODULETYPE
      * @returns Converter
      */
@@ -29,6 +30,12 @@ export declare class DataSupportManager extends EventDispatcher {
      * @returns
      */
     getConfigfromModule<T extends BasicConfig>(module: string, vid: string): T | null;
+    /**
+     * 从一个模块中通过vid标识获取配置
+     * @param module 模块类型
+     * @param vid vid标识
+     * @returns 配置
+     */
     getConfigFromModule<T extends BasicConfig>(module: string, vid: string): T | null;
     /**
      * @deprecated use getConfigFromModules
@@ -37,6 +44,12 @@ export declare class DataSupportManager extends EventDispatcher {
      * @returns
      */
     getConfigfromModules<T extends BasicConfig>(modules: string[] | Record<string, any>, vid: string): T | null;
+    /**
+     * 从多个模块中通过vid标识获取配置
+     * @param modules 模块类型
+     * @param vid vid标识
+     * @returns 配置
+     */
     getConfigFromModules<T extends BasicConfig>(modules: string[] | Record<string, any>, vid: string): T | null;
     /**
      * 通过vid标识移除相关配置对象

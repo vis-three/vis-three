@@ -22,3 +22,6 @@ export type DeepArrayToObject<T> = T extends Function ? T : T extends object ? {
 export type KeyEnum<T> = {
     [P in keyof T]: P;
 };
+export type KeyMappingTo<O, T> = {
+    [P in keyof O]: T;
+};

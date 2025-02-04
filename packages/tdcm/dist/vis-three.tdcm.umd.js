@@ -138,13 +138,24 @@
   class Model extends core.EventDispatcher {
     constructor(params) {
       super();
+      this.resources = {};
       this.config = params.config;
       this.engine = params.engine;
       this.compiler = params.compiler;
     }
+    /**
+     * 转化为目标配置
+     * @param vid vid标识
+     * @returns Config | null
+     */
     toConfig(vid) {
       return this.engine.getConfigBySymbol(vid);
     }
+    /**
+     * 转化为目标模型
+     * @param vid vid标识或者 目标对象
+     * @returns model | null
+     */
     toModel(vid) {
       if (typeof vid === "string") {
         return this.engine.compilerManager.getModelBySymbol(vid);
@@ -158,24 +169,52 @@
         }
       }
     }
+    /**
+     * 转化为目标物体
+     * @param vid vid标识
+     * @returns object
+     */
     toObject(vid) {
       return this.engine.getObjectBySymbol(vid);
     }
+    /**
+     * 转化为目标物体
+     * @param vid vid标识
+     * @returns object
+     */
     toPuppet(vid) {
       return this.toObject(vid);
     }
+    /**
+     * 转化为异步执行
+     * @param fun 所需要执行的函数方法
+     */
     toAsync(fun) {
       AsyncScheduler.exec(fun);
     }
+    /**
+     * 将函数方法加入到下一个异步队列中
+     * @param fun 函数方法
+     */
     asyncNextTick(fun) {
       AsyncScheduler.nextTick(fun);
     }
+    /**
+     * 转化为触发器触发
+     * @param name 触发器名称
+     * @param fun 需要触发器触发的函数方法
+     */
     toTrigger(name, fun) {
       const trigger = this.engine.getTrigger(name);
       if (trigger) {
         trigger.register(fun);
       }
     }
+    /**
+     * 通用的处理方法
+     * @param params 操作通知参数
+     * @returns
+     */
     process(params) {
       const modelParams = {
         ...params,
@@ -218,6 +257,7 @@
                 puppet: this.puppet,
                 engine: this.engine,
                 compiler: this.compiler,
+                resources: this.resources,
                 ...modelParams
               });
               return;
@@ -227,6 +267,11 @@
       }
       this[params.operate](modelParams);
     }
+    /**
+     * 通用的操作添加方法
+     * @param params 操作通知参数
+     * @returns
+     */
     add(params) {
       let target = this.puppet;
       for (const key of params.path) {
@@ -239,6 +284,11 @@
       }
       target[params.key] = params.value;
     }
+    /**
+     * 通用的操作设置方法
+     * @param params 操作通知参数
+     * @returns
+     */
     set(params) {
       let target = this.puppet;
       for (const key of params.path) {
@@ -251,6 +301,11 @@
       }
       target[params.key] = params.value;
     }
+    /**
+     * 通用的操作删除方法
+     * @param params 操作通知参数
+     * @returns
+     */
     delete(params) {
       let target = this.puppet;
       for (const key of params.path) {
@@ -263,15 +318,22 @@
       }
       target[params.key] = params.value;
     }
+    /**
+     * 模型生成方法内部会调用createPuppet
+     */
     create() {
       this.config[Symbol.for(SYMBOL_MODEL)] = this;
       this.puppet = this.createPuppet.call(this, {
         model: this,
         config: this.config,
         engine: this.engine,
-        compiler: this.compiler
+        compiler: this.compiler,
+        resources: this.resources || {}
       });
     }
+    /**
+     * 模型销毁方法内部会调用disposePuppet
+     */
     dispose() {
       this.disposePuppet.call(this, {
         model: this,
@@ -279,7 +341,8 @@
         puppet: this.puppet,
         config: this.config,
         engine: this.engine,
-        compiler: this.compiler
+        compiler: this.compiler,
+        resources: this.resources || {}
       });
       this.config[Symbol.for(SYMBOL_MODEL)] = void 0;
       this.clear();
@@ -362,14 +425,29 @@
     getMap() {
       return null;
     }
+    /**
+     * 使用引擎
+     * @param engine 继承于EngineSupport的engine
+     * @returns this
+     */
     useEngine(engine) {
       this.engine = engine;
       return this;
     }
+    /**
+     * 设置配置化编译目标
+     * @param target 配置化编译对象结构
+     * @returns this
+     */
     setTarget(target) {
       this.target = target;
       return this;
     }
+    /**
+     * 编译操作添加
+     * @param config 添加的配置
+     * @returns 该配置对应的模型puppet或者空
+     */
     add(config) {
       if (!this.builders.has(config.type)) {
         console.warn(
@@ -383,6 +461,15 @@
         engine: this.engine,
         compiler: this
       });
+      if (option.resources) {
+        model.resources = {};
+        const engine = this.engine;
+        for (const key in option.resources) {
+          model.resources[key] = engine.loaderManager.getResource(
+            typeof option.resources[key] === "object" ? option.resources[key].url : option.resources[key]
+          );
+        }
+      }
       if (option.context) {
         Object.assign(model, option.context({ model }));
       }
@@ -396,6 +483,11 @@
       model.emit(MODEL_EVENT.COMPILED);
       return model.puppet;
     }
+    /**
+     * 编译操作移除
+     * @param config 移除的配置
+     * @returns this
+     */
     remove(config) {
       const vid = config.vid;
       if (!this.map.has(vid)) {
@@ -418,6 +510,11 @@
       model.emit(MODEL_EVENT.COMPILED);
       return this;
     }
+    /**
+     * 编译操作覆盖
+     * @param config 覆盖的配置
+     * @returns this
+     */
     cover(config) {
       const vid = config.vid;
       if (!this.map.has(vid)) {
@@ -434,6 +531,12 @@
       });
       return this;
     }
+    /**
+     * 编译操作运行时的编译处理
+     * @param vid 配置标识
+     * @param notice 运行时的操作通知
+     * @returns this
+     */
     compile(vid, notice) {
       if (!this.map.has(vid)) {
         console.warn(
@@ -451,6 +554,10 @@
       model.emit(MODEL_EVENT.COMPILED);
       return this;
     }
+    /**
+     * 编译该实例目标下所有的配置
+     * @returns this
+     */
     compileAll() {
       const target = this.target;
       for (const config of Object.values(target)) {
@@ -458,6 +565,10 @@
       }
       return this;
     }
+    /**
+     * 该编译器的销毁方法
+     * @returns this
+     */
     dispose() {
       for (const model of this.map.values()) {
         model.dispose();
@@ -466,16 +577,37 @@
       this.target = {};
       return this;
     }
+    /**
+     * 获取一个对象的标识
+     * @param object 物体对象
+     * @returns vid |null
+     */
     getObjectSymbol(object) {
       return this.symbolMap.get(object) || null;
     }
+    /**
+     * 通过对象标识获取物体对象
+     * @param vid 对象标识
+     * @returns 物体对象 | null
+     */
     getObjectBySymbol(vid) {
       var _a;
       return ((_a = this.map.get(vid)) == null ? void 0 : _a.puppet) || null;
     }
+    /**
+     * 通过对象标识获取配置化模型
+     * @param vid 对象标识
+     * @returns 配置化模型 | null
+     */
     getModelBySymbol(vid) {
       return this.map.get(vid) || null;
     }
+    /**
+     * 使用一个配置化模型
+     * @param option 配置化模型选项
+     * @param callback 使用后的回调函数
+     * @returns this
+     */
     useModel(option, callback) {
       if (CONFIG_MODEL[option.type]) {
         console.warn(
@@ -563,7 +695,7 @@
     },
     symbol: {
       generator: nanoid.nanoid,
-      validator: (id) => id.length === 21
+      validator: (id) => typeof id === "string" && id.length === 21
     },
     engine: void 0
   };
@@ -796,9 +928,6 @@
   generateConfig.autoInject = true;
   generateConfig.injectScene = false;
   generateConfig.injectEngine = null;
-  const toSymbol = function(config) {
-    return config.vid;
-  };
   const clone = (object, options = {}) => {
     let jsonObject = JSON.stringify(object, JSONHandler.stringify);
     const detail = {};
@@ -1438,14 +1567,24 @@
   const createSymbol = function() {
     return globalOption.symbol.generator();
   };
+  const toSymbol = function(config) {
+    return config.vid;
+  };
   const emptyHandler = function() {
   };
   class Moduler {
     constructor(module2) {
       this.type = "";
+      this.preload = [];
       this.module = module2;
       this.type = module2.type;
       this.ruler = new Ruler(module2.rule);
+      for (const model of module2.models) {
+        if (model.resources) {
+          this.preload.push(...Object.values(model.resources));
+        }
+      }
+      this.preload = Array.from(new Set(this.preload));
       this.compiler = module2.compiler ? new module2.compiler({
         module: module2.type,
         models: module2.models
@@ -1468,8 +1607,9 @@
       this.compilerMap = /* @__PURE__ */ new Map();
     }
     /**
-     * 编译器扩展
-     * @param compiler
+     * 编译器拓展
+     * @param compiler 拓展的编译器
+     * @param focus 强制覆盖
      */
     extend(compiler, focus = false) {
       if (this.compilerMap.has(compiler.MODULE)) {
@@ -1481,6 +1621,11 @@
         this.compilerMap.set(compiler.MODULE, compiler);
       }
     }
+    /**
+     * 获取编译器
+     * @param module 编译器所属的模块
+     * @returns compiler | null
+     */
     getCompiler(module2) {
       if (this.compilerMap.has(module2)) {
         return this.compilerMap.get(module2);
@@ -1517,7 +1662,11 @@
       }
       return null;
     }
-    // TODO: getModelBySymbol
+    /**
+     * 通过vid标识获取相应的配置化模型
+     * @param vid vid标识
+     * @returns model
+     */
     getModelBySymbol(vid) {
       for (const compiler of this.compilerMap.values()) {
         const model = compiler.getModelBySymbol(vid);
@@ -1536,6 +1685,12 @@
     getObjectfromModule(module2, vid) {
       return this.getObjectFromModule(module2, vid);
     }
+    /**
+     * 从一个模块中通过vid获取物体对象
+     * @param module 指定模块
+     * @param vid vid标识
+     * @returns object | null
+     */
     getObjectFromModule(module2, vid) {
       var _a;
       if (!this.compilerMap.has(module2)) {
@@ -1554,6 +1709,12 @@
     getObjectfromModules(modules, vid) {
       return this.getObjectFromModules(modules, vid);
     }
+    /**
+     * 从多个模块中通过vid获取物体
+     * @param modules 指定的多个模块
+     * @param vid vid标识
+     * @returns object | null
+     */
     getObjectFromModules(modules, vid) {
       var _a;
       if (!Array.isArray(modules)) {
@@ -1571,6 +1732,10 @@
       }
       return null;
     }
+    /**
+     * 整个编译器的销毁方法
+     * @returns this
+     */
     dispose() {
       for (const compiler of this.compilerMap.values()) {
         compiler.dispose();
@@ -1627,8 +1792,9 @@
       this.dataSupportMap = /* @__PURE__ */ new Map();
     }
     /**
-     * 编译器扩展
-     * @param compiler
+     * 转换器拓展
+     * @param dataSupport 转换器
+     * @param focus 是否强制覆盖
      */
     extend(dataSupport, focus = false) {
       if (this.dataSupportMap.has(dataSupport.MODULE)) {
@@ -1644,7 +1810,7 @@
       }
     }
     /**
-     * 获取该模块下的支持插件
+     * 获取该模块下的转换器
      * @param type MODULETYPE
      * @returns Converter
      */
@@ -1680,6 +1846,12 @@
     getConfigfromModule(module2, vid) {
       return this.getConfigFromModule(module2, vid);
     }
+    /**
+     * 从一个模块中通过vid标识获取配置
+     * @param module 模块类型
+     * @param vid vid标识
+     * @returns 配置
+     */
     getConfigFromModule(module2, vid) {
       if (!this.dataSupportMap.has(module2)) {
         console.warn(`data support manager can not found this module: ${module2}`);
@@ -1697,6 +1869,12 @@
     getConfigfromModules(modules, vid) {
       return this.getConfigFromModules(modules, vid);
     }
+    /**
+     * 从多个模块中通过vid标识获取配置
+     * @param modules 模块类型
+     * @param vid vid标识
+     * @returns 配置
+     */
     getConfigFromModules(modules, vid) {
       if (!Array.isArray(modules)) {
         modules = Object.keys(modules);
@@ -1843,10 +2021,10 @@
         engine.getConfigBySymbol = function(vid) {
           return dataSupportManager.getConfigBySymbol(vid);
         };
-        engine.getConfigfromModule = function(module2, vid) {
+        engine.getConfigFromModule = function(module2, vid) {
           return dataSupportManager.getConfigfromModule(module2, vid);
         };
-        engine.getConfigfromModules = function(modules, vid) {
+        engine.getConfigFromModules = function(modules, vid) {
           return dataSupportManager.getConfigfromModules(modules, vid);
         };
         engine.removeConfigBySymbol = function(...vids) {
@@ -2198,12 +2376,22 @@
         this.validator = validator;
       }
     }
+    /**
+     * 模块条件追加，追加的模块在内部通过校验后会作为触发器的条件模块
+     * @param module 模块类型
+     * @returns this
+     */
     add(module2) {
       if (this.validator(module2)) {
         this.condition[module2] = false;
       }
       return this;
     }
+    /**
+     * 将一个模块标记为已完成，如果所有的模块都完成会自动触发内部的缓存方法执行。
+     * @param module 模块类型
+     * @returns this
+     */
     reach(module2) {
       if (this.condition[module2] === void 0) {
         return this;
@@ -2214,11 +2402,21 @@
       }
       return this;
     }
+    /**
+     * 注册一个触发器触发时需要执行的方法
+     * @param fun immediate是一个立即执行的标识
+     * 这个方法在加入触发器之前会立即执行一次，如果返回为true，就不会加入触发器
+     * 如果返回为false就会加入触发器
+     * 函数内部可以通过immediate判断是否需要使用该功能
+     */
     register(fun) {
       if (!fun(true)) {
         this.list.push(fun);
       }
     }
+    /**
+     * 触发器的执行方法，执行完之后会自动调用重置方法，不建议手动执行。
+     */
     trig() {
       const list = this.list;
       for (const fun of list) {
@@ -2226,12 +2424,19 @@
       }
       this.reset();
     }
+    /**
+     * 触发器的重置方法，会重置条件与缓存方法列表。
+     */
     reset() {
       this.list = [];
       Object.keys(this.condition).forEach((key) => {
         this.condition[key] = false;
       });
     }
+    /**
+     * 触发器的检测方法，检测所有的条件是否达成。
+     * @returns boolean
+     */
     check() {
       return !Object.values(this.condition).includes(false);
     }
@@ -2257,9 +2462,14 @@
       super();
       this.moduleLifeCycle = [];
       this.triggers = { object: ObjectTrigger };
+      this.modulers = {};
       this.install(pluginLoaderManager.LoaderManagerPlugin(params.LoaderManagerPlugin)).install(pluginPointerManager.PointerManagerPlugin(params.PointerManagerPlugin)).install(pluginEventManager.EventManagerPlugin(params.EventManagerPlugin)).install(pluginRenderManager.RenderManagerPlugin(params.RenderManagerPlugin)).install(ResourceManagerPlugin(params.ResourceManagerPlugin)).install(DataSupportManagerPlugin(params.DataSupportManagerPlugin)).install(CompilerManagerPlugin(params.CompilerManagerPlugin));
       this.exec(LoaderDataSupportStrategy()).exec(LoaderMappingStrategy()).exec(CompilerSupportStrategy());
     }
+    /**
+     * 导入配置的生命周期执行方法
+     * @param config 配置
+     */
     loadLifeCycle(config) {
       const dataSupportManager = this.dataSupportManager;
       const triggers = this.triggers;
@@ -2271,6 +2481,10 @@
         }
       }
     }
+    /**
+     * 移除配置时的生命周期执行方法
+     * @param config 配置
+     */
     removeLifeCycle(config) {
       const dataSupportManager = this.dataSupportManager;
       const removeCycle = this.moduleLifeCycle.sort((a, b) => b.order - a.order);
@@ -2285,6 +2499,12 @@
         loaderManager.remove(url);
       });
     }
+    /**
+     * 加载一个配置
+     * @param config 配置单
+     * @param callback 加载完成后的回调
+     * @returns this
+     */
     loadConfig(config, callback) {
       const renderFlag = this.renderManager.hasRendering();
       if (renderFlag) {
@@ -2315,6 +2535,12 @@
       }
       return this;
     }
+    /**
+     * 异步的加载一个配置
+     * @param config 配置单
+     * @param pretreat 配置单预处理
+     * @returns Promise<MappedEvent>
+     */
     loadConfigAsync(config, pretreat) {
       return new Promise((resolve, reject) => {
         const renderFlag = this.renderManager.hasRendering();
@@ -2348,9 +2574,18 @@
         }
       });
     }
+    /**
+     * 移除一个配置单
+     * @param config 配置单
+     */
     removeConfig(config) {
       this.removeLifeCycle(config);
     }
+    /**
+     * 获取一个对象的配置结构
+     * @param object 物体对象
+     * @returns 配置 | null
+     */
     getObjectConfig(object) {
       const symbol = this.getObjectSymbol(object);
       if (symbol) {
@@ -2359,6 +2594,11 @@
         return null;
       }
     }
+    /**
+     * 使用一个配置化模块
+     * @param options 配置化模块选项
+     * @returns this
+     */
     useModule(options) {
       const typeName = emunDecamelize(options.type);
       if (MODULE_TYPE[typeName]) {
@@ -2371,6 +2611,7 @@
         OBJECT_MODULE[options.type] = true;
       }
       const moduler = new Moduler(options);
+      this.modulers[options.type] = moduler;
       moduler.compiler.useEngine(this);
       this.dataSupportManager.extend(moduler.converter);
       this.compilerManager.extend(moduler.compiler);
@@ -2386,6 +2627,12 @@
       });
       return this;
     }
+    /**
+     * 添加一个触发器
+     * @param name 触发器名称或者标识
+     * @param trigger 触发器对象
+     * @returns this
+     */
     addTrigger(name, trigger) {
       if (!this.triggers[name]) {
         this.triggers[name] = trigger;
@@ -2397,6 +2644,11 @@
       }
       return this;
     }
+    /**
+     * 获取一个触发器
+     * @param name 触发器名称
+     * @returns Trigger
+     */
     getTrigger(name) {
       if (!this.triggers[name]) {
         console.warn(
@@ -2408,8 +2660,18 @@
         return this.triggers[name];
       }
     }
-    //TODO: module init
-    init() {
+    /**
+     * 引擎的初始化，如果定义的模型存在外部资源需要手动调用此api。
+     */
+    async init() {
+      let allPreload = [];
+      for (const moduler of Object.values(this.modulers)) {
+        allPreload.push(...moduler.preload);
+      }
+      allPreload = Array.from(new Set(allPreload));
+      await this.loadResourcesAsync(allPreload).catch((err) => {
+        console.error(`EngineSupport init err: `, err);
+      });
     }
     /**
      * @deprecated

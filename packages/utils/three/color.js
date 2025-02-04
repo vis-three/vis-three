@@ -1,3 +1,9 @@
+/**
+ * 解析颜色
+ * @param str 颜色rgb或rgba
+ * @param percent 是否已百分比解析
+ * @returns {r, g, b, a?}
+ */
 export const parseColor = function (str, percent = false) {
     if (str.startsWith("rgba")) {
         const [r, g, b, a] = str

@@ -21,7 +21,8 @@ export interface CommandParameters<
   P extends object = object,
   E extends EngineSupport = EngineSupport,
   O extends Compiler<E> = Compiler<E>,
-  M extends Model<C, P, E, O> = Model<C, P, E, O>
+  R extends Record<string, object> = Record<string, object>,
+  M extends Model<C, P, E, O, R> = Model<C, P, E, O, R>
 > extends ModelNotice {
   model: M;
   ctx: M;
@@ -30,6 +31,7 @@ export interface CommandParameters<
   config: C;
   engine: E;
   compiler: O;
+  resources: R;
 }
 
 export type RegCommand<
@@ -37,10 +39,11 @@ export type RegCommand<
   P extends object = object,
   E extends EngineSupport = EngineSupport,
   O extends Compiler<E> = Compiler<E>,
-  M extends Model<C, P, E, O> = Model<C, P, E, O>
+  R extends Record<string, object> = Record<string, object>,
+  M extends Model<C, P, E, O, R> = Model<C, P, E, O, R>
 > = {
   reg: RegExp;
-  handler: (this: M, params: CommandParameters<C, P, E, O, M>) => void;
+  handler: (this: M, params: CommandParameters<C, P, E, O, R, M>) => void;
 };
 
 export type KeyCommand<
@@ -48,23 +51,25 @@ export type KeyCommand<
   P extends object = object,
   E extends EngineSupport = EngineSupport,
   O extends Compiler<E> = Compiler<E>,
-  M extends Model<C, P, E, O> = Model<C, P, E, O>
-> = (this: M, params: CommandParameters<C, P, E, O, M>) => void;
+  R extends Record<string, object> = Record<string, object>,
+  M extends Model<C, P, E, O, R> = Model<C, P, E, O, R>
+> = (this: M, params: CommandParameters<C, P, E, O, R, M>) => void;
 
 export type CommandStructure<
   C extends BasicConfig = BasicConfig,
   P extends object = object,
   E extends EngineSupport = EngineSupport,
   O extends Compiler<E> = Compiler<E>,
-  M extends Model<C, P, E, O> = Model<C, P, E, O>
+  R extends Record<string, object> = Record<string, object>,
+  M extends Model<C, P, E, O, R> = Model<C, P, E, O, R>
 > = DeepIntersection<
   DeepPartial<
     DeepRecord<
-      DeepUnion<C, KeyCommand<C, P, E, O, M>>,
-      KeyCommand<C, P, E, O, M>
+      DeepUnion<C, KeyCommand<C, P, E, O, R, M>>,
+      KeyCommand<C, P, E, O, R, M>
     >
   >,
-  { $reg?: RegCommand<C, P, E, O, M>[] }
+  { $reg?: RegCommand<C, P, E, O, R, M>[] }
 >;
 
 export interface ModelCommands<
@@ -72,11 +77,12 @@ export interface ModelCommands<
   P extends object = object,
   E extends EngineSupport = EngineSupport,
   O extends Compiler<E> = Compiler<E>,
-  M extends Model<C, P, E, O> = Model<C, P, E, O>
+  R extends Record<string, object> = Record<string, object>,
+  M extends Model<C, P, E, O, R> = Model<C, P, E, O, R>
 > {
-  add?: CommandStructure<C, P, E, O, M>;
-  set?: CommandStructure<C, P, E, O, M>;
-  delete?: CommandStructure<C, P, E, O, M>;
+  add?: CommandStructure<C, P, E, O, R, M>;
+  set?: CommandStructure<C, P, E, O, R, M>;
+  delete?: CommandStructure<C, P, E, O, R, M>;
 }
 
 export interface ModelParameters<
@@ -94,13 +100,15 @@ export class Model<
   C extends BasicConfig = BasicConfig,
   P extends object = object,
   E extends EngineSupport = EngineSupport,
-  O extends Compiler<E> = Compiler<E>
+  O extends Compiler<E> = Compiler<E>,
+  R extends Record<string, object> = Record<string, object>
 > extends EventDispatcher {
   puppet!: P;
   config: C;
   engine: E;
   compiler: O;
-  commands?: ModelCommands<C, P, E, O>;
+  commands?: ModelCommands<C, P, E, O, R>;
+  resources: R = {} as R;
 
   /**
    * 该配置化模型的对象生成方法。对应defineModel.create
@@ -114,7 +122,7 @@ export class Model<
    */
   createPuppet!: (
     this: any,
-    params: { model: any; config: C; engine: E; compiler: O }
+    params: { model: any; config: C; engine: E; compiler: O; resources: R }
   ) => P;
 
   /**
@@ -137,6 +145,7 @@ export class Model<
       config: C;
       engine: E;
       compiler: O;
+      resources: R;
     }
   ) => void;
 
@@ -271,6 +280,7 @@ export class Model<
               puppet: this.puppet,
               engine: this.engine,
               compiler: this.compiler,
+              resources: this.resources,
               ...modelParams,
             });
             return;
@@ -350,6 +360,7 @@ export class Model<
       config: this.config,
       engine: this.engine,
       compiler: this.compiler,
+      resources: this.resources || ({} as R),
     });
   }
 
@@ -364,6 +375,7 @@ export class Model<
       config: this.config,
       engine: this.engine,
       compiler: this.compiler,
+      resources: this.resources || ({} as R),
     });
     this.config[Symbol.for(SYMBOL_MODEL)] = undefined;
     this.clear();

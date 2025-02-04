@@ -18,4 +18,9 @@ export declare class Ruler {
     pop(): this;
     shift(): this;
 }
+/**
+ * 定义规则链
+ * @param rules 规则链
+ * @returns rules
+ */
 export declare const defineRule: (rules: Rule[]) => Rule[];
