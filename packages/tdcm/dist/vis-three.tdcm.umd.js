@@ -546,10 +546,26 @@
       }
       const model = this.map.get(vid);
       model.process(notice);
-      const router = notice.path;
-      model.emit(
-        `${MODEL_EVENT.COMPILED_ATTR}:${router ? router + "." : router}${notice.key}`
-      );
+      if (notice.path) {
+        if (!notice.path.includes(".")) {
+          model.emit(`${MODEL_EVENT.COMPILED_ATTR}:${notice.path}`);
+        } else {
+          let position = notice.path.indexOf(".");
+          const emitAttrFun = () => {
+            if (position !== -1) {
+              model.emit(
+                `${MODEL_EVENT.COMPILED_ATTR}:${notice.path.slice(position)}`
+              );
+              position = notice.path.indexOf(".", position + 1);
+              emitAttrFun();
+            }
+          };
+          emitAttrFun();
+        }
+        model.emit(`${MODEL_EVENT.COMPILED_ATTR}:${notice.path}.${notice.key}`);
+      } else {
+        model.emit(`${MODEL_EVENT.COMPILED_ATTR}:${notice.key}`);
+      }
       model.emit(MODEL_EVENT.COMPILED_UPDATE);
       model.emit(MODEL_EVENT.COMPILED);
       return this;
