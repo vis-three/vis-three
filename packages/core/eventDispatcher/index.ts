@@ -14,6 +14,11 @@ export interface EventListener<E extends BaseEvent = Event> {
 export class EventDispatcher {
   private listeners: Map<string, Array<Function>> = new Map();
 
+  private throttleSymbol = Symbol.for("vis.throttle");
+  private throttleTimers: WeakSet<Function> = new WeakSet();
+
+  private antiShakeSymbol = Symbol.for("vis.antiShake");
+  private antiShakeTimers: WeakMap<Function, number> = new WeakMap();
   /**
    * 订阅一个事件
    * @param type 事件类型
@@ -58,7 +63,7 @@ export class EventDispatcher {
   }
 
   /**
-   * 移除事件
+   * 移除事件(包括该事件对应的节流事件和防抖事件)
    * @param type 事件类型
    * @param listener 事件方法
    * @returns
@@ -72,13 +77,25 @@ export class EventDispatcher {
       return;
     }
 
-    if (!listeners.get(type)!.includes(listener)) {
-      return;
-    }
-
     const array = listeners.get(type)!;
 
-    array.splice(array.indexOf(listener), 1);
+    if (listener[this.throttleSymbol]) {
+      if (array.includes(listener[this.throttleSymbol])) {
+        array.splice(array.indexOf(listener[this.throttleSymbol]), 1);
+        delete listener[this.throttleSymbol];
+      }
+    }
+
+    if (listener[this.antiShakeSymbol]) {
+      if (array.includes(listener[this.antiShakeSymbol])) {
+        array.splice(array.indexOf(listener[this.antiShakeSymbol]), 1);
+        delete listener[this.antiShakeSymbol];
+      }
+    }
+
+    if (array.includes(listener)) {
+      array.splice(array.indexOf(listener), 1);
+    }
   }
 
   /**
@@ -185,11 +202,7 @@ export class EventDispatcher {
     if (listener) {
       this.removeEventListener(type, listener);
     } else {
-      const listeners = this.listeners;
-      if (!listeners.has(type)) {
-        return;
-      }
-      listeners.delete(type);
+      this.removeEvent(type);
     }
   }
 
@@ -231,5 +244,82 @@ export class EventDispatcher {
    */
   useful(): boolean {
     return Boolean([...this.listeners.keys()].length);
+  }
+
+  /**
+   * 事件以节流模式触发
+   * @param type 订阅的事件
+   * @param listener 触发函数
+   * @param time 节流时间
+   * @returns
+   */
+  onThrottle<C extends BaseEvent>(
+    type: C["type"],
+    listener: EventListener<C>,
+    time = 1000 / 60
+  ) {
+    if (listener[this.throttleSymbol]) {
+      console.warn(
+        `EventDispatcher: this listener has already been decorated with throttle in type ${type}.`,
+        listener
+      );
+      return;
+    }
+
+    const throttleDecorator = function (this: EventDispatcher, event: C) {
+      if (this.throttleTimers.has(listener)) {
+        return;
+      }
+
+      window.setTimeout(() => {
+        listener.call(this, event);
+        this.throttleTimers.delete(listener);
+      }, time);
+
+      this.throttleTimers.add(listener);
+    };
+
+    listener[this.throttleSymbol] = throttleDecorator;
+
+    this.addEventListener(type, throttleDecorator);
+  }
+
+  /**
+   * 事件以防抖模式触发
+   * @param type 订阅的事件
+   * @param listener 触发函数
+   * @param time 防抖时间
+   * @returns
+   */
+  onAntiShake<C extends BaseEvent>(
+    type: C["type"],
+    listener: EventListener<C>,
+    time = 1000 / 60
+  ) {
+    if (listener[this.antiShakeSymbol]) {
+      console.warn(
+        `EventDispatcher: this listener has already been decorated with anti-shake in type ${type}.`,
+        listener
+      );
+      return;
+    }
+
+    const antiShakeDecorator = function (this: EventDispatcher, event: C) {
+      if (this.antiShakeTimers.has(listener)) {
+        clearTimeout(this.antiShakeTimers.get(listener));
+      }
+
+      this.antiShakeTimers.set(
+        listener,
+        window.setTimeout(() => {
+          listener.call(this, event);
+          this.antiShakeTimers.delete(listener);
+        }, time)
+      );
+    };
+
+    listener[this.antiShakeSymbol] = antiShakeDecorator;
+
+    this.addEventListener(type, antiShakeDecorator);
   }
 }

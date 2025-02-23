@@ -216,20 +216,6 @@ export class Compiler<E extends EngineSupport = EngineSupport> {
 
     model.process(notice);
 
-    // const router = notice.path
-    //   ? [...notice.path.split("."), notice.key]
-    //   : [notice.key];
-
-    // if (router.length > 1) {
-    //   for (let i = 0; i < router.length; i += 1) {
-    //     model.emit(
-    //       `${MODEL_EVENT.COMPILED_ATTR}:${router.slice(0, i + 1).join(".")}`
-    //     );
-    //   }
-    // } else {
-    //   model.emit(`${MODEL_EVENT.COMPILED_ATTR}:${notice.key}`);
-    // }
-
     if (notice.path) {
       if (!notice.path.includes(".")) {
         model.emit(`${MODEL_EVENT.COMPILED_ATTR}:${notice.path}`);
