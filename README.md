@@ -33,16 +33,21 @@
 
 > 夫物速成则疾亡，晚就则善终。朝华之草，夕而零落；松柏之茂，隆寒不衰。是以大雅君子恶速成。——《群书治要》
 
-
 ## 主页、文档、案例在线地址
 
 github 入口：[https://vis-three.github.io](https://vis-three.github.io)
 
-gitee 入口：[https://vis-three.gitee.io](https://vis-three.gitee.io)
-
-> gitee 的 pages 服务目前已暂停服务，gitee 的视频类静态资源访问会失效，如有需要请移步 github。
-
 > 文档内容不一定是最新版本内容，持续更新。当前的文档版为：`0.7.x`
+
+## 核心版本速览
+
+| 包名                  | 最新版本                                                                     |
+| :-------------------- | :--------------------------------------------------------------------------- |
+| @vis-three/core       | <img alt="version" src="https://img.shields.io/npm/v/@vis-three/core">       |
+| @vis-three/tdcm       | <img alt="version" src="https://img.shields.io/npm/v/@vis-three/tdcm">       |
+| @vis-three/widget     | <img alt="version" src="https://img.shields.io/npm/v/@vis-three/widget">     |
+| @vis-three/utils      | <img alt="version" src="https://img.shields.io/npm/v/@vis-three/utils">      |
+| @vis-three/convenient | <img alt="version" src="https://img.shields.io/npm/v/@vis-three/convenient"> |
 
 ## 贡献者
 
@@ -58,6 +63,8 @@ gitee 入口：[https://vis-three.gitee.io](https://vis-three.gitee.io)
 | <a href="https://space.bilibili.com/18899105"><img src="https://i2.hdslb.com/bfs/face/a809a3b8407840ae00032360108261fcf503d38a.jpg@60w_60h_1c_1s.webp" /></a> | <a href="https://space.bilibili.com/184913597"><img src="https://i2.hdslb.com/bfs/face/500b0b3bf04cd89d2264ac75e4109afb83d0bc87.jpg@60w_60h_1c_1s.webp" /></a> |                                                                                                                                     |
 
 ## 赞助商
+
+
 
 ## 关于 issue
 
