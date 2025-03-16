@@ -55,6 +55,11 @@
         target: pointLight.vid,
       });
 
+      const spotLightTarget = generateConfig("Object3D", {
+        position: {
+          x: -40,
+        },
+      });
       const spotLight = generateConfig("SpotLight", {
         position: {
           x: 20,
@@ -62,7 +67,11 @@
         distance: 30,
         color: "rgb(0, 0, 255)",
         intensity: 2,
+        target: spotLightTarget.vid, //照射对象
       });
+      //默认选中照射对象（可以是其它实体）
+      engine.selectionBox.add(engine.getObject3D(spotLightTarget.vid));
+      engine.setSelectionBox(Array.from(engine.selectionBox));
 
       const spotLightHelper = generateConfig("ObjectHelper", {
         target: spotLight.vid,
