@@ -21,12 +21,12 @@ const h = function() {
       camera: i
     }
   });
-}, A = function() {
+}, M = function() {
   return Object.assign(l(), {
     color: "rgb(255, 255, 255)",
     intensity: 1
   });
-}, M = function() {
+}, O = function() {
   return Object.assign(
     p({
       fov: 90,
@@ -39,7 +39,7 @@ const h = function() {
       decay: 0.01
     }
   );
-}, O = function() {
+}, R = function() {
   return Object.assign(
     p({
       fov: 50,
@@ -52,10 +52,10 @@ const h = function() {
       angle: Math.PI / 180 * 45,
       penumbra: 0.01,
       decay: 0.01,
-      targetAt: ""
+      target: ""
     }
   );
-}, R = function() {
+}, A = function() {
   return Object.assign(
     p({
       near: 0.5,
@@ -167,7 +167,7 @@ const h = function() {
 })), D = c(
   (i) => ({
     type: "AmbientLight",
-    config: A,
+    config: M,
     create({ model: e, config: t, engine: r }) {
       const o = new S();
       return i.create({
@@ -186,7 +186,7 @@ const h = function() {
 ), v = c(
   (i) => ({
     type: "DirectionalLight",
-    config: R,
+    config: A,
     create({ model: e, config: t, engine: r }) {
       const o = new b();
       return i.create({
@@ -231,7 +231,7 @@ const h = function() {
   }
 })), V = c((i) => ({
   type: "PointLight",
-  config: M,
+  config: O,
   create({ model: e, config: t, engine: r }) {
     const o = new z();
     return i.create({
@@ -276,14 +276,14 @@ const h = function() {
   })
 ), k = c((i) => ({
   type: "SpotLight",
-  config: O,
+  config: R,
   create({ model: e, config: t, engine: r }) {
     const o = new E();
-    return t.targetAt && (o.target = r.getObject3D(t.targetAt)), i.create({
+    return t.target && (o.target = r.getObject3D(t.target)), i.create({
       model: e,
       light: o,
       config: t,
-      filter: {},
+      filter: { target: !0 },
       engine: r,
       shadow: !0
     }), o;
@@ -306,10 +306,10 @@ const h = function() {
 });
 export {
   B as default,
-  A as getAmbientLightConfig,
-  R as getDirectionalLightConfig,
+  M as getAmbientLightConfig,
+  A as getDirectionalLightConfig,
   P as getHemisphereLightConfig,
-  M as getPointLightConfig,
+  O as getPointLightConfig,
   H as getRectAreaLightConfig,
-  O as getSpotLightConfig
+  R as getSpotLightConfig
 };

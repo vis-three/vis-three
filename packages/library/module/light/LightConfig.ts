@@ -49,7 +49,7 @@ export interface SpotLightConfig extends ShadowLightConfig {
   angle: number;
   penumbra: number;
   decay: number;
-  targetAt: string;
+  target: string;
 }
 
 export interface DirectionalLightConfig
@@ -131,7 +131,7 @@ export const getSpotLightConfig = function (): SpotLightConfig {
       angle: (Math.PI / 180) * 45,
       penumbra: 0.01,
       decay: 0.01,
-      targetAt:'',
+      target:'',
     }
   );
 };

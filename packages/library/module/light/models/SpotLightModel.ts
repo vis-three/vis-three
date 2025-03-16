@@ -1,4 +1,4 @@
-import { PointLight, SpotLight } from "three";
+import { PointLight, SpotLight, Object3D } from "three";
 import { defineLightModel, LightModel } from "./LightModel";
 import {
   getPointLightConfig,
@@ -12,15 +12,15 @@ export default defineLightModel<SpotLightConfig, SpotLight>((lightModel) => ({
   config: getSpotLightConfig,
   create({ model, config, engine }) {
     const light = new SpotLight();
-    if(config.targetAt){
-      light.target = engine.getObject3D(config.targetAt);
+    if(config.target){
+      light.target = engine.getObject3D(config.target) as Object3D;
     }
 
     lightModel.create!({
       model: model as unknown as LightModel,
       light,
       config,
-      filter: {},
+      filter: {target: true},
       engine,
       shadow: true,
     });
