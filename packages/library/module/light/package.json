@@ -10,7 +10,7 @@
   "private": false,
   "scripts": {
     "dev": "vite build --watch",
-    "build": "vite build",
+    "build": "tsc -p ./tsconfig.json  && vite build",
     "lint": "npx eslint *.js src/**/*.ts --fix"
   },
   "dependencies": {
