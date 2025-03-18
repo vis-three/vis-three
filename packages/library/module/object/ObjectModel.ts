@@ -419,6 +419,6 @@ export const defineObjectModel = defineModel.extend<
   },
   dispose({ target }) {
     // @ts-ignore
-    target._listener = {};
+    target && (target._listener = {});
   },
 });

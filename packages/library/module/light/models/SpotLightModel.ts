@@ -12,18 +12,25 @@ export default defineLightModel<SpotLightConfig, SpotLight>((lightModel) => ({
   config: getSpotLightConfig,
   create({ model, config, engine }) {
     const light = new SpotLight();
-    if(config.target){
-      light.target = engine.getObject3D(config.target) as Object3D;
-    }
 
-    lightModel.create!({
+    let lightModelObj = {
       model: model as unknown as LightModel,
       light,
       config,
       filter: {target: true},
       engine,
       shadow: true,
-    });
+    }
+
+    if(config.target){
+      model.toTrigger("object", () => {
+        light.target = engine.getObject3D(config.target) as Object3D;
+        lightModelObj.light = light;
+        lightModel.create!(lightModelObj);
+      })
+    }else{
+      lightModel.create!(lightModelObj);
+    }
 
     return light;
   },

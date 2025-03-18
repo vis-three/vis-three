@@ -1,9 +1,9 @@
 import { emptyHandler as d, defineModule as y, SUPPORT_LIFE_CYCLE as L } from "@vis-three/tdcm";
-import { Vector2 as u, Color as m, AmbientLight as S, DirectionalLight as b, HemisphereLight as C, PointLight as z, RectAreaLight as x, SpotLight as E } from "three";
-import { getObjectConfig as l, defineObjectModel as j } from "@vis-three/module-object";
+import { Vector2 as u, Color as l, AmbientLight as b, DirectionalLight as S, HemisphereLight as C, PointLight as z, RectAreaLight as x, SpotLight as E } from "three";
+import { getObjectConfig as m, defineObjectModel as j } from "@vis-three/module-object";
 import { ENGINE_EVENT as f } from "@vis-three/core";
 const h = function() {
-  return Object.assign(l(), {
+  return Object.assign(m(), {
     type: "Light",
     color: "rgb(255, 255, 255)",
     intensity: 1
@@ -21,12 +21,12 @@ const h = function() {
       camera: i
     }
   });
-}, M = function() {
-  return Object.assign(l(), {
+}, O = function() {
+  return Object.assign(m(), {
     color: "rgb(255, 255, 255)",
     intensity: 1
   });
-}, O = function() {
+}, M = function() {
   return Object.assign(
     p({
       fov: 90,
@@ -81,52 +81,52 @@ const h = function() {
   shared: {
     cacheMapSize: new u(),
     cacheViewportSize: new u(),
-    updateShadowSize(e, t, r) {
-      const o = this.cacheMapSize, a = this.cacheViewportSize, s = e.shadow;
+    updateShadowSize(e, o, r) {
+      const t = this.cacheMapSize, a = this.cacheViewportSize, s = e.shadow;
       e.shadow.mapSize.set(
-        t.shadow.mapSize.x,
-        t.shadow.mapSize.y
-      ), o.copy(s.mapSize);
+        o.shadow.mapSize.x,
+        o.shadow.mapSize.y
+      ), t.copy(s.mapSize);
       const n = s.getFrameExtents();
-      o.multiply(n), a.copy(s.mapSize), (o.x > r || o.y > r) && (o.x > r && (a.x = Math.floor(
+      t.multiply(n), a.copy(s.mapSize), (t.x > r || t.y > r) && (t.x > r && (a.x = Math.floor(
         r / n.x
-      ), o.x = a.x * n.x, s.mapSize.x = a.x), o.y > r && (a.y = Math.floor(
+      ), t.x = a.x * n.x, s.mapSize.x = a.x), t.y > r && (a.y = Math.floor(
         r / n.y
-      ), o.y = a.y * n.y, s.mapSize.y = a.y)), e.shadow.map.setSize(o.x, o.y);
+      ), t.y = a.y * n.y, s.mapSize.y = a.y)), e.shadow.map.setSize(t.x, t.y);
     }
   },
   context() {
     return {
-      cacheColor: new m()
+      cacheColor: new l()
     };
   },
   commands: {
     set: {
-      color({ model: e, target: t, value: r }) {
-        t.color.copy(e.cacheColor.set(r));
+      color({ model: e, target: o, value: r }) {
+        o.color.copy(e.cacheColor.set(r));
       },
       scale: d,
       rotation: d,
       lookAt: d,
       shadow: {
-        mapSize({ model: e, target: t, config: r, engine: o, key: a, value: s }) {
-          t.shadow.mapSize[a] = s, e.updateShadowSize(
-            t,
+        mapSize({ model: e, target: o, config: r, engine: t, key: a, value: s }) {
+          o.shadow.mapSize[a] = s, e.updateShadowSize(
+            o,
             r,
-            o.webGLRenderer.capabilities.maxTextureSize
+            t.webGLRenderer.capabilities.maxTextureSize
           );
         },
-        camera({ target: e, key: t, value: r }) {
-          e.shadow.camera[t] = r, e.shadow.camera.updateProjectionMatrix();
+        camera({ target: e, key: o, value: r }) {
+          e.shadow.camera[o] = r, e.shadow.camera.updateProjectionMatrix();
         }
       }
     }
   },
-  create({ model: e, light: t, config: r, filter: o, engine: a, shadow: s }) {
-    if (t.color.copy(e.cacheColor.set(r.color)), s) {
+  create({ model: e, light: o, config: r, filter: t, engine: a, shadow: s }) {
+    if (o.color.copy(e.cacheColor.set(r.color)), s) {
       const n = r, g = () => {
-        t.shadow.map && (e.updateShadowSize(
-          t,
+        o.shadow.map && (e.updateShadowSize(
+          o,
           n,
           a.webGLRenderer.capabilities.maxTextureSize
         ), a.renderManager.removeEventListener(
@@ -139,13 +139,13 @@ const h = function() {
         g
       ), n.shadow) {
         for (const w in n.shadow.camera)
-          t.shadow.camera[w] = n.shadow.camera[w];
-        t.shadow.camera.updateProjectionMatrix();
+          o.shadow.camera[w] = n.shadow.camera[w];
+        o.shadow.camera.updateProjectionMatrix();
       }
     }
     i.create({
       model: e,
-      target: t,
+      target: o,
       config: r,
       filter: {
         color: !0,
@@ -156,7 +156,7 @@ const h = function() {
           mapSize: !0,
           camera: !0
         },
-        ...o
+        ...t
       },
       engine: a
     });
@@ -167,17 +167,17 @@ const h = function() {
 })), D = c(
   (i) => ({
     type: "AmbientLight",
-    config: M,
-    create({ model: e, config: t, engine: r }) {
-      const o = new S();
+    config: O,
+    create({ model: e, config: o, engine: r }) {
+      const t = new b();
       return i.create({
         model: e,
-        light: o,
-        config: t,
+        light: t,
+        config: o,
         filter: {},
         engine: r,
         shadow: !1
-      }), o;
+      }), t;
     },
     dispose({ target: e }) {
       i.dispose(e);
@@ -187,16 +187,16 @@ const h = function() {
   (i) => ({
     type: "DirectionalLight",
     config: A,
-    create({ model: e, config: t, engine: r }) {
-      const o = new b();
+    create({ model: e, config: o, engine: r }) {
+      const t = new S();
       return i.create({
         model: e,
-        light: o,
-        config: t,
+        light: t,
+        config: o,
         filter: {},
         engine: r,
         shadow: !0
-      }), o;
+      }), t;
     },
     dispose({ target: e }) {
       i.dispose(e);
@@ -206,42 +206,42 @@ const h = function() {
   type: "HemisphereLight",
   config: P,
   shared: {
-    cacheColor: new m()
+    cacheColor: new l()
   },
   commands: {
     set: {
-      groundColor({ model: e, target: t, value: r }) {
-        t.groundColor.copy(e.cacheColor.set(r));
+      groundColor({ model: e, target: o, value: r }) {
+        o.groundColor.copy(e.cacheColor.set(r));
       }
     }
   },
-  create({ model: e, config: t, engine: r }) {
-    const o = new C();
-    return o.groundColor.copy(e.cacheColor.set(t.groundColor)), i.create({
+  create({ model: e, config: o, engine: r }) {
+    const t = new C();
+    return t.groundColor.copy(e.cacheColor.set(o.groundColor)), i.create({
       model: e,
-      light: o,
-      config: t,
+      light: t,
+      config: o,
       filter: { groundColor: !0 },
       engine: r,
       shadow: !1
-    }), o;
+    }), t;
   },
   dispose({ target: e }) {
     i.dispose(e);
   }
 })), V = c((i) => ({
   type: "PointLight",
-  config: O,
-  create({ model: e, config: t, engine: r }) {
-    const o = new z();
+  config: M,
+  create({ model: e, config: o, engine: r }) {
+    const t = new z();
     return i.create({
       model: e,
-      light: o,
-      config: t,
+      light: t,
+      config: o,
       filter: {},
       engine: r,
       shadow: !0
-    }), o;
+    }), t;
   },
   dispose({ target: e }) {
     i.dispose(e);
@@ -255,20 +255,20 @@ const h = function() {
         rotation: void 0
       }
     },
-    create({ model: e, config: t, engine: r }) {
-      const o = new x();
-      return o.rotation.set(
-        t.rotation.x,
-        t.rotation.y,
-        t.rotation.z
-      ), o.updateMatrixWorld(), i.create({
+    create({ model: e, config: o, engine: r }) {
+      const t = new x();
+      return t.rotation.set(
+        o.rotation.x,
+        o.rotation.y,
+        o.rotation.z
+      ), t.updateMatrixWorld(), i.create({
         model: e,
-        light: o,
-        config: t,
+        light: t,
+        config: o,
         filter: {},
         engine: r,
         shadow: !0
-      }), o;
+      }), t;
     },
     dispose({ target: e }) {
       i.dispose(e);
@@ -277,16 +277,19 @@ const h = function() {
 ), k = c((i) => ({
   type: "SpotLight",
   config: R,
-  create({ model: e, config: t, engine: r }) {
-    const o = new E();
-    return t.target && (o.target = r.getObject3D(t.target)), i.create({
+  create({ model: e, config: o, engine: r }) {
+    const t = new E();
+    let a = {
       model: e,
-      light: o,
-      config: t,
+      light: t,
+      config: o,
       filter: { target: !0 },
       engine: r,
       shadow: !0
-    }), o;
+    };
+    return o.target ? e.toTrigger("object", () => {
+      t.target = r.getObject3D(o.target), a.light = t, i.create(a);
+    }) : i.create(a), t;
   },
   dispose({ target: e }) {
     i.dispose(e);
@@ -306,10 +309,10 @@ const h = function() {
 });
 export {
   B as default,
-  M as getAmbientLightConfig,
+  O as getAmbientLightConfig,
   A as getDirectionalLightConfig,
   P as getHemisphereLightConfig,
-  O as getPointLightConfig,
+  M as getPointLightConfig,
   H as getRectAreaLightConfig,
   R as getSpotLightConfig
 };
