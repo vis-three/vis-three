@@ -7,29 +7,50 @@ import {
   SpotLightConfig,
 } from "../LightConfig";
 
-export default defineLightModel<SpotLightConfig, SpotLight>((lightModel) => ({
+export default defineLightModel<
+  SpotLightConfig,
+  SpotLight,
+  {
+    virtualTarget: Object3D;
+  }
+>((lightModel) => ({
   type: "SpotLight",
   config: getSpotLightConfig,
+  context() {
+    return {
+      virtualTarget: new Object3D(),
+    };
+  },
   create({ model, config, engine }) {
     const light = new SpotLight();
 
-    if (config.target) {
-      model.toTrigger("object", (immediate) => {
-        const targetObject = engine.getObject3D(config.target);
+    light.target = model.virtualTarget;
 
-        if (!targetObject) {
-          if (!immediate) {
-            console.error(
-              "SpotLight model: can not found vid object in engine",
-              config.target
-            );
+    if (config.target) {
+      if (typeof config.target === "string") {
+        model.toTrigger("object", (immediate) => {
+          const targetObject = engine.getObject3D(config.target as string);
+
+          if (!targetObject) {
+            if (!immediate) {
+              console.error(
+                "SpotLight model: can not found vid object in engine",
+                config.target
+              );
+            }
+            return false;
+          } else {
+            light.target = targetObject;
+            return true;
           }
-          return false;
-        } else {
-          light.target = targetObject;
-          return true;
-        }
-      });
+        });
+      } else {
+        model.virtualTarget.position.set(
+          config.target.x,
+          config.target.y,
+          config.target.z
+        );
+      }
     }
 
     lightModel.create!({
@@ -44,7 +65,8 @@ export default defineLightModel<SpotLightConfig, SpotLight>((lightModel) => ({
     return light;
   },
 
-  dispose({ target }) {
+  dispose({ model, target }) {
+    target.target = model.virtualTarget;
     lightModel.dispose!(target);
   },
 }));
