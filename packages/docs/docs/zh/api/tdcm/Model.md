@@ -199,6 +199,8 @@ asyncNextTick(fun: () => boolean): void
 
 ### toTrigger
 
+内部使用的是[Trigger.register](./Trigger.md#register)方法。
+
 - **详情**
 
 ```ts

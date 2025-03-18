@@ -1,5 +1,5 @@
 import { emptyHandler as d, defineModule as L, SUPPORT_LIFE_CYCLE as y } from "@vis-three/tdcm";
-import { Vector2 as u, Color as l, AmbientLight as b, DirectionalLight as S, HemisphereLight as C, PointLight as z, RectAreaLight as j, SpotLight as x } from "three";
+import { Vector2 as w, Color as l, AmbientLight as b, DirectionalLight as S, HemisphereLight as C, PointLight as z, RectAreaLight as j, SpotLight as x } from "three";
 import { getObjectConfig as m, defineObjectModel as E } from "@vis-three/module-object";
 import { ENGINE_EVENT as f } from "@vis-three/core";
 const h = function() {
@@ -79,8 +79,8 @@ const h = function() {
   });
 }, c = E.extend((i) => ({
   shared: {
-    cacheMapSize: new u(),
-    cacheViewportSize: new u(),
+    cacheMapSize: new w(),
+    cacheViewportSize: new w(),
     updateShadowSize(e, t, r) {
       const o = this.cacheMapSize, a = this.cacheViewportSize, n = e.shadow;
       e.shadow.mapSize.set(
@@ -138,8 +138,8 @@ const h = function() {
         f.RENDER,
         g
       ), s.shadow) {
-        for (const w in s.shadow.camera)
-          t.shadow.camera[w] = s.shadow.camera[w];
+        for (const u in s.shadow.camera)
+          t.shadow.camera[u] = s.shadow.camera[u];
         t.shadow.camera.updateProjectionMatrix();
       }
     }
@@ -279,18 +279,20 @@ const h = function() {
   config: R,
   create({ model: e, config: t, engine: r }) {
     const o = new x();
-    let a = {
+    return t.target && e.toTrigger("object", (a) => {
+      const n = r.getObject3D(t.target);
+      return n ? (o.target = n, !0) : (a || console.error(
+        "SpotLight model: can not found vid object in engine",
+        t.target
+      ), !1);
+    }), i.create({
       model: e,
       light: o,
       config: t,
       filter: { target: !0 },
       engine: r,
       shadow: !0
-    };
-    return t.target ? e.toTrigger("object", () => {
-      const n = r.getObject3D(t.target);
-      n ? (o.target = n, a.light = o) : console.error("SpotLight model: can not found vid object in engine", t.target), i.create(a);
-    }) : i.create(a), o;
+    }), o;
   },
   dispose({ target: e }) {
     i.dispose(e);

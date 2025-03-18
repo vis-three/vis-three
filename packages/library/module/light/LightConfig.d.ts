@@ -40,6 +40,7 @@ export interface SpotLightConfig extends ShadowLightConfig {
     angle: number;
     penumbra: number;
     decay: number;
+    target: string;
 }
 export interface DirectionalLightConfig extends ShadowLightConfig<OrthographicCameraConfig> {
 }

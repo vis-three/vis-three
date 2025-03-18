@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-light",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "vis-three light module",
   "main": "dist/vis-three.module-light.umd.js",
   "module": "dist/vis-three.module-light.es.js",
