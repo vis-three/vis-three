@@ -12,15 +12,31 @@ export default defineLightModel<SpotLightConfig, SpotLight>((lightModel) => ({
   config: getSpotLightConfig,
   create({ model, config, engine }) {
     const light = new SpotLight();
-    if(config.target){
-      light.target = engine.getObject3D(config.target) as Object3D;
+
+    if (config.target) {
+      model.toTrigger("object", (immediate) => {
+        const targetObject = engine.getObject3D(config.target);
+
+        if (!targetObject) {
+          if (!immediate) {
+            console.error(
+              "SpotLight model: can not found vid object in engine",
+              config.target
+            );
+          }
+          return false;
+        } else {
+          light.target = targetObject;
+          return true;
+        }
+      });
     }
 
     lightModel.create!({
       model: model as unknown as LightModel,
       light,
       config,
-      filter: {target: true},
+      filter: { target: true },
       engine,
       shadow: true,
     });

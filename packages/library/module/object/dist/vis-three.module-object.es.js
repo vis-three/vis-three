@@ -1,4 +1,4 @@
-import { getBasicConfig as h, defineRule as O, DEFAULT_RULE as y, defineModel as M, emptyHandler as x, EVENTNAME as A, OBJECT_MODULE as m, MODEL_EVENT as E } from "@vis-three/tdcm";
+import { getBasicConfig as h, defineRule as O, DEFAULT_RULE as y, defineModel as M, emptyHandler as x, EVENTNAME as A, OBJECT_MODULE as m, MODEL_EVENT as g } from "@vis-three/tdcm";
 import { syncObject as L } from "@vis-three/utils";
 const C = function() {
   return Object.assign(h(), {
@@ -51,6 +51,12 @@ const C = function() {
   y.OPERATE_COVER,
   y.OPERATE_COMPILE
 ]), s = class s {
+  /**
+   * 生成配置
+   * @param name 配置名
+   * @param merge 配置的预设
+   * @returns BasicEventConfig
+   */
   static generateConfig(e, r) {
     if (!s.configLibrary.has(e))
       return console.warn(`event library can not found config by name: ${e}`), null;
@@ -71,6 +77,11 @@ const C = function() {
     ), () => {
     });
   }
+  /**
+   * 判断管理器中是否注册该事件
+   * @param name 事件名
+   * @returns boolean
+   */
   static has(e) {
     return s.configLibrary.has(e);
   }
@@ -101,7 +112,7 @@ s.configLibrary = /* @__PURE__ */ new Map(), s.generatorLibrary = /* @__PURE__ *
   ), s.generatorLibrary.set(e.name, r), s);
 };
 let b = s;
-const g = function({
+const E = function({
   model: t,
   target: e,
   config: r,
@@ -203,7 +214,7 @@ const g = function({
       m,
       n
     );
-    return a ? (e.add(a), a.updateMatrixWorld(!0), (u = t.toModel(n)) == null || u.emit(`${E.COMPILED_ATTR}:parent`), !0) : (o || console.warn(`can not found this vid in engine: ${n}.`), !1);
+    return a ? (e.add(a), a.updateMatrixWorld(!0), (u = t.toModel(n)) == null || u.emit(`${g.COMPILED_ATTR}:parent`), !0) : (o || console.warn(`can not found this vid in engine: ${n}.`), !1);
   });
 }, k = function({
   model: t,
@@ -227,7 +238,7 @@ const g = function({
     console.warn(`can not found this vid in engine: ${n}.`);
     return;
   }
-  i.parent = "", (a = t.toModel(n)) == null || a.emit(`${E.COMPILED_ATTR}:parent`);
+  i.parent = "", (a = t.toModel(n)) == null || a.emit(`${g.COMPILED_ATTR}:parent`);
 }, w = function({
   model: t,
   target: e,
@@ -263,7 +274,7 @@ const g = function({
       children: v
     },
     set: {
-      lookAt: g,
+      lookAt: E,
       pointerdown: f,
       pointerup: f,
       pointermove: f,
@@ -296,7 +307,7 @@ const g = function({
     }
   },
   create({ model: t, target: e, config: r, engine: n, filter: c }) {
-    !c.lookAt && g.call(t, {
+    !c.lookAt && E.call(t, {
       model: t,
       target: e,
       config: r,
@@ -340,7 +351,7 @@ const g = function({
     });
   },
   dispose({ target: t }) {
-    t._listener = {};
+    t && (t._listener = {});
   }
 });
 export {

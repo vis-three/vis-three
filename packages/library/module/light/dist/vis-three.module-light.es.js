@@ -1,9 +1,9 @@
-import { emptyHandler as d, defineModule as y, SUPPORT_LIFE_CYCLE as L } from "@vis-three/tdcm";
-import { Vector2 as u, Color as m, AmbientLight as S, DirectionalLight as b, HemisphereLight as C, PointLight as z, RectAreaLight as x, SpotLight as E } from "three";
-import { getObjectConfig as l, defineObjectModel as j } from "@vis-three/module-object";
+import { emptyHandler as d, defineModule as L, SUPPORT_LIFE_CYCLE as y } from "@vis-three/tdcm";
+import { Vector2 as u, Color as l, AmbientLight as b, DirectionalLight as S, HemisphereLight as C, PointLight as z, RectAreaLight as j, SpotLight as x } from "three";
+import { getObjectConfig as m, defineObjectModel as E } from "@vis-three/module-object";
 import { ENGINE_EVENT as f } from "@vis-three/core";
 const h = function() {
-  return Object.assign(l(), {
+  return Object.assign(m(), {
     type: "Light",
     color: "rgb(255, 255, 255)",
     intensity: 1
@@ -21,12 +21,12 @@ const h = function() {
       camera: i
     }
   });
-}, M = function() {
-  return Object.assign(l(), {
+}, O = function() {
+  return Object.assign(m(), {
     color: "rgb(255, 255, 255)",
     intensity: 1
   });
-}, O = function() {
+}, M = function() {
   return Object.assign(
     p({
       fov: 90,
@@ -77,27 +77,27 @@ const h = function() {
     width: 10,
     height: 10
   });
-}, c = j.extend((i) => ({
+}, c = E.extend((i) => ({
   shared: {
     cacheMapSize: new u(),
     cacheViewportSize: new u(),
     updateShadowSize(e, t, r) {
-      const o = this.cacheMapSize, a = this.cacheViewportSize, s = e.shadow;
+      const o = this.cacheMapSize, a = this.cacheViewportSize, n = e.shadow;
       e.shadow.mapSize.set(
         t.shadow.mapSize.x,
         t.shadow.mapSize.y
-      ), o.copy(s.mapSize);
-      const n = s.getFrameExtents();
-      o.multiply(n), a.copy(s.mapSize), (o.x > r || o.y > r) && (o.x > r && (a.x = Math.floor(
-        r / n.x
-      ), o.x = a.x * n.x, s.mapSize.x = a.x), o.y > r && (a.y = Math.floor(
-        r / n.y
-      ), o.y = a.y * n.y, s.mapSize.y = a.y)), e.shadow.map.setSize(o.x, o.y);
+      ), o.copy(n.mapSize);
+      const s = n.getFrameExtents();
+      o.multiply(s), a.copy(n.mapSize), (o.x > r || o.y > r) && (o.x > r && (a.x = Math.floor(
+        r / s.x
+      ), o.x = a.x * s.x, n.mapSize.x = a.x), o.y > r && (a.y = Math.floor(
+        r / s.y
+      ), o.y = a.y * s.y, n.mapSize.y = a.y)), e.shadow.map.setSize(o.x, o.y);
     }
   },
   context() {
     return {
-      cacheColor: new m()
+      cacheColor: new l()
     };
   },
   commands: {
@@ -109,8 +109,8 @@ const h = function() {
       rotation: d,
       lookAt: d,
       shadow: {
-        mapSize({ model: e, target: t, config: r, engine: o, key: a, value: s }) {
-          t.shadow.mapSize[a] = s, e.updateShadowSize(
+        mapSize({ model: e, target: t, config: r, engine: o, key: a, value: n }) {
+          t.shadow.mapSize[a] = n, e.updateShadowSize(
             t,
             r,
             o.webGLRenderer.capabilities.maxTextureSize
@@ -122,12 +122,12 @@ const h = function() {
       }
     }
   },
-  create({ model: e, light: t, config: r, filter: o, engine: a, shadow: s }) {
-    if (t.color.copy(e.cacheColor.set(r.color)), s) {
-      const n = r, g = () => {
+  create({ model: e, light: t, config: r, filter: o, engine: a, shadow: n }) {
+    if (t.color.copy(e.cacheColor.set(r.color)), n) {
+      const s = r, g = () => {
         t.shadow.map && (e.updateShadowSize(
           t,
-          n,
+          s,
           a.webGLRenderer.capabilities.maxTextureSize
         ), a.renderManager.removeEventListener(
           f.RENDER,
@@ -137,9 +137,9 @@ const h = function() {
       if (a.renderManager.addEventListener(
         f.RENDER,
         g
-      ), n.shadow) {
-        for (const w in n.shadow.camera)
-          t.shadow.camera[w] = n.shadow.camera[w];
+      ), s.shadow) {
+        for (const w in s.shadow.camera)
+          t.shadow.camera[w] = s.shadow.camera[w];
         t.shadow.camera.updateProjectionMatrix();
       }
     }
@@ -164,12 +164,12 @@ const h = function() {
   dispose(e) {
     i.dispose(e);
   }
-})), D = c(
+})), v = c(
   (i) => ({
     type: "AmbientLight",
-    config: M,
+    config: O,
     create({ model: e, config: t, engine: r }) {
-      const o = new S();
+      const o = new b();
       return i.create({
         model: e,
         light: o,
@@ -183,12 +183,12 @@ const h = function() {
       i.dispose(e);
     }
   })
-), v = c(
+), D = c(
   (i) => ({
     type: "DirectionalLight",
     config: A,
     create({ model: e, config: t, engine: r }) {
-      const o = new b();
+      const o = new S();
       return i.create({
         model: e,
         light: o,
@@ -206,7 +206,7 @@ const h = function() {
   type: "HemisphereLight",
   config: P,
   shared: {
-    cacheColor: new m()
+    cacheColor: new l()
   },
   commands: {
     set: {
@@ -231,7 +231,7 @@ const h = function() {
   }
 })), V = c((i) => ({
   type: "PointLight",
-  config: O,
+  config: M,
   create({ model: e, config: t, engine: r }) {
     const o = new z();
     return i.create({
@@ -256,7 +256,7 @@ const h = function() {
       }
     },
     create({ model: e, config: t, engine: r }) {
-      const o = new x();
+      const o = new j();
       return o.rotation.set(
         t.rotation.x,
         t.rotation.y,
@@ -278,38 +278,42 @@ const h = function() {
   type: "SpotLight",
   config: R,
   create({ model: e, config: t, engine: r }) {
-    const o = new E();
-    return t.target && (o.target = r.getObject3D(t.target)), i.create({
+    const o = new x();
+    let a = {
       model: e,
       light: o,
       config: t,
       filter: { target: !0 },
       engine: r,
       shadow: !0
-    }), o;
+    };
+    return t.target ? e.toTrigger("object", () => {
+      const n = r.getObject3D(t.target);
+      n ? (o.target = n, a.light = o) : console.error("SpotLight model: can not found vid object in engine", t.target), i.create(a);
+    }) : i.create(a), o;
   },
   dispose({ target: e }) {
     i.dispose(e);
   }
-})), B = y({
+})), B = L({
   type: "light",
   object: !0,
   models: [
-    D,
     v,
+    D,
     N,
     V,
     F,
     k
   ],
-  lifeOrder: L.THREE
+  lifeOrder: y.THREE
 });
 export {
   B as default,
-  M as getAmbientLightConfig,
+  O as getAmbientLightConfig,
   A as getDirectionalLightConfig,
   P as getHemisphereLightConfig,
-  O as getPointLightConfig,
+  M as getPointLightConfig,
   H as getRectAreaLightConfig,
   R as getSpotLightConfig
 };
