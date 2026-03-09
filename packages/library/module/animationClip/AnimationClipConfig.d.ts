@@ -1,4 +1,5 @@
 import { BasicConfig } from "@vis-three/tdcm";
+import { AnimationBlendMode, InterpolationModes } from "three";
 export interface BooleanKeyframeTrackConfig {
     type: "Boolean";
     name: string;
@@ -9,40 +10,40 @@ export interface ColorKeyframeTrackConfig {
     type: "Color";
     name: string;
     times: number[];
-    values: [number, number, number][];
-    interpolation: number;
+    values: ArrayLike<number>;
+    interpolation: InterpolationModes | undefined;
 }
 export interface NumberKeyframeTrackConfig {
     type: "Number";
     name: string;
     times: number[];
     values: number[];
-    interpolation: number;
+    interpolation: InterpolationModes | undefined;
 }
 export interface QuaternionKeyframeTrackConfig {
     type: "Quaternion";
     name: string;
     times: number[];
-    values: [number, number, number, number][];
-    interpolation: number;
+    values: ArrayLike<number>;
+    interpolation: InterpolationModes | undefined;
 }
 export interface StringKeyframeTrackConfig {
     type: "String";
     name: string;
     times: number[];
     values: string[];
-    interpolation: number;
 }
 export interface VectorKeyframeTrackConfig {
     type: "Vector";
     name: string;
     times: number[];
-    values: [number, number, number][];
-    interpolation: number;
+    values: ArrayLike<number>;
+    interpolation: InterpolationModes | undefined;
 }
 export type KeyframeTracks = BooleanKeyframeTrackConfig | ColorKeyframeTrackConfig | NumberKeyframeTrackConfig | QuaternionKeyframeTrackConfig | StringKeyframeTrackConfig | VectorKeyframeTrackConfig;
 export interface AnimationClipConfig extends BasicConfig {
     duration: number;
+    blendMode: AnimationBlendMode;
     tracks: KeyframeTracks[];
 }
 export interface LoadAnimationClipConfig extends BasicConfig {

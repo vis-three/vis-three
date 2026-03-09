@@ -1,42 +1,92 @@
-import { getBasicConfig as i, defineModel as t, defineModule as a, SUPPORT_LIFE_CYCLE as s } from "@vis-three/tdcm";
-import { AnimationClip as o } from "three";
-const l = function() {
-  return Object.assign(i(), {
+import { getBasicConfig as s, defineModel as l, defineModule as p, SUPPORT_LIFE_CYCLE as u } from "@vis-three/tdcm";
+import { NormalAnimationBlendMode as c, BooleanKeyframeTrack as m, ColorKeyframeTrack as d, NumberKeyframeTrack as f, QuaternionKeyframeTrack as y, StringKeyframeTrack as g, VectorKeyframeTrack as C, AnimationClip as a } from "three";
+const h = function() {
+  return Object.assign(s(), {
     duration: -1,
-    tracks: []
+    tracks: [],
+    blendMode: c
   });
-}, c = function() {
-  return Object.assign(i(), {
+}, k = function() {
+  return Object.assign(s(), {
     url: ""
   });
-}, u = t({
+}, w = l({
   type: "AnimationClip",
-  config: l,
-  create() {
-    return {};
+  config: h,
+  shared: {
+    parseName(n) {
+      const t = n.split(".");
+      return t.length < 2 ? n : t.slice(0, 2).join(".") + t.slice(2, t.length).map((i) => `[${i}]`);
+    }
   },
-  dispose() {
+  commands: {},
+  create({ model: n, config: t, engine: i }) {
+    const r = [];
+    for (const e of t.tracks) {
+      const o = n.parseName(e.name);
+      e.type === "Boolean" ? r.push(
+        new m(o, e.times, e.values)
+      ) : e.type === "Color" ? r.push(
+        new d(
+          o,
+          e.times,
+          e.values,
+          e.interpolation
+        )
+      ) : e.type === "Number" ? r.push(
+        new f(
+          o,
+          e.times,
+          e.values,
+          e.interpolation
+        )
+      ) : e.type === "Quaternion" ? r.push(
+        new y(
+          o,
+          e.times,
+          e.values,
+          e.interpolation
+        )
+      ) : e.type === "String" ? r.push(
+        new g(o, e.times, e.values)
+      ) : e.type === "Vector" && r.push(
+        new C(
+          o,
+          e.times,
+          e.values,
+          e.interpolation
+        )
+      );
+    }
+    return new a(
+      "",
+      t.duration,
+      r,
+      t.blendMode
+    );
+  },
+  dispose({ target: n }) {
   }
-}), p = t({
+}), M = l({
   type: "LoadAnimationClip",
-  config: c,
-  create({ config: n, engine: r }) {
+  config: k,
+  create({ config: n, engine: t }) {
     if (!n.url)
-      return console.warn("load animation clip processor must have url"), new o();
-    const e = r.resourceManager.resourceMap;
-    return e.has(n.url) ? e.get(n.url) : (console.warn(
+      return console.warn("load animation clip processor must have url"), new a();
+    const i = t.resourceManager.resourceMap;
+    return i.has(n.url) ? i.get(n.url) : (console.warn(
       `load animation clip processor can not found url in engine: ${n.url}`
-    ), new o());
+    ), new a());
   },
   dispose(n) {
   }
-}), f = a({
+}), v = p({
   type: "animationClip",
-  models: [u, p],
-  lifeOrder: s.ZERO
+  models: [w, M],
+  lifeOrder: u.ZERO
 });
 export {
-  f as default,
-  l as getAnimationClipConfig,
-  c as getLoadAnimationClipConfig
+  v as default,
+  h as getAnimationClipConfig,
+  k as getLoadAnimationClipConfig
 };

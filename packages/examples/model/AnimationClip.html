@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <title>AnimationClip</title>
+  </head>
+
+  <style></style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { ModelingEngineSupport } from "@vis-three/engine-modeling-support";
+      import { generateConfig, CONFIG_TYPE, toSymbol } from "@vis-three/tdcm";
+
+      const engine = new ModelingEngineSupport()
+        .setDom(document.getElementById("app"))
+        .setStats(true)
+        .setSize()
+        .play();
+
+      generateConfig.injectEngine = engine;
+
+      const scene = generateConfig("Scene");
+
+      engine.setSceneBySymbol(toSymbol(scene));
+
+      generateConfig.injectScene = true;
+
+      engine.loaderManager.setPath(import.meta.env.BASE_URL);
+
+      generateConfig("AmbientLight", {
+        intensity: 10,
+      });
+
+      generateConfig.autoInject = true;
+
+      const geometry = generateConfig("BoxGeometry", {
+        width: 20,
+        height: 20,
+        depth: 20,
+      });
+
+      const material = generateConfig("MeshBasicMaterial", {
+        color: "rgb(255, 100, 80)",
+      });
+
+      const box = generateConfig("Mesh", {
+        geometry: toSymbol(geometry),
+        material: toSymbol(material),
+      });
+
+      const clip = generateConfig("AnimationClip", {
+        tracks: [
+          {
+            type: "Number",
+            name: ".position.x",
+            times: [0, 3, 5],
+            values: [0, 10, 0],
+          },
+        ],
+      });
+
+      const mixer = generateConfig(CONFIG_TYPE.MIXERANIMATION, {
+        target: toSymbol(box),
+      });
+
+      const action = generateConfig(CONFIG_TYPE.ANIMATIONACTION, {
+        mixer: toSymbol(mixer),
+        clip: toSymbol(clip),
+      });
+
+      window.engine = engine;
+    </script>
+  </body>
+</html>

@@ -1,4 +1,5 @@
 import { BasicConfig, getBasicConfig } from "@vis-three/tdcm";
+import { AnimationBlendMode, InterpolationModes, NormalAnimationBlendMode } from "three";
 
 export interface BooleanKeyframeTrackConfig {
   type: "Boolean";
@@ -11,8 +12,8 @@ export interface ColorKeyframeTrackConfig {
   type: "Color";
   name: string;
   times: number[];
-  values: [number, number, number][];
-  interpolation: number;
+  values: ArrayLike<number>;
+  interpolation: InterpolationModes | undefined;
 }
 
 export interface NumberKeyframeTrackConfig {
@@ -20,15 +21,15 @@ export interface NumberKeyframeTrackConfig {
   name: string;
   times: number[];
   values: number[];
-  interpolation: number;
+  interpolation: InterpolationModes | undefined;
 }
 
 export interface QuaternionKeyframeTrackConfig {
   type: "Quaternion";
   name: string;
   times: number[];
-  values: [number, number, number, number][];
-  interpolation: number;
+  values: ArrayLike<number>;
+  interpolation: InterpolationModes | undefined;
 }
 
 export interface StringKeyframeTrackConfig {
@@ -36,15 +37,14 @@ export interface StringKeyframeTrackConfig {
   name: string;
   times: number[];
   values: string[];
-  interpolation: number;
 }
 
 export interface VectorKeyframeTrackConfig {
   type: "Vector";
   name: string;
   times: number[];
-  values: [number, number, number][];
-  interpolation: number;
+  values: ArrayLike<number>;
+  interpolation: InterpolationModes | undefined;
 }
 
 export type KeyframeTracks =
@@ -57,6 +57,7 @@ export type KeyframeTracks =
 
 export interface AnimationClipConfig extends BasicConfig {
   duration: number;
+  blendMode: AnimationBlendMode;
   tracks: KeyframeTracks[];
 }
 
@@ -68,6 +69,7 @@ export const getAnimationClipConfig = function (): AnimationClipConfig {
   return Object.assign(getBasicConfig(), {
     duration: -1,
     tracks: [],
+    blendMode: NormalAnimationBlendMode
   });
 };
 
