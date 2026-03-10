@@ -20,6 +20,7 @@ export default defineModel<
   {},
   {
     parseName: (name: string) => string;
+    parseColor: (color: string) => Array<number>;
   }
 >({
   type: "AnimationClip",
@@ -39,6 +40,12 @@ export default defineModel<
           .join("")
       );
     },
+    parseColor(color: string) {
+      return color
+        .slice(4, -1)
+        .split(",")
+        .map((elem) => Number(elem.trim()) / 255);
+    },
   },
   commands: {},
   create({ model, config, engine }) {
@@ -56,7 +63,7 @@ export default defineModel<
           new ColorKeyframeTrack(
             name,
             track.times,
-            track.values,
+           track.values.map((color) => model.parseColor(color)).flat(),
             track.interpolation,
           ),
         );

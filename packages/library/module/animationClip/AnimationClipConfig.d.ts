@@ -10,7 +10,7 @@ export interface ColorKeyframeTrackConfig {
     type: "Color";
     name: string;
     times: number[];
-    values: ArrayLike<number>;
+    values: string[];
     interpolation: InterpolationModes | undefined;
 }
 export interface NumberKeyframeTrackConfig {

@@ -1,5 +1,9 @@
 import { BasicConfig, getBasicConfig } from "@vis-three/tdcm";
-import { AnimationBlendMode, InterpolationModes, NormalAnimationBlendMode } from "three";
+import {
+  AnimationBlendMode,
+  InterpolationModes,
+  NormalAnimationBlendMode,
+} from "three";
 
 export interface BooleanKeyframeTrackConfig {
   type: "Boolean";
@@ -12,7 +16,7 @@ export interface ColorKeyframeTrackConfig {
   type: "Color";
   name: string;
   times: number[];
-  values: ArrayLike<number>;
+  values: string[];
   interpolation: InterpolationModes | undefined;
 }
 
@@ -69,7 +73,7 @@ export const getAnimationClipConfig = function (): AnimationClipConfig {
   return Object.assign(getBasicConfig(), {
     duration: -1,
     tracks: [],
-    blendMode: NormalAnimationBlendMode
+    blendMode: NormalAnimationBlendMode,
   });
 };
 

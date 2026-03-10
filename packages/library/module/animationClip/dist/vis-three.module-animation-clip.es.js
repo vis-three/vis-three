@@ -1,56 +1,59 @@
-import { getBasicConfig as s, defineModel as l, defineModule as p, SUPPORT_LIFE_CYCLE as u } from "@vis-three/tdcm";
-import { NormalAnimationBlendMode as c, BooleanKeyframeTrack as m, ColorKeyframeTrack as d, NumberKeyframeTrack as f, QuaternionKeyframeTrack as y, StringKeyframeTrack as g, VectorKeyframeTrack as C, AnimationClip as a } from "three";
-const h = function() {
+import { getBasicConfig as s, defineModel as l, defineModule as u, SUPPORT_LIFE_CYCLE as m } from "@vis-three/tdcm";
+import { NormalAnimationBlendMode as c, BooleanKeyframeTrack as f, ColorKeyframeTrack as d, NumberKeyframeTrack as C, QuaternionKeyframeTrack as y, StringKeyframeTrack as g, VectorKeyframeTrack as h, AnimationClip as a } from "three";
+const k = function() {
   return Object.assign(s(), {
     duration: -1,
     tracks: [],
     blendMode: c
   });
-}, k = function() {
+}, w = function() {
   return Object.assign(s(), {
     url: ""
   });
-}, w = l({
+}, M = l({
   type: "AnimationClip",
-  config: h,
+  config: k,
   shared: {
     parseName(n) {
-      const t = n.split(".");
-      return t.length < 2 ? n : t.slice(0, 2).join(".") + t.slice(2, t.length).map((i) => `[${i}]`);
+      const r = n.split(".");
+      return r.length < 2 ? n : r.slice(0, 2).join(".") + r.slice(2, r.length).map((i) => `[${i}]`).join("");
+    },
+    parseColor(n) {
+      return n.slice(4, -1).split(",").map((r) => Number(r.trim()) / 255);
     }
   },
   commands: {},
-  create({ model: n, config: t, engine: i }) {
-    const r = [];
-    for (const e of t.tracks) {
+  create({ model: n, config: r, engine: i }) {
+    const t = [];
+    for (const e of r.tracks) {
       const o = n.parseName(e.name);
-      e.type === "Boolean" ? r.push(
-        new m(o, e.times, e.values)
-      ) : e.type === "Color" ? r.push(
+      e.type === "Boolean" ? t.push(
+        new f(o, e.times, e.values)
+      ) : e.type === "Color" ? t.push(
         new d(
           o,
           e.times,
-          e.values,
+          e.values.map((p) => n.parseColor(p)).flat(),
           e.interpolation
         )
-      ) : e.type === "Number" ? r.push(
-        new f(
+      ) : e.type === "Number" ? t.push(
+        new C(
           o,
           e.times,
           e.values,
           e.interpolation
         )
-      ) : e.type === "Quaternion" ? r.push(
+      ) : e.type === "Quaternion" ? t.push(
         new y(
           o,
           e.times,
           e.values,
           e.interpolation
         )
-      ) : e.type === "String" ? r.push(
+      ) : e.type === "String" ? t.push(
         new g(o, e.times, e.values)
-      ) : e.type === "Vector" && r.push(
-        new C(
+      ) : e.type === "Vector" && t.push(
+        new h(
           o,
           e.times,
           e.values,
@@ -60,33 +63,33 @@ const h = function() {
     }
     return new a(
       "",
-      t.duration,
-      r,
-      t.blendMode
+      r.duration,
+      t,
+      r.blendMode
     );
   },
   dispose({ target: n }) {
   }
-}), M = l({
+}), A = l({
   type: "LoadAnimationClip",
-  config: k,
-  create({ config: n, engine: t }) {
+  config: w,
+  create({ config: n, engine: r }) {
     if (!n.url)
       return console.warn("load animation clip processor must have url"), new a();
-    const i = t.resourceManager.resourceMap;
+    const i = r.resourceManager.resourceMap;
     return i.has(n.url) ? i.get(n.url) : (console.warn(
       `load animation clip processor can not found url in engine: ${n.url}`
     ), new a());
   },
   dispose(n) {
   }
-}), v = p({
+}), v = u({
   type: "animationClip",
-  models: [w, M],
-  lifeOrder: u.ZERO
+  models: [M, A],
+  lifeOrder: m.ZERO
 });
 export {
   v as default,
-  h as getAnimationClipConfig,
-  k as getLoadAnimationClipConfig
+  k as getAnimationClipConfig,
+  w as getLoadAnimationClipConfig
 };

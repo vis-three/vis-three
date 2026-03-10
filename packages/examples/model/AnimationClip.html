@@ -62,7 +62,13 @@
             type: "Number",
             name: ".position.x",
             times: [0, 3, 5],
-            values: [0, 10, 0],
+            values: [-15, 10, -15],
+          },
+          {
+            type: "Number",
+            name: ".scale",
+            times: [0, 3, 5],
+            values: [1, 1, 1, 2, 0.1, 4, 1, 1, 1],
           },
         ],
       });
@@ -71,9 +77,39 @@
         target: toSymbol(box),
       });
 
-      const action = generateConfig(CONFIG_TYPE.ANIMATIONACTION, {
+      generateConfig(CONFIG_TYPE.ANIMATIONACTION, {
         mixer: toSymbol(mixer),
         clip: toSymbol(clip),
+      });
+
+      const mClip = generateConfig("AnimationClip", {
+        tracks: [
+          {
+            type: "Color",
+            name: ".color",
+            times: [0, 3, 5],
+            values: [
+              "rgb(255, 100, 100)",
+              "rgb(100, 2550, 100)",
+              "rgb(100, 100, 2550)",
+            ],
+          },
+          {
+            type: "Boolean",
+            name: ".visible",
+            times: [0, 1, 2, 3, 4, 5],
+            values: [true, false, true, false, true, false],
+          },
+        ],
+      });
+
+      const mMixer = generateConfig(CONFIG_TYPE.MIXERANIMATION, {
+        target: toSymbol(material),
+      });
+
+      generateConfig(CONFIG_TYPE.ANIMATIONACTION, {
+        mixer: toSymbol(mMixer),
+        clip: toSymbol(mClip),
       });
 
       window.engine = engine;
