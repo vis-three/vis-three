@@ -17,7 +17,13 @@ import { queueJob, queuePostFlushCb } from "../scheduler";
 import { KeyEnum } from "@vis-three/utils";
 import { parseName } from "../renderer/events";
 
-export interface RenderParams<Resources extends object = any> {
+export interface RenderParams<
+  Props extends object = any,
+  RawBindings extends object = any,
+  Resources extends object = any,
+> {
+  props: Props;
+  setup: RawBindings;
   components: Record<string, ComponentOptions>;
   resources: KeyEnum<Resources>;
 }
@@ -25,7 +31,7 @@ export interface RenderParams<Resources extends object = any> {
 export interface SetupParams<
   Engine extends EngineWidget = any,
   Props extends object = any,
-  Emit extends object = any
+  Emit extends object = any,
 > {
   engine: Engine;
   props: Props;
@@ -37,7 +43,7 @@ export interface ComponentOptions<
   Emit extends object = any,
   Props extends object = any,
   RawBindings extends object = any,
-  Resources extends object = any
+  Resources extends object = any,
 > {
   /**组件名 */
   name?: string;
@@ -54,18 +60,20 @@ export interface ComponentOptions<
   /**组件需要加载的外部资源 */
   load: Record<string, string>;
   /**组件可以使用的资源 */
-  resources?: () => Resources;
+  resources?: (params: { setup: RawBindings }) => Resources;
   /**组件的响应式对象和业务逻辑的位置 */
   setup?: (params: SetupParams<Engine, Props>) => RawBindings;
-  /**组件渲染的目标 */
-  render: (params: RenderParams<Resources>) => VNode | VNode[];
+  /**组件渲染的目标，目前可以支持不需要返回值，通过h函数自动处理 */
+  render: (
+    params: RenderParams<Props, RawBindings, Resources>,
+  ) => VNode | VNode[] | void;
 }
 export class Component<
   Engine extends EngineWidget = any,
   Emit extends object = any,
   Props extends object = any,
   RawBindings extends object = any,
-  Resources extends object = any
+  Resources extends object = any,
 > extends EventDispatcher {
   static currentComponent: Component | null;
 
@@ -95,7 +103,7 @@ export class Component<
   >;
   private el = "";
 
-  private render!: (params: RenderParams) => VNode | VNode[];
+  private render!: (params: RenderParams) => VNode | VNode[] | void;
 
   private engine: Engine;
   private renderer: Renderer<Engine>;
@@ -115,7 +123,7 @@ export class Component<
 
   private cacheResources: Resources = Object.create(Object.prototype);
   private resourcesKeyEnum: KeyEnum<Resources> = Object.create(
-    Object.prototype
+    Object.prototype,
   );
 
   private cacheEvent: Record<string, Function> = {};
@@ -150,12 +158,15 @@ export class Component<
     _h.reset();
     _h.el = this.el;
 
+    // 可以使用this，但是还是支持setup, props中直接获取减少心智负担
     this.render.call(
       { ...this.setupState, ...this.props },
       {
+        setup: this.setupState,
+        props: this.props,
         components: this.options.components || {},
         resources: this.resourcesKeyEnum,
-      }
+      },
     );
 
     let tree = _h.vnodes;
@@ -167,8 +178,11 @@ export class Component<
     if (!this.options.resources) {
       return;
     }
-
-    const resources = this.options.resources.call(this.setupState);
+    // TODO: resources处于promise中，等待异步完成再注册资源，执行this.effect.run()
+    // 可以使用this，但是还是支持setup中直接获取减少心智负担
+    const resources = this.options.resources.call(this.setupState, {
+      setup: this.setupState,
+    });
     this.engine.registerResources(resources as Record<string, unknown>);
 
     this.cacheResources = resources;
@@ -193,7 +207,7 @@ export class Component<
         } else {
           console.warn(
             `widget Component: you not declare attribute  ${key}  in emits options`,
-            this.options
+            this.options,
           );
         }
       } else {
@@ -232,7 +246,7 @@ export class Component<
             key,
             value,
             type: options.type,
-          }
+          },
         );
         return;
       }
@@ -331,7 +345,7 @@ export class Component<
 
           this.engine.renderManager.addEventListener<RenderEvent>(
             ENGINE_EVENT.RENDER,
-            frameEvent
+            frameEvent,
           );
 
           this.cacheEvent[ENGINE_EVENT.RENDER] = frameEvent;
@@ -377,7 +391,7 @@ export class Component<
                   if (prev.keyMap.has(key)) {
                     this.renderer.patch(
                       prev.keyMap.get(key)!,
-                      next.keyMap.get(key)!
+                      next.keyMap.get(key)!,
                     );
                     // prevTree是一次性的所有可以修改
                     prev.keyMap.delete(key);
@@ -391,7 +405,7 @@ export class Component<
                 }
               } else {
                 console.warn(
-                  `widget component render: unknow scope type: ${next.scope}`
+                  `widget component render: unknow scope type: ${next.scope}`,
                 );
               }
             }
@@ -402,7 +416,7 @@ export class Component<
       },
       () => queueJob(update),
       undefined,
-      this.scope
+      this.scope,
     );
 
     const update = () => effect.run();
@@ -416,7 +430,7 @@ export class Component<
   distory() {
     this.engine.removeEventListener<RenderEvent>(
       ENGINE_EVENT.RENDER,
-      this.cacheEvent[ENGINE_EVENT.RENDER] as (event: RenderEvent) => void
+      this.cacheEvent[ENGINE_EVENT.RENDER] as (event: RenderEvent) => void,
     );
 
     this.emit(LifeCycleHooks.BEFORE_DISTORY);
@@ -457,9 +471,9 @@ export const defineComponent = function <
   Emit extends object = any,
   Props extends object = any,
   RawBindings extends object = any,
-  Resources extends object = any
+  Resources extends object = any,
 >(
-  options: ComponentOptions<Engine, Emit, Props, RawBindings, Resources>
+  options: ComponentOptions<Engine, Emit, Props, RawBindings, Resources>,
 ): ComponentOptions<Engine, Emit, Props, RawBindings, Resources> {
   return options;
 };
