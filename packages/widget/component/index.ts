@@ -154,44 +154,6 @@ export class Component<
     this.createEffect();
   }
 
-  private renderTree() {
-    _h.reset();
-    _h.el = this.el;
-
-    // 可以使用this，但是还是支持setup, props中直接获取减少心智负担
-    this.render.call(
-      { ...this.setupState, ...this.props },
-      {
-        setup: this.setupState,
-        props: this.props,
-        components: this.options.components || {},
-        resources: this.resourcesKeyEnum,
-      },
-    );
-
-    let tree = _h.vnodes;
-
-    return tree;
-  }
-
-  private createResources() {
-    if (!this.options.resources) {
-      return;
-    }
-    // TODO: resources处于promise中，等待异步完成再注册资源，执行this.effect.run()
-    // 可以使用this，但是还是支持setup中直接获取减少心智负担
-    const resources = this.options.resources.call(this.setupState, {
-      setup: this.setupState,
-    });
-    this.engine.registerResources(resources as Record<string, unknown>);
-
-    this.cacheResources = resources;
-
-    for (const key in resources) {
-      this.resourcesKeyEnum[key] = key;
-    }
-  }
-
   private createProps() {
     const propsOptions = this.options.props || {};
     const vnProps = this.vnode.props || {};
@@ -272,6 +234,41 @@ export class Component<
     this.rawSetupState = setupResult;
 
     Component.unsetCurrentComponent();
+  }
+
+  private createResources() {
+    if (!this.options.resources) {
+      return;
+    }
+
+    // 可以使用this，但是还是支持setup中直接获取减少心智负担
+    const resources = this.options.resources.call(this.setupState, {
+      setup: this.setupState,
+    });
+
+    // resources资源加载在很多场景下处于外部资源异步加载范畴，处于promise中，
+    // 等待异步完成再注册资源，执行this.effect.run()
+    if (resources instanceof Promise) {
+      resources.then((res) => {
+        this.engine.registerResources(res as Record<string, unknown>);
+
+        this.cacheResources = res;
+
+        for (const key in res) {
+          this.resourcesKeyEnum[key] = key;
+        }
+
+        this.effect.run();
+      });
+    } else {
+      this.engine.registerResources(resources as Record<string, unknown>);
+
+      this.cacheResources = resources;
+
+      for (const key in resources) {
+        this.resourcesKeyEnum[key] = key;
+      }
+    }
   }
 
   private createRender() {
@@ -425,6 +422,26 @@ export class Component<
 
     this.effect = effect;
     this.update = update;
+  }
+
+  private renderTree() {
+    _h.reset();
+    _h.el = this.el;
+
+    // 可以使用this，但是还是支持setup, props中直接获取减少心智负担
+    this.render.call(
+      { ...this.setupState, ...this.props },
+      {
+        setup: this.setupState,
+        props: this.props,
+        components: this.options.components || {},
+        resources: this.resourcesKeyEnum,
+      },
+    );
+
+    let tree = _h.vnodes;
+
+    return tree;
   }
 
   distory() {

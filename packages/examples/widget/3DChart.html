@@ -57,9 +57,9 @@
             }),
           },
         },
-        resources() {
+        resources({ setup }) {
           return {
-            text: this.textGenerator.getDom(),
+            text: setup.textGenerator.getDom(),
           };
         },
         render({ resources }) {
@@ -134,7 +134,7 @@
             }),
           },
         },
-        render() {
+        render({ setup, props }) {
           h("Mesh", {
             geometry: h("BoxGeometry", {
               width: 5,
@@ -145,16 +145,16 @@
               },
             }),
             material: h("MeshStandardMaterial", {
-              color: this.color,
+              color: setup.color,
               transparent: true,
-              opacity: 0.8,
+              opacity: 0.98,
             }),
             scale: {
-              y: this.value,
+              y: props.value,
             },
-            position: this.position,
-            onMouseenter: this.mouseEnter,
-            onMouseleave: this.mouseLeave,
+            position: props.position,
+            onMouseenter: setup.mouseEnter,
+            onMouseleave: setup.mouseLeave,
           });
         },
         setup({ engine, props }) {
@@ -219,17 +219,17 @@
             }),
           },
         },
-        render() {
+        render({ setup, props }) {
           h("LineSegments", {
             geometry: h("CustomGeometry", {
               attribute: {
-                position: this.vertexs,
+                position: setup.vertexs,
               },
               center: false,
             }),
             material: h("LineBasicMaterial"),
-            position: this.position,
-            rotation: this.rotation,
+            position: props.position,
+            rotation: props.rotation,
           });
         },
         setup({ props }) {
@@ -274,7 +274,7 @@
 
       const root = defineComponent({
         components: { label, pillar, grid },
-        render({ components }) {
+        render({ setup, components }) {
           h("DirectionalLight", {
             intensity: 1.5,
             position: {
@@ -408,7 +408,7 @@
           });
 
           vfor(() => {
-            this.pillars.forEach((item) => {
+            setup.pillars.forEach((item) => {
               h(components.pillar, item);
             });
           });

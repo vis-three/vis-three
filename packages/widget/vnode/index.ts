@@ -16,6 +16,7 @@ export interface VNode<NodeProps = Data> {
   el: string | null;
   key: string | number | symbol | null;
   ref: string | null;
+  // 获取 tdcm 配置
   raw: any | null;
   children: VNode[] | null;
 }
@@ -30,7 +31,7 @@ export const createVNode = function <NodeProps = Data>(
     key?: VNode["key"];
     ref?: VNode["ref"];
     raw?: VNode["raw"];
-  } = {}
+  } = {},
 ): VNode<NodeProps> {
   return {
     _isVNode: true,

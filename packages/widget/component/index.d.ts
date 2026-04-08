@@ -5,7 +5,9 @@ import { EventDispatcher } from "@vis-three/core";
 import { Renderer } from "../renderer";
 import { PropsOptions } from "./props";
 import { KeyEnum } from "@vis-three/utils";
-export interface RenderParams<Resources extends object = any> {
+export interface RenderParams<Props extends object = any, RawBindings extends object = any, Resources extends object = any> {
+    props: Props;
+    setup: RawBindings;
     components: Record<string, ComponentOptions>;
     resources: KeyEnum<Resources>;
 }
@@ -15,16 +17,28 @@ export interface SetupParams<Engine extends EngineWidget = any, Props extends ob
     emit: (type: keyof Emit, params: any) => void;
 }
 export interface ComponentOptions<Engine extends EngineWidget = any, Emit extends object = any, Props extends object = any, RawBindings extends object = any, Resources extends object = any> {
+    /**组件名 */
     name?: string;
+    /**组件的事件列表 */
     emits?: Emit;
+    /**父组件的传入 */
     props?: PropsOptions<Props>;
+    /**注册的子组件 */
     components?: Record<string, ComponentOptions>;
+    /**组件使用的engine */
     engine: Engine;
+    /**组件挂载的位置 */
     el: string;
+    /**组件需要加载的外部资源 */
     load: Record<string, string>;
-    resources?: () => Resources;
+    /**组件可以使用的资源 */
+    resources?: (params: {
+        setup: RawBindings;
+    }) => Resources;
+    /**组件的响应式对象和业务逻辑的位置 */
     setup?: (params: SetupParams<Engine, Props>) => RawBindings;
-    render: (params: RenderParams<Resources>) => VNode | VNode[];
+    /**组件渲染的目标，目前可以支持不需要返回值，通过h函数自动处理 */
+    render: (params: RenderParams<Props, RawBindings, Resources>) => VNode | VNode[] | void;
 }
 export declare class Component<Engine extends EngineWidget = any, Emit extends object = any, Props extends object = any, RawBindings extends object = any, Resources extends object = any> extends EventDispatcher {
     static currentComponent: Component | null;
@@ -51,12 +65,12 @@ export declare class Component<Engine extends EngineWidget = any, Emit extends o
     private resourcesKeyEnum;
     private cacheEvent;
     constructor(vnode: VNode<Props>, renderer: Renderer<Engine>);
-    private renderTree;
-    private createResources;
     private createProps;
     private createSetup;
+    private createResources;
     private createRender;
     private createEffect;
+    private renderTree;
     distory(): void;
     updateProps(newProps: Partial<Props>): void;
     getState(raw?: boolean): RawBindings;

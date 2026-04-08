@@ -1,10 +1,10 @@
 import { createSymbol as H, isObjectType as L, OBJECT_MODULE as x, generateConfig as ie, EngineSupport as ce } from "@vis-three/tdcm";
-import { isObject as le } from "@vis-three/utils";
-import { shallowReactive as fe, EffectScope as ue, proxyRefs as pe, ReactiveEffect as Z, getCurrentScope as ae, isRef as B, isShallow as G, isReactive as j } from "@vue/reactivity";
-import { computed as et, reactive as tt, ref as nt, shallowReactive as ot, shallowReadonly as rt, shallowRef as st, toRef as it, toRefs as ct } from "@vue/reactivity";
-import { EventDispatcher as he, ENGINE_EVENT as T } from "@vis-three/core";
-import { isFunction as D, isPromise as de, isArray as z, EMPTY_OBJ as me, NOOP as ge, hasChanged as Y, remove as ye, isObject as Ee, isSet as ve, isMap as we, isPlainObject as Ce } from "@vue/shared";
-const Re = "0.7.0", Q = function(t, e = null, n = {}) {
+import { isObject as ue } from "@vis-three/utils";
+import { shallowReactive as le, EffectScope as fe, proxyRefs as pe, ReactiveEffect as Z, getCurrentScope as ae, isRef as B, isShallow as G, isReactive as j } from "@vue/reactivity";
+import { computed as et, reactive as tt, ref as nt, shallowReactive as st, shallowReadonly as ot, shallowRef as rt, toRef as it, toRefs as ct } from "@vue/reactivity";
+import { EventDispatcher as he, ENGINE_EVENT as P } from "@vis-three/core";
+import { isFunction as D, isPromise as de, isArray as z, EMPTY_OBJ as me, NOOP as ge, hasChanged as K, remove as ye, isObject as Ee, isSet as ve, isMap as we, isPlainObject as Ce } from "@vue/shared";
+const Re = "0.7.1", Q = function(t, e = null, n = {}) {
   return {
     _isVNode: !0,
     type: t,
@@ -23,44 +23,44 @@ const Re = "0.7.0", Q = function(t, e = null, n = {}) {
   return /^on[A-Z]/.test(t);
 }, Se = function(t) {
   const e = t.props, n = {};
-  for (const o in e)
-    N(o) && (n[o] = e[o]);
+  for (const s in e)
+    N(s) && (n[s] = e[s]);
   return n;
 };
 var W = /* @__PURE__ */ ((t) => (t.STATIC = "static", t.VIF = "vif", t.VFOR = "vfor", t))(W || {});
-const f = function(t, e = null) {
+const l = function(t, e = null) {
   const n = Q(t, e, {
     key: e && e.key || null,
     ref: e && e.ref || null,
     raw: e && e.raw || null
   });
-  return f.add(n), n;
+  return l.add(n), n;
 };
-f.reset = function() {
-  f.el = null, f.scope = "static", f.vnodes = [];
+l.reset = function() {
+  l.el = null, l.scope = "static", l.vnodes = [];
 };
-f.add = function(t) {
-  if (t.el = f.el, f.scope !== "static") {
-    const e = f.vnodes[f.vnodes.length - 1];
-    f.scope === "vfor" && (t.key || (t.key = e.vnodes.length), e.keyMap.set(t.key, t)), e.vnodes.push(t);
+l.add = function(t) {
+  if (t.el = l.el, l.scope !== "static") {
+    const e = l.vnodes[l.vnodes.length - 1];
+    l.scope === "vfor" && (t.key || (t.key = e.vnodes.length), e.keyMap.set(t.key, t)), e.vnodes.push(t);
   } else
-    f.vnodes.push(t);
-  return f.vnodes;
+    l.vnodes.push(t);
+  return l.vnodes;
 };
 const qe = function(t, e = null) {
-  return f(t, e);
+  return l(t, e);
 }, Je = function(t) {
-  f.scope = "vif", f.vnodes.push({
-    scope: f.scope,
+  l.scope = "vif", l.vnodes.push({
+    scope: l.scope,
     vnodes: [],
     keyMap: /* @__PURE__ */ new Map()
-  }), t(), f.scope = "static";
+  }), t(), l.scope = "static";
 }, Ue = function(t) {
-  f.scope = "vfor", f.vnodes.push({
-    scope: f.scope,
+  l.scope = "vfor", l.vnodes.push({
+    scope: l.scope,
     vnodes: [],
     keyMap: /* @__PURE__ */ new Map()
-  }), t(), f.scope = "static";
+  }), t(), l.scope = "static";
 };
 var F = /* @__PURE__ */ ((t) => (t.MOUNTED = "mounted", t.BEFORE_DISTORY = "beforeDistory", t.UPDATE = "update", t.FRAME = "frame", t.CAMERA_CHANGE = "cameraChange", t.SCENE_CHANGE = "sceneCHange", t))(F || {});
 const Le = function(t = () => {
@@ -72,7 +72,7 @@ const Le = function(t = () => {
     "beforeDistory",
     (e) => t()
   );
-}, Ye = function(t = () => {
+}, Ke = function(t = () => {
 }) {
   h.currentComponent && h.currentComponent.on(
     "frame",
@@ -88,8 +88,8 @@ const ke = /* @__PURE__ */ Promise.resolve();
 function Oe(t) {
   let e = E + 1, n = m.length;
   for (; e < n; ) {
-    const o = e + n >>> 1, s = m[o], i = M(s);
-    i < t || i === t && s.pre ? e = o + 1 : n = o;
+    const s = e + n >>> 1, r = m[s], i = M(r);
+    i < t || i === t && r.pre ? e = s + 1 : n = s;
   }
   return e;
 }
@@ -144,52 +144,52 @@ function ee() {
     E = 0, m.length = 0, Me(), I = !1, (m.length || O.length) && ee();
   }
 }
-const S = Symbol.for("vis.widget.event"), Te = function(t) {
+const S = Symbol.for("vis.widget.event"), Pe = function(t) {
   const e = function(n) {
     e.value(n);
   };
   return e.value = t, e;
-}, K = /Once$/;
+}, Y = /Once$/;
 function J(t) {
   let e = {};
-  if (K.test(t)) {
+  if (Y.test(t)) {
     e = {};
-    let o;
-    for (; o = t.match(K); )
-      t = t.slice(0, t.length - o[0].length), e[o[0].toLowerCase()] = !0;
+    let s;
+    for (; s = t.match(Y); )
+      t = t.slice(0, t.length - s[0].length), e[s[0].toLowerCase()] = !0;
   }
   return [t.slice(2).toLowerCase(), e];
 }
-const Pe = function(t, e, n) {
+const Te = function(t, e, n) {
   if (e[S]) {
     console.error("config has already create events", e);
     return;
   }
-  const o = Se(t);
-  for (const s in o) {
-    o[s] = Te(o[s]);
-    const [i, c] = J(s);
-    n.addEventListener(i, o[s]);
+  const s = Se(t);
+  for (const r in s) {
+    s[r] = Pe(s[r]);
+    const [i, c] = J(r);
+    n.addEventListener(i, s[r]);
   }
-  e[S] = o;
+  e[S] = s;
 }, Fe = function(t) {
   const e = t.props, n = t.config;
   if (!n[S])
     return;
-  const o = n[S];
-  for (const s in o) {
-    const i = o[s];
-    i && i.value !== e[s] && (i.value = e[s]);
+  const s = n[S];
+  for (const r in s) {
+    const i = s[r];
+    i && i.value !== e[r] && (i.value = e[r]);
   }
 }, Ae = function(t, e) {
   const n = t.config;
   if (!n[S])
     return;
-  const o = n[S];
-  for (const s in o) {
-    const i = o[s];
+  const s = n[S];
+  for (const r in s) {
+    const i = s[r];
     if (i) {
-      const [c, l] = J(s);
+      const [c, u] = J(r);
       e.removeEventListener(c, i);
     }
   }
@@ -197,11 +197,11 @@ const Pe = function(t, e, n) {
 };
 class h extends he {
   constructor(e, n) {
-    super(), this.cid = H(), this.name = "", this.el = "", this.isMounted = !1, this.props = fe(Object.create(Object.prototype)), this.scope = new ue(!0), this.subTree = null, this.cacheResources = Object.create(Object.prototype), this.resourcesKeyEnum = Object.create(
+    super(), this.cid = H(), this.name = "", this.el = "", this.isMounted = !1, this.props = le(Object.create(Object.prototype)), this.scope = new fe(!0), this.subTree = null, this.cacheResources = Object.create(Object.prototype), this.resourcesKeyEnum = Object.create(
       Object.prototype
     ), this.cacheEvent = {}, this.vnode = e;
-    const o = e.type;
-    o.name && (this.name = o.name), this.el = o.el, this.options = o, this.renderer = n, this.engine = n.engine, this.ctx = n.context, this.createProps(), this.createSetup(), this.createResources(), this.createRender(), this.createEffect();
+    const s = e.type;
+    s.name && (this.name = s.name), this.el = s.el, this.options = s, this.renderer = n, this.engine = n.engine, this.ctx = n.context, this.createProps(), this.createSetup(), this.createResources(), this.createRender(), this.createEffect();
   }
   static setCurrentComponent(e) {
     h.currentComponent = e, e.scope.on();
@@ -209,37 +209,20 @@ class h extends he {
   static unsetCurrentComponent() {
     h.currentComponent && h.currentComponent.scope.off(), h.currentComponent = null;
   }
-  renderTree() {
-    return f.reset(), f.el = this.el, this.render.call(
-      { ...this.setupState, ...this.props },
-      {
-        components: this.options.components || {},
-        resources: this.resourcesKeyEnum
-      }
-    ), f.vnodes;
-  }
-  createResources() {
-    if (!this.options.resources)
-      return;
-    const e = this.options.resources.call(this.setupState);
-    this.engine.registerResources(e), this.cacheResources = e;
-    for (const n in e)
-      this.resourcesKeyEnum[n] = n;
-  }
   createProps() {
-    const e = this.options.props || {}, n = this.vnode.props || {}, o = this.props, s = this.options.emits || {}, i = {};
+    const e = this.options.props || {}, n = this.vnode.props || {}, s = this.props, r = this.options.emits || {}, i = {};
     for (const c in n)
       if (N(c)) {
-        const [l, r] = J(c);
-        s[l] ? this[r.once ? "once" : "on"](l, n[c]) : console.warn(
+        const [u, o] = J(c);
+        r[u] ? this[o.once ? "once" : "on"](u, n[c]) : console.warn(
           `widget Component: you not declare attribute  ${c}  in emits options`,
           this.options
         );
       } else
         i[c] = n[c];
     for (const c in e) {
-      const l = e[c];
-      if (l.required && typeof i[c] > "u") {
+      const u = e[c];
+      if (u.required && typeof i[c] > "u") {
         console.error("widget component: component prop is required.", {
           component: this,
           props: i,
@@ -247,21 +230,21 @@ class h extends he {
         });
         return;
       }
-      let r;
-      if (typeof i[c] < "u" ? r = i[c] : l.default && (r = typeof l.default == "function" ? l.default() : l.default), r.constructor !== l.type) {
+      let o;
+      if (typeof i[c] < "u" ? o = i[c] : u.default && (o = typeof u.default == "function" ? u.default() : u.default), o.constructor !== u.type) {
         console.error(
           "widget component: component prop is not instance of type.",
           {
             component: this,
             props: i,
             key: c,
-            value: r,
-            type: l.type
+            value: o,
+            type: u.type
           }
         );
         return;
       }
-      o[c] = r;
+      s[c] = o;
     }
   }
   createSetup() {
@@ -275,6 +258,25 @@ class h extends he {
     }) || {};
     this.setupState = pe(e), this.rawSetupState = e, h.unsetCurrentComponent();
   }
+  createResources() {
+    if (!this.options.resources)
+      return;
+    const e = this.options.resources.call(this.setupState, {
+      setup: this.setupState
+    });
+    if (e instanceof Promise)
+      e.then((n) => {
+        this.engine.registerResources(n), this.cacheResources = n;
+        for (const s in n)
+          this.resourcesKeyEnum[s] = s;
+        this.effect.run();
+      });
+    else {
+      this.engine.registerResources(e), this.cacheResources = e;
+      for (const n in e)
+        this.resourcesKeyEnum[n] = n;
+    }
+  }
   createRender() {
     this.render = this.options.render;
   }
@@ -282,78 +284,78 @@ class h extends he {
     const e = new Z(
       () => {
         if (this.isMounted) {
-          const o = this.renderTree(), s = this.subTree;
-          if (s.length !== o.length) {
+          const s = this.renderTree(), r = this.subTree;
+          if (r.length !== s.length) {
             console.error("widget component render: tree render error", {
-              nextTree: o,
-              prevTree: s
+              nextTree: s,
+              prevTree: r
             });
             return;
           }
-          for (let i = 0; i < o.length; i += 1)
-            if (v(s[i]) && v(o[i]))
-              this.renderer.patch(s[i], o[i]);
+          for (let i = 0; i < s.length; i += 1)
+            if (v(r[i]) && v(s[i]))
+              this.renderer.patch(r[i], s[i]);
             else {
-              const c = o[i], l = s[i];
-              if (c.scope !== l.scope) {
+              const c = s[i], u = r[i];
+              if (c.scope !== u.scope) {
                 console.error("widget component render: tree render error", {
-                  nextTree: o,
-                  prevTree: s
+                  nextTree: s,
+                  prevTree: r
                 });
                 return;
               }
               if (c.scope === W.VIF) {
-                for (const r of l.vnodes)
-                  this.renderer.patch(r, null);
-                for (const r of c.vnodes)
-                  this.renderer.patch(null, r);
+                for (const o of u.vnodes)
+                  this.renderer.patch(o, null);
+                for (const o of c.vnodes)
+                  this.renderer.patch(null, o);
               } else if (c.scope === W.VFOR) {
-                for (const r of c.keyMap.keys())
-                  l.keyMap.has(r) ? (this.renderer.patch(
-                    l.keyMap.get(r),
-                    c.keyMap.get(r)
-                  ), l.keyMap.delete(r)) : this.renderer.patch(null, c.keyMap.get(r));
-                for (const r of l.keyMap.values())
-                  this.renderer.unmountElement(r);
+                for (const o of c.keyMap.keys())
+                  u.keyMap.has(o) ? (this.renderer.patch(
+                    u.keyMap.get(o),
+                    c.keyMap.get(o)
+                  ), u.keyMap.delete(o)) : this.renderer.patch(null, c.keyMap.get(o));
+                for (const o of u.keyMap.values())
+                  this.renderer.unmountElement(o);
               } else
                 console.warn(
                   `widget component render: unknow scope type: ${c.scope}`
                 );
             }
-          this.subTree = o;
+          this.subTree = s;
         } else {
-          const o = this.rawSetupState, s = (r) => {
-            r.ref && typeof o[r.ref] < "u" && (o[r.ref].value = r.component ? r.component : r.config || null);
-          }, i = (r) => {
-            if (r.raw && typeof o[r.raw] < "u")
-              if (r.config) {
-                const p = this.engine.getObjectBySymbol(r.config.vid);
+          const s = this.rawSetupState, r = (o) => {
+            o.ref && typeof s[o.ref] < "u" && (s[o.ref].value = o.component ? o.component : o.config || null);
+          }, i = (o) => {
+            if (o.raw && typeof s[o.raw] < "u")
+              if (o.config) {
+                const p = this.engine.getObjectBySymbol(o.config.vid);
                 p || console.warn("can not found raw object in engine", {
                   component: this,
-                  vnode: r
-                }), o[r.raw].value = p || null;
+                  vnode: o
+                }), s[o.raw].value = p || null;
               } else {
                 console.warn("component raw object is not a native config", {
                   component: this,
-                  vnode: r
+                  vnode: o
                 });
                 return;
               }
           }, c = this.subTree = this.renderTree();
-          for (const r of c)
-            if (v(r))
-              this.renderer.patch(null, r), s(r), i(r);
+          for (const o of c)
+            if (v(o))
+              this.renderer.patch(null, o), r(o), i(o);
             else
-              for (const p of r.vnodes)
-                this.renderer.patch(null, p), s(p), i(p);
+              for (const p of o.vnodes)
+                this.renderer.patch(null, p), r(p), i(p);
           this.isMounted = !0, $(() => this.emit(F.MOUNTED));
-          const l = (r) => {
-            this.emit(F.FRAME, r);
+          const u = (o) => {
+            this.emit(F.FRAME, o);
           };
           this.engine.renderManager.addEventListener(
-            T.RENDER,
-            l
-          ), this.cacheEvent[T.RENDER] = l;
+            P.RENDER,
+            u
+          ), this.cacheEvent[P.RENDER] = u;
         }
       },
       () => X(n),
@@ -362,29 +364,40 @@ class h extends he {
     ), n = () => e.run();
     n(), this.effect = e, this.update = n;
   }
+  renderTree() {
+    return l.reset(), l.el = this.el, this.render.call(
+      { ...this.setupState, ...this.props },
+      {
+        setup: this.setupState,
+        props: this.props,
+        components: this.options.components || {},
+        resources: this.resourcesKeyEnum
+      }
+    ), l.vnodes;
+  }
   distory() {
     this.engine.removeEventListener(
-      T.RENDER,
-      this.cacheEvent[T.RENDER]
+      P.RENDER,
+      this.cacheEvent[P.RENDER]
     ), this.emit(F.BEFORE_DISTORY), this.scope.stop(), this.effect.active = !1, this.effect.stop();
     const e = this.subTree || [];
     for (let n = 0; n < e.length; n += 1)
       if (v(e[n]))
         this.renderer.patch(e[n], null), e[n].config = null, e[n].raw = null;
       else
-        for (const o of e[n].vnodes)
-          this.renderer.patch(o, null), o.config = null, o.raw = null;
+        for (const s of e[n].vnodes)
+          this.renderer.patch(s, null), s.config = null, s.raw = null;
   }
   updateProps(e) {
     const n = this.props;
-    for (const o in e)
-      n[o] = e[o];
+    for (const s in e)
+      n[s] = e[s];
   }
   getState(e = !0) {
     return e ? this.rawSetupState : this.setupState;
   }
 }
-const Ke = function(t) {
+const Ye = function(t) {
   return t;
 }, te = (t) => {
   if (typeof t == "object") {
@@ -400,8 +413,8 @@ class Ne {
   constructor(e) {
     this.context = e, this.engine = e.engine;
   }
-  log(e, n, o) {
-    n ? console[e](`Widget renderer: ${n}`, o) : console.info(`Widget renderer: ${e}`);
+  log(e, n, s) {
+    n ? console[e](`Widget renderer: ${n}`, s) : console.info(`Widget renderer: ${e}`);
   }
   patch(e, n) {
     if (!e && !n) {
@@ -423,31 +436,31 @@ class Ne {
   unmountElement(e) {
     if (L(e.type)) {
       if (e.config.parent) {
-        const o = this.engine.getConfigFromModules(
+        const s = this.engine.getConfigFromModules(
           x,
           e.config.parent
         );
-        if (!o) {
+        if (!s) {
           console.error(
             "widget renderer: can not found parent config with: ",
             e
           );
           return;
         }
-        o.children.splice(
-          o.children.indexOf(
+        s.children.splice(
+          s.children.indexOf(
             e.config.vid
           ),
           1
         );
       } else if (!e.el) {
-        const o = this.engine.getObjectBySymbol(
+        const s = this.engine.getObjectBySymbol(
           e.config.vid
         );
-        o || console.error(
+        s || console.error(
           "widget renderer: can not found Three object with: ",
           e
-        ), o.removeFromParent();
+        ), s.removeFromParent();
       }
       const n = this.engine.getObjectBySymbol(
         e.config.vid
@@ -457,7 +470,7 @@ class Ne {
     this.engine.removeConfigBySymbol(e.config.vid);
   }
   mountElement(e) {
-    const { element: n, onProps: o } = this.createElement(e);
+    const { element: n, onProps: s } = this.createElement(e);
     if (this.engine.applyConfig(n), L(n.type)) {
       if (!e.el)
         this.engine.scene.add(
@@ -476,8 +489,8 @@ class Ne {
         }
         i.children.push(n.vid);
       }
-      const s = this.engine.getObjectBySymbol(n.vid);
-      Pe(e, n, s);
+      const r = this.engine.getObjectBySymbol(n.vid);
+      Te(e, n, r);
     }
   }
   patchElement(e, n) {
@@ -485,34 +498,34 @@ class Ne {
       this.unmountElement(e), this.mountElement(n);
     else {
       n.config = e.config;
-      const o = e.config;
-      o || console.error("widget renderer: can not found  config with: ", e);
-      let s = {};
+      const s = e.config;
+      s || console.error("widget renderer: can not found  config with: ", e);
+      let r = {};
       const i = n.props;
       let c = !1;
-      for (const r in e.props) {
-        if (N(r)) {
+      for (const o in e.props) {
+        if (N(o)) {
           c = !0;
           continue;
         }
-        s[r] = e.props[r];
+        r[o] = e.props[o];
       }
-      const l = (r, p, g) => {
-        for (const u in r)
-          v(r[u]) ? v(p[u]) && p[u].config.vid !== r[u].config.vid ? g[u] = p[u].config.vid : v(p[u]) || (g[u] = p[u]) : le(r[u]) ? l(r[u], p[u], g[u]) : p[u] !== r[u] && (g[u] = p[u]);
+      const u = (o, p, g) => {
+        for (const f in o)
+          v(o[f]) ? v(p[f]) && p[f].config.vid !== o[f].config.vid ? g[f] = p[f].config.vid : v(p[f]) || (g[f] = p[f]) : ue(o[f]) ? u(o[f], p[f], g[f]) : p[f] !== o[f] && (g[f] = p[f]);
       };
-      l(s, i, o), c && Fe(n);
+      u(r, i, s), c && Fe(n);
     }
   }
   createElement(e) {
-    const n = e.props, o = {}, s = {};
+    const n = e.props, s = {}, r = {};
     for (const c in n)
-      ["ref", "index"].includes(c) || (N(c) ? s[c] = n[c] : o[c] = te(n[c]));
-    const i = ie(e.type, o, {
+      ["ref", "index"].includes(c) || (N(c) ? r[c] = n[c] : s[c] = te(n[c]));
+    const i = ie(e.type, s, {
       strict: !1,
       warn: !1
     });
-    return e.config = i, { element: i, onProps: s };
+    return e.config = i, { element: i, onProps: r };
   }
   processComponent(e, n) {
     if (!e && !n) {
@@ -529,19 +542,25 @@ class Ne {
     (n = e.component) == null || n.distory(), e.component = null;
   }
   patchComponent(e, n) {
-    const o = e.component;
-    n.component = o, o.vnode = n;
-    const s = e.props || {}, i = n.props || {}, c = {};
-    let l = !1;
-    for (const r in i)
-      i[r] !== s[r] && (c[r] = i[r], l = !0);
-    l && (o.updateProps(c), o.update());
+    const s = e.component;
+    n.component = s, s.vnode = n;
+    const r = e.props || {}, i = n.props || {}, c = {};
+    let u = !1;
+    for (const o in i)
+      i[o] !== r[o] && (c[o] = i[o], u = !0);
+    u && (s.updateProps(c), s.update());
   }
 }
 class Ie {
   constructor(e, n) {
     this.wid = H(), this.version = Re, this.components = {}, this.instance = null, this.engine = e, this.root = n, this.renderer = new Ne(this);
   }
+  /**
+   * 注册布局全局组件
+   * @param name 组件名
+   * @param component 组件选项
+   * @returns
+   */
   component(e, n) {
     if (typeof e == "object") {
       if (n = e, !n.name) {
@@ -566,14 +585,25 @@ class Ie {
     }
     this.components[e] = n;
   }
+  /**
+   * 部件挂载
+   * @returns this
+   */
   mount() {
     const e = Q(this.root);
     return this.renderer.render(e), this.instance = e.component, this;
   }
+  /**
+   * 获取根组件的状态对象
+   * @returns any
+   */
   getState() {
     var e;
     return (e = this.instance) == null ? void 0 : e.getState(!0);
   }
+  /**
+   * 解除部件绑定
+   */
   unmount() {
     var e;
     (e = this.instance) == null || e.distory();
@@ -585,20 +615,25 @@ class xe extends ce {
   constructor(e = {}) {
     super(e);
   }
+  /**
+   * 创建一个小部件
+   * @param component 组件
+   * @returns Widget
+   */
   createWidget(e) {
     return new Ie(this, e);
   }
 }
 const He = function(t, e = {}) {
   const n = new xe();
-  return t.modules && t.modules.forEach((o) => {
-    n.registModule(o);
-  }), t.plugins && t.plugins.forEach((o) => {
-    n.install(o);
-  }), t.strategy && t.strategy.forEach((o) => {
-    n.exec(o);
-  }), t.wdigets && t.wdigets.forEach((o) => {
-    n.createWidget(o);
+  return t.modules && t.modules.forEach((s) => {
+    n.useModule(s);
+  }), t.plugins && t.plugins.forEach((s) => {
+    n.install(s);
+  }), t.strategy && t.strategy.forEach((s) => {
+    n.exec(s);
+  }), t.wdigets && t.wdigets.forEach((s) => {
+    n.createWidget(s);
   }), n;
 }, Ze = function(t) {
   return {
@@ -606,75 +641,75 @@ const He = function(t, e = {}) {
   };
 };
 function A(t, e, n) {
-  let o;
+  let s;
   try {
-    o = n ? t(...n) : t();
-  } catch (s) {
-    console.error(s);
+    s = n ? t(...n) : t();
+  } catch (r) {
+    console.error(r);
   }
-  return o;
+  return s;
 }
 function q(t, e, n) {
   if (D(t)) {
-    const s = A(t, e, n);
-    return s && de(s) && s.catch((i) => {
+    const r = A(t, e, n);
+    return r && de(r) && r.catch((i) => {
       console.error(i);
-    }), s;
+    }), r;
   }
-  const o = [];
-  for (let s = 0; s < t.length; s++)
-    o.push(q(t[s], e, n));
-  return o;
+  const s = [];
+  for (let r = 0; r < t.length; r++)
+    s.push(q(t[r], e, n));
+  return s;
 }
 function ze(t, e) {
   return ne(t, null, e);
 }
-const P = {};
+const T = {};
 function Qe(t, e, n) {
   return ne(t, e, n);
 }
-function ne(t, e, { immediate: n, deep: o, flush: s, onTrack: i, onTrigger: c } = me) {
+function ne(t, e, { immediate: n, deep: s, flush: r, onTrack: i, onTrigger: c } = me) {
   var U;
-  const l = ae() === ((U = h.currentComponent) == null ? void 0 : U.scope) ? h.currentComponent : null;
-  let r, p = !1, g = !1;
-  if (B(t) ? (r = () => t.value, p = G(t)) : j(t) ? (r = () => t, o = !0) : z(t) ? (g = !0, p = t.some((a) => j(a) || G(a)), r = () => t.map((a) => {
+  const u = ae() === ((U = h.currentComponent) == null ? void 0 : U.scope) ? h.currentComponent : null;
+  let o, p = !1, g = !1;
+  if (B(t) ? (o = () => t.value, p = G(t)) : j(t) ? (o = () => t, s = !0) : z(t) ? (g = !0, p = t.some((a) => j(a) || G(a)), o = () => t.map((a) => {
     if (B(a))
       return a.value;
     if (j(a))
       return k(a);
     if (D(a))
       return A(a);
-  })) : D(t) ? e ? r = () => A(t) : r = () => {
-    if (!(l && !l.isMounted))
-      return u && u(), q(t, l);
-  } : r = ge, e && o) {
-    const a = r;
-    r = () => k(a());
+  })) : D(t) ? e ? o = () => A(t) : o = () => {
+    if (!(u && !u.isMounted))
+      return f && f(), q(t, u);
+  } : o = ge, e && s) {
+    const a = o;
+    o = () => k(a());
   }
-  let u, oe = (a) => {
-    u = d.onStop = () => {
-      A(a), u = d.onStop = void 0;
+  let f, se = (a) => {
+    f = d.onStop = () => {
+      A(a), f = d.onStop = void 0;
     };
-  }, w = g ? new Array(t.length).fill(P) : P;
+  }, w = g ? new Array(t.length).fill(T) : T;
   const C = () => {
     if (d.active)
       if (e) {
         const a = d.run();
-        (o || p || (g ? a.some((re, se) => Y(re, w[se])) : Y(a, w))) && (u && u(), q(e, l, [
+        (s || p || (g ? a.some((oe, re) => K(oe, w[re])) : K(a, w))) && (f && f(), q(e, u, [
           a,
           // pass undefined as the old value when it's changed for the first time
-          w === P ? void 0 : g && w[0] === P ? [] : w,
-          oe
+          w === T ? void 0 : g && w[0] === T ? [] : w,
+          se
         ]), w = a);
       } else
         d.run();
   };
   C.allowRecurse = !!e;
   let b;
-  s === "sync" ? b = C : s === "post" ? b = () => $(C) : (C.pre = !0, l && (C.id = l.cid), b = () => X(C));
-  const d = new Z(r, b);
-  return e ? n ? C() : w = d.run() : s === "post" ? $(d.run.bind(d)) : d.run(), () => {
-    d.stop(), l && l.scope && ye(l.scope.effects, d);
+  r === "sync" ? b = C : r === "post" ? b = () => $(C) : (C.pre = !0, u && (C.id = u.cid), b = () => X(C));
+  const d = new Z(o, b);
+  return e ? n ? C() : w = d.run() : r === "post" ? $(d.run.bind(d)) : d.run(), () => {
+    d.stop(), u && u.scope && ye(u.scope.effects, d);
   };
 }
 function k(t, e) {
@@ -697,18 +732,18 @@ function k(t, e) {
 export {
   xe as EngineWidget,
   et as computed,
-  Ke as defineComponent,
+  Ye as defineComponent,
   He as defineEngineWidget,
   qe as h,
   Ge as onBeforeDistory,
-  Ye as onFrame,
+  Ke as onFrame,
   Le as onMounted,
   Ze as raw,
   tt as reactive,
   nt as ref,
-  ot as shallowReactive,
-  rt as shallowReadonly,
-  st as shallowRef,
+  st as shallowReactive,
+  ot as shallowReadonly,
+  rt as shallowRef,
   it as toRef,
   ct as toRefs,
   Ue as vfor,
