@@ -108,7 +108,8 @@ export class Component<
   private engine: Engine;
   private renderer: Renderer<Engine>;
 
-  isMounted = false;
+  isLoaded = false; // 资源加载标记
+  isMounted = false; // 挂载标记
 
   private props: Props = shallowReactive(Object.create(Object.prototype));
   private setupState!: RawBindings;
@@ -238,6 +239,7 @@ export class Component<
 
   private createResources() {
     if (!this.options.resources) {
+      this.isLoaded = true;
       return;
     }
 
@@ -257,6 +259,7 @@ export class Component<
         for (const key in res) {
           this.resourcesKeyEnum[key] = key;
         }
+        this.isLoaded = true;
 
         this.effect.run();
       });
@@ -268,6 +271,8 @@ export class Component<
       for (const key in resources) {
         this.resourcesKeyEnum[key] = key;
       }
+
+      this.isLoaded = true;
     }
   }
 
@@ -278,6 +283,11 @@ export class Component<
   private createEffect() {
     const effect = new ReactiveEffect(
       () => {
+        // 等待资源加载完成
+        if (!this.isLoaded) {
+          return;
+        }
+
         if (!this.isMounted) {
           const setupState = this.rawSetupState;
 

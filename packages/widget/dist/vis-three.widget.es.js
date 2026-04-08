@@ -1,6 +1,6 @@
-import { createSymbol as H, isObjectType as L, OBJECT_MODULE as x, generateConfig as ie, EngineSupport as ce } from "@vis-three/tdcm";
+import { createSymbol as H, isObjectType as U, OBJECT_MODULE as x, generateConfig as ie, EngineSupport as ce } from "@vis-three/tdcm";
 import { isObject as ue } from "@vis-three/utils";
-import { shallowReactive as le, EffectScope as fe, proxyRefs as pe, ReactiveEffect as Z, getCurrentScope as ae, isRef as B, isShallow as G, isReactive as j } from "@vue/reactivity";
+import { shallowReactive as fe, EffectScope as le, proxyRefs as pe, ReactiveEffect as Z, getCurrentScope as ae, isRef as B, isShallow as G, isReactive as j } from "@vue/reactivity";
 import { computed as et, reactive as tt, ref as nt, shallowReactive as st, shallowReadonly as ot, shallowRef as rt, toRef as it, toRefs as ct } from "@vue/reactivity";
 import { EventDispatcher as he, ENGINE_EVENT as P } from "@vis-three/core";
 import { isFunction as D, isPromise as de, isArray as z, EMPTY_OBJ as me, NOOP as ge, hasChanged as K, remove as ye, isObject as Ee, isSet as ve, isMap as we, isPlainObject as Ce } from "@vue/shared";
@@ -28,42 +28,42 @@ const Re = "0.7.1", Q = function(t, e = null, n = {}) {
   return n;
 };
 var W = /* @__PURE__ */ ((t) => (t.STATIC = "static", t.VIF = "vif", t.VFOR = "vfor", t))(W || {});
-const l = function(t, e = null) {
+const f = function(t, e = null) {
   const n = Q(t, e, {
     key: e && e.key || null,
     ref: e && e.ref || null,
     raw: e && e.raw || null
   });
-  return l.add(n), n;
+  return f.add(n), n;
 };
-l.reset = function() {
-  l.el = null, l.scope = "static", l.vnodes = [];
+f.reset = function() {
+  f.el = null, f.scope = "static", f.vnodes = [];
 };
-l.add = function(t) {
-  if (t.el = l.el, l.scope !== "static") {
-    const e = l.vnodes[l.vnodes.length - 1];
-    l.scope === "vfor" && (t.key || (t.key = e.vnodes.length), e.keyMap.set(t.key, t)), e.vnodes.push(t);
+f.add = function(t) {
+  if (t.el = f.el, f.scope !== "static") {
+    const e = f.vnodes[f.vnodes.length - 1];
+    f.scope === "vfor" && (t.key || (t.key = e.vnodes.length), e.keyMap.set(t.key, t)), e.vnodes.push(t);
   } else
-    l.vnodes.push(t);
-  return l.vnodes;
+    f.vnodes.push(t);
+  return f.vnodes;
 };
-const qe = function(t, e = null) {
-  return l(t, e);
+const $e = function(t, e = null) {
+  return f(t, e);
+}, qe = function(t) {
+  f.scope = "vif", f.vnodes.push({
+    scope: f.scope,
+    vnodes: [],
+    keyMap: /* @__PURE__ */ new Map()
+  }), t(), f.scope = "static";
 }, Je = function(t) {
-  l.scope = "vif", l.vnodes.push({
-    scope: l.scope,
+  f.scope = "vfor", f.vnodes.push({
+    scope: f.scope,
     vnodes: [],
     keyMap: /* @__PURE__ */ new Map()
-  }), t(), l.scope = "static";
-}, Ue = function(t) {
-  l.scope = "vfor", l.vnodes.push({
-    scope: l.scope,
-    vnodes: [],
-    keyMap: /* @__PURE__ */ new Map()
-  }), t(), l.scope = "static";
+  }), t(), f.scope = "static";
 };
 var F = /* @__PURE__ */ ((t) => (t.MOUNTED = "mounted", t.BEFORE_DISTORY = "beforeDistory", t.UPDATE = "update", t.FRAME = "frame", t.CAMERA_CHANGE = "cameraChange", t.SCENE_CHANGE = "sceneCHange", t))(F || {});
-const Le = function(t = () => {
+const Ue = function(t = () => {
 }) {
   h.currentComponent && h.currentComponent.on("mounted", (e) => t());
 }, Ge = function(t = () => {
@@ -79,7 +79,7 @@ const Le = function(t = () => {
     (e) => t(e.delta, e.total)
   );
 };
-let I = !1, _ = !1;
+let I = !1, L = !1;
 const m = [];
 let E = 0;
 const O = [];
@@ -100,9 +100,9 @@ function X(t) {
   )) && (t.id == null ? m.push(t) : m.splice(Oe(t.id), 0, t), V());
 }
 function V() {
-  !I && !_ && (_ = !0, ke.then(ee));
+  !I && !L && (L = !0, ke.then(ee));
 }
-function $(t) {
+function _(t) {
   Array.isArray(t) ? O.push(...t) : (!y || !y.includes(
     t,
     t.allowRecurse ? R + 1 : R
@@ -129,7 +129,7 @@ const M = (t) => t.id == null ? 1 / 0 : t.id, be = (t, e) => {
   return n;
 };
 function ee() {
-  _ = !1, I = !0, m.sort(be);
+  L = !1, I = !0, m.sort(be);
   try {
     for (E = 0; E < m.length; E++) {
       const t = m[E];
@@ -150,7 +150,7 @@ const S = Symbol.for("vis.widget.event"), Pe = function(t) {
   };
   return e.value = t, e;
 }, Y = /Once$/;
-function J(t) {
+function q(t) {
   let e = {};
   if (Y.test(t)) {
     e = {};
@@ -168,7 +168,7 @@ const Te = function(t, e, n) {
   const s = Se(t);
   for (const r in s) {
     s[r] = Pe(s[r]);
-    const [i, c] = J(r);
+    const [i, c] = q(r);
     n.addEventListener(i, s[r]);
   }
   e[S] = s;
@@ -189,7 +189,7 @@ const Te = function(t, e, n) {
   for (const r in s) {
     const i = s[r];
     if (i) {
-      const [c, u] = J(r);
+      const [c, u] = q(r);
       e.removeEventListener(c, i);
     }
   }
@@ -197,7 +197,7 @@ const Te = function(t, e, n) {
 };
 class h extends he {
   constructor(e, n) {
-    super(), this.cid = H(), this.name = "", this.el = "", this.isMounted = !1, this.props = le(Object.create(Object.prototype)), this.scope = new fe(!0), this.subTree = null, this.cacheResources = Object.create(Object.prototype), this.resourcesKeyEnum = Object.create(
+    super(), this.cid = H(), this.name = "", this.el = "", this.isLoaded = !1, this.isMounted = !1, this.props = fe(Object.create(Object.prototype)), this.scope = new le(!0), this.subTree = null, this.cacheResources = Object.create(Object.prototype), this.resourcesKeyEnum = Object.create(
       Object.prototype
     ), this.cacheEvent = {}, this.vnode = e;
     const s = e.type;
@@ -213,7 +213,7 @@ class h extends he {
     const e = this.options.props || {}, n = this.vnode.props || {}, s = this.props, r = this.options.emits || {}, i = {};
     for (const c in n)
       if (N(c)) {
-        const [u, o] = J(c);
+        const [u, o] = q(c);
         r[u] ? this[o.once ? "once" : "on"](u, n[c]) : console.warn(
           `widget Component: you not declare attribute  ${c}  in emits options`,
           this.options
@@ -259,8 +259,10 @@ class h extends he {
     this.setupState = pe(e), this.rawSetupState = e, h.unsetCurrentComponent();
   }
   createResources() {
-    if (!this.options.resources)
+    if (!this.options.resources) {
+      this.isLoaded = !0;
       return;
+    }
     const e = this.options.resources.call(this.setupState, {
       setup: this.setupState
     });
@@ -269,12 +271,13 @@ class h extends he {
         this.engine.registerResources(n), this.cacheResources = n;
         for (const s in n)
           this.resourcesKeyEnum[s] = s;
-        this.effect.run();
+        this.isLoaded = !0, this.effect.run();
       });
     else {
       this.engine.registerResources(e), this.cacheResources = e;
       for (const n in e)
         this.resourcesKeyEnum[n] = n;
+      this.isLoaded = !0;
     }
   }
   createRender() {
@@ -283,80 +286,81 @@ class h extends he {
   createEffect() {
     const e = new Z(
       () => {
-        if (this.isMounted) {
-          const s = this.renderTree(), r = this.subTree;
-          if (r.length !== s.length) {
-            console.error("widget component render: tree render error", {
-              nextTree: s,
-              prevTree: r
-            });
-            return;
-          }
-          for (let i = 0; i < s.length; i += 1)
-            if (v(r[i]) && v(s[i]))
-              this.renderer.patch(r[i], s[i]);
-            else {
-              const c = s[i], u = r[i];
-              if (c.scope !== u.scope) {
-                console.error("widget component render: tree render error", {
-                  nextTree: s,
-                  prevTree: r
-                });
-                return;
-              }
-              if (c.scope === W.VIF) {
-                for (const o of u.vnodes)
-                  this.renderer.patch(o, null);
-                for (const o of c.vnodes)
-                  this.renderer.patch(null, o);
-              } else if (c.scope === W.VFOR) {
-                for (const o of c.keyMap.keys())
-                  u.keyMap.has(o) ? (this.renderer.patch(
-                    u.keyMap.get(o),
-                    c.keyMap.get(o)
-                  ), u.keyMap.delete(o)) : this.renderer.patch(null, c.keyMap.get(o));
-                for (const o of u.keyMap.values())
-                  this.renderer.unmountElement(o);
-              } else
-                console.warn(
-                  `widget component render: unknow scope type: ${c.scope}`
-                );
+        if (this.isLoaded)
+          if (this.isMounted) {
+            const s = this.renderTree(), r = this.subTree;
+            if (r.length !== s.length) {
+              console.error("widget component render: tree render error", {
+                nextTree: s,
+                prevTree: r
+              });
+              return;
             }
-          this.subTree = s;
-        } else {
-          const s = this.rawSetupState, r = (o) => {
-            o.ref && typeof s[o.ref] < "u" && (s[o.ref].value = o.component ? o.component : o.config || null);
-          }, i = (o) => {
-            if (o.raw && typeof s[o.raw] < "u")
-              if (o.config) {
-                const p = this.engine.getObjectBySymbol(o.config.vid);
-                p || console.warn("can not found raw object in engine", {
-                  component: this,
-                  vnode: o
-                }), s[o.raw].value = p || null;
-              } else {
-                console.warn("component raw object is not a native config", {
-                  component: this,
-                  vnode: o
-                });
-                return;
+            for (let i = 0; i < s.length; i += 1)
+              if (v(r[i]) && v(s[i]))
+                this.renderer.patch(r[i], s[i]);
+              else {
+                const c = s[i], u = r[i];
+                if (c.scope !== u.scope) {
+                  console.error("widget component render: tree render error", {
+                    nextTree: s,
+                    prevTree: r
+                  });
+                  return;
+                }
+                if (c.scope === W.VIF) {
+                  for (const o of u.vnodes)
+                    this.renderer.patch(o, null);
+                  for (const o of c.vnodes)
+                    this.renderer.patch(null, o);
+                } else if (c.scope === W.VFOR) {
+                  for (const o of c.keyMap.keys())
+                    u.keyMap.has(o) ? (this.renderer.patch(
+                      u.keyMap.get(o),
+                      c.keyMap.get(o)
+                    ), u.keyMap.delete(o)) : this.renderer.patch(null, c.keyMap.get(o));
+                  for (const o of u.keyMap.values())
+                    this.renderer.unmountElement(o);
+                } else
+                  console.warn(
+                    `widget component render: unknow scope type: ${c.scope}`
+                  );
               }
-          }, c = this.subTree = this.renderTree();
-          for (const o of c)
-            if (v(o))
-              this.renderer.patch(null, o), r(o), i(o);
-            else
-              for (const p of o.vnodes)
-                this.renderer.patch(null, p), r(p), i(p);
-          this.isMounted = !0, $(() => this.emit(F.MOUNTED));
-          const u = (o) => {
-            this.emit(F.FRAME, o);
-          };
-          this.engine.renderManager.addEventListener(
-            P.RENDER,
-            u
-          ), this.cacheEvent[P.RENDER] = u;
-        }
+            this.subTree = s;
+          } else {
+            const s = this.rawSetupState, r = (o) => {
+              o.ref && typeof s[o.ref] < "u" && (s[o.ref].value = o.component ? o.component : o.config || null);
+            }, i = (o) => {
+              if (o.raw && typeof s[o.raw] < "u")
+                if (o.config) {
+                  const p = this.engine.getObjectBySymbol(o.config.vid);
+                  p || console.warn("can not found raw object in engine", {
+                    component: this,
+                    vnode: o
+                  }), s[o.raw].value = p || null;
+                } else {
+                  console.warn("component raw object is not a native config", {
+                    component: this,
+                    vnode: o
+                  });
+                  return;
+                }
+            }, c = this.subTree = this.renderTree();
+            for (const o of c)
+              if (v(o))
+                this.renderer.patch(null, o), r(o), i(o);
+              else
+                for (const p of o.vnodes)
+                  this.renderer.patch(null, p), r(p), i(p);
+            this.isMounted = !0, _(() => this.emit(F.MOUNTED));
+            const u = (o) => {
+              this.emit(F.FRAME, o);
+            };
+            this.engine.renderManager.addEventListener(
+              P.RENDER,
+              u
+            ), this.cacheEvent[P.RENDER] = u;
+          }
       },
       () => X(n),
       void 0,
@@ -365,7 +369,7 @@ class h extends he {
     n(), this.effect = e, this.update = n;
   }
   renderTree() {
-    return l.reset(), l.el = this.el, this.render.call(
+    return f.reset(), f.el = this.el, this.render.call(
       { ...this.setupState, ...this.props },
       {
         setup: this.setupState,
@@ -373,7 +377,7 @@ class h extends he {
         components: this.options.components || {},
         resources: this.resourcesKeyEnum
       }
-    ), l.vnodes;
+    ), f.vnodes;
   }
   distory() {
     this.engine.removeEventListener(
@@ -434,7 +438,7 @@ class Ne {
     e === null ? this.mountElement(n) : n === null ? this.unmountElement(e) : this.patchElement(e, n);
   }
   unmountElement(e) {
-    if (L(e.type)) {
+    if (U(e.type)) {
       if (e.config.parent) {
         const s = this.engine.getConfigFromModules(
           x,
@@ -471,7 +475,7 @@ class Ne {
   }
   mountElement(e) {
     const { element: n, onProps: s } = this.createElement(e);
-    if (this.engine.applyConfig(n), L(n.type)) {
+    if (this.engine.applyConfig(n), U(n.type)) {
       if (!e.el)
         this.engine.scene.add(
           this.engine.getObjectFromModules(x, n.vid)
@@ -511,8 +515,8 @@ class Ne {
         r[o] = e.props[o];
       }
       const u = (o, p, g) => {
-        for (const f in o)
-          v(o[f]) ? v(p[f]) && p[f].config.vid !== o[f].config.vid ? g[f] = p[f].config.vid : v(p[f]) || (g[f] = p[f]) : ue(o[f]) ? u(o[f], p[f], g[f]) : p[f] !== o[f] && (g[f] = p[f]);
+        for (const l in o)
+          v(o[l]) ? v(p[l]) && p[l].config.vid !== o[l].config.vid ? g[l] = p[l].config.vid : v(p[l]) || (g[l] = p[l]) : ue(o[l]) ? u(o[l], p[l], g[l]) : p[l] !== o[l] && (g[l] = p[l]);
       };
       u(r, i, s), c && Fe(n);
     }
@@ -649,7 +653,7 @@ function A(t, e, n) {
   }
   return s;
 }
-function q(t, e, n) {
+function $(t, e, n) {
   if (D(t)) {
     const r = A(t, e, n);
     return r && de(r) && r.catch((i) => {
@@ -658,7 +662,7 @@ function q(t, e, n) {
   }
   const s = [];
   for (let r = 0; r < t.length; r++)
-    s.push(q(t[r], e, n));
+    s.push($(t[r], e, n));
   return s;
 }
 function ze(t, e) {
@@ -669,8 +673,8 @@ function Qe(t, e, n) {
   return ne(t, e, n);
 }
 function ne(t, e, { immediate: n, deep: s, flush: r, onTrack: i, onTrigger: c } = me) {
-  var U;
-  const u = ae() === ((U = h.currentComponent) == null ? void 0 : U.scope) ? h.currentComponent : null;
+  var J;
+  const u = ae() === ((J = h.currentComponent) == null ? void 0 : J.scope) ? h.currentComponent : null;
   let o, p = !1, g = !1;
   if (B(t) ? (o = () => t.value, p = G(t)) : j(t) ? (o = () => t, s = !0) : z(t) ? (g = !0, p = t.some((a) => j(a) || G(a)), o = () => t.map((a) => {
     if (B(a))
@@ -681,21 +685,21 @@ function ne(t, e, { immediate: n, deep: s, flush: r, onTrack: i, onTrigger: c } 
       return A(a);
   })) : D(t) ? e ? o = () => A(t) : o = () => {
     if (!(u && !u.isMounted))
-      return f && f(), q(t, u);
+      return l && l(), $(t, u);
   } : o = ge, e && s) {
     const a = o;
     o = () => k(a());
   }
-  let f, se = (a) => {
-    f = d.onStop = () => {
-      A(a), f = d.onStop = void 0;
+  let l, se = (a) => {
+    l = d.onStop = () => {
+      A(a), l = d.onStop = void 0;
     };
   }, w = g ? new Array(t.length).fill(T) : T;
   const C = () => {
     if (d.active)
       if (e) {
         const a = d.run();
-        (s || p || (g ? a.some((oe, re) => K(oe, w[re])) : K(a, w))) && (f && f(), q(e, u, [
+        (s || p || (g ? a.some((oe, re) => K(oe, w[re])) : K(a, w))) && (l && l(), $(e, u, [
           a,
           // pass undefined as the old value when it's changed for the first time
           w === T ? void 0 : g && w[0] === T ? [] : w,
@@ -706,9 +710,9 @@ function ne(t, e, { immediate: n, deep: s, flush: r, onTrack: i, onTrigger: c } 
   };
   C.allowRecurse = !!e;
   let b;
-  r === "sync" ? b = C : r === "post" ? b = () => $(C) : (C.pre = !0, u && (C.id = u.cid), b = () => X(C));
+  r === "sync" ? b = C : r === "post" ? b = () => _(C) : (C.pre = !0, u && (C.id = u.cid), b = () => X(C));
   const d = new Z(o, b);
-  return e ? n ? C() : w = d.run() : r === "post" ? $(d.run.bind(d)) : d.run(), () => {
+  return e ? n ? C() : w = d.run() : r === "post" ? _(d.run.bind(d)) : d.run(), () => {
     d.stop(), u && u.scope && ye(u.scope.effects, d);
   };
 }
@@ -734,10 +738,10 @@ export {
   et as computed,
   Ye as defineComponent,
   He as defineEngineWidget,
-  qe as h,
+  $e as h,
   Ge as onBeforeDistory,
   Ke as onFrame,
-  Le as onMounted,
+  Ue as onMounted,
   Ze as raw,
   tt as reactive,
   nt as ref,
@@ -746,8 +750,8 @@ export {
   rt as shallowRef,
   it as toRef,
   ct as toRefs,
-  Ue as vfor,
-  Je as vif,
+  Je as vfor,
+  qe as vif,
   Qe as watch,
   ze as watchEffect
 };

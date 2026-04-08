@@ -1,6 +1,6 @@
 {
   "name": "@vis-three/module-object3d",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "vis-three object3d module",
   "main": "dist/vis-three.module-object3d.umd.js",
   "module": "dist/vis-three.module-object3d.es.js",

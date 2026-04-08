@@ -1,34 +1,66 @@
-import { defineModule as i, SUPPORT_LIFE_CYCLE as n } from "@vis-three/tdcm";
-import { getObjectConfig as f, ObjectRule as s, defineObjectModel as b } from "@vis-three/module-object";
-import { Object3D as d } from "three";
-const j = function() {
-  return Object.assign(f(), {});
-}, g = i({
+import { defineModule as i, SUPPORT_LIFE_CYCLE as a } from "@vis-three/tdcm";
+import { getObjectConfig as n, defineObjectModel as s, ObjectRule as d } from "@vis-three/module-object";
+import { Object3D as u } from "three";
+const f = function() {
+  return Object.assign(n(), {});
+}, b = function() {
+  return Object.assign(n(), {
+    url: "",
+    raw: !0
+  });
+}, j = s((t) => ({
+  type: "Object3D",
+  config: f,
+  create({ model: e, config: o, engine: c }) {
+    const r = new u();
+    return t.create({
+      model: e,
+      target: r,
+      config: o,
+      filter: {},
+      engine: c
+    }), r;
+  },
+  dispose({ target: e }) {
+    t.dispose({ target: e });
+  }
+})), O = s(
+  (t) => ({
+    type: "LoadObject3D",
+    config: b,
+    commands: {
+      set: {
+        //TODO:
+        url() {
+        },
+        //TODO:
+        raw() {
+        }
+      }
+    },
+    create({ model: e, config: o, engine: c }) {
+      const r = c.resourceManager.resourceMap.get(o.url);
+      return t.create({
+        model: e,
+        target: r,
+        config: o,
+        filter: {},
+        engine: c
+      }), r;
+    },
+    dispose({ target: e }) {
+      t.dispose({ target: e });
+    }
+  })
+), m = i({
   type: "object3D",
   object: !0,
-  rule: s,
-  models: [
-    b((t) => ({
-      type: "Object3D",
-      config: j,
-      create({ model: e, config: r, engine: c }) {
-        const o = new d();
-        return t.create({
-          model: e,
-          target: o,
-          config: r,
-          filter: {},
-          engine: c
-        }), o;
-      },
-      dispose({ target: e }) {
-        t.dispose({ target: e });
-      }
-    }))
-  ],
-  lifeOrder: n.THREE
+  rule: d,
+  models: [j, O],
+  lifeOrder: a.THREE
 });
 export {
-  g as default,
-  j as getObject3DConfig
+  m as default,
+  b as getLoadObject3DConfig,
+  f as getObject3DConfig
 };
