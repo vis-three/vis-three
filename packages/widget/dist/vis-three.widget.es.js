@@ -201,7 +201,7 @@ class h extends he {
       Object.prototype
     ), this.cacheEvent = {}, this.vnode = e;
     const s = e.type;
-    s.name && (this.name = s.name), this.el = s.el, this.options = s, this.renderer = n, this.engine = n.engine, this.ctx = n.context, this.createProps(), this.createSetup(), this.createResources(), this.createRender(), this.createEffect();
+    s.name && (this.name = s.name), this.el = s.el || "", this.options = s, this.renderer = n, this.engine = n.engine, this.ctx = n.context, this.createProps(), this.createSetup(), this.createResources(), this.createRender(), this.createEffect();
   }
   static setCurrentComponent(e) {
     h.currentComponent = e, e.scope.on();
