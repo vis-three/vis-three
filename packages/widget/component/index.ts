@@ -53,12 +53,12 @@ export interface ComponentOptions<
   props?: PropsOptions<Props>;
   /**注册的子组件 */
   components?: Record<string, ComponentOptions>;
-  /**组件使用的engine */
-  engine: Engine;
-  /**组件挂载的位置 */
-  el: string;
-  /**组件需要加载的外部资源 */
-  load: Record<string, string>;
+  /**组件使用的engine，当前默认同步使用renderer的engine */
+  // engine: Engine;
+  /**组件挂载的位置, 不传会默认挂载到当前场景下 */
+  el?: string;
+  /**组件需要加载的外部资源， 当前这个load字段和resources存在重复，看后面的实现需求 */
+  // load: Record<string, string>;
   /**组件可以使用的资源 */
   resources?: (params: { setup: RawBindings }) => Resources;
   /**组件的响应式对象和业务逻辑的位置 */
@@ -142,7 +142,7 @@ export class Component<
     >;
 
     options.name && (this.name = options.name);
-    this.el = options.el;
+    this.el = options.el || "";
 
     this.options = options;
     this.renderer = renderer;
