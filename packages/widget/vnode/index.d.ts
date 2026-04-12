@@ -13,7 +13,6 @@ export interface VNode<NodeProps = Data> {
     key: string | number | symbol | null;
     ref: string | null;
     raw: any | null;
-    children: VNode[] | null;
 }
 export type ElementVNode<NodeProps extends ElementData = ElementData> = VNode<NodeProps>;
 export declare const createVNode: <NodeProps = Data>(type: VNodeTypes, props?: NodeProps | null, options?: {

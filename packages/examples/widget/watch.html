@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>watch</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/common.css" />
+  </head>
+
+  <style>
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import { DisplayEngineWidget } from "@vis-three/engine-display-widget";
+      import { GridHelperPlugin } from "@vis-three/plugin-grid-helper";
+      import { CanvasGenerator } from "@vis-three/convenient";
+
+      import {
+        defineComponent,
+        h,
+        ref,
+        reactive,
+        vfor,
+        watch,
+        onMounted,
+      } from "@vis-three/widget";
+
+      const engine = new DisplayEngineWidget()
+        .install(GridHelperPlugin())
+        .setDom(document.getElementById("app"))
+        .setSize()
+        .play();
+
+      const sphere = defineComponent({
+        components: {},
+        props: {
+          height: {
+            type: Number,
+            default: 10,
+          },
+        },
+        render({ resources, setup, props, components }) {
+          const boxGeometry_qR = h("BoxGeometry", {
+            position: {
+              y: 1,
+            },
+            height: 1,
+          });
+
+          const planeGeometry_3l = h("PlaneGeometry", {
+            width: 10,
+          });
+
+          const meshBasicMaterial_K9 = h("MeshBasicMaterial", {
+            color: "rgb(6, 247, 255)",
+          });
+
+          const meshBasicMaterial_Kk = h("MeshBasicMaterial", {
+            side: 2,
+            transparent: true,
+          });
+
+          const mesh_ur = h("Mesh", {
+            material: meshBasicMaterial_K9,
+            geometry: boxGeometry_qR,
+            scale: {
+              y: props.height,
+            },
+          });
+
+          const mesh_Jc = h("Mesh", {
+            position: {
+              y: 6,
+            },
+
+            material: meshBasicMaterial_Kk,
+            geometry: planeGeometry_3l,
+          });
+
+          console.log(mesh_Jc);
+          const group_gp = h("Group", {
+            position: {
+              y: 3,
+            },
+            children: [mesh_Jc, mesh_ur],
+          });
+          console.log(group_gp);
+        },
+
+        setup({ engine, props }) {
+          watch(
+            () => props.height,
+            () => {
+              console.log("watch", props.height);
+            },
+            {
+              immediate: true,
+            }
+          );
+
+          return {};
+        },
+      });
+
+      const root = defineComponent({
+        components: {
+          sphere,
+        },
+        setup({ props }) {
+          const height = ref(10);
+
+          setTimeout(() => {
+            height.value = 20;
+          }, 1000);
+          return { height };
+        },
+        render({ components, resources, setup }) {
+          h(components.sphere, {
+            height: setup.height,
+          });
+        },
+      });
+
+      const widget = engine.createWidget(root).mount();
+
+      window.widget = widget;
+
+      window.engine = engine;
+    </script>
+  </body>
+</html>

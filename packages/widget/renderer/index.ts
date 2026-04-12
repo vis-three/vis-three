@@ -71,39 +71,39 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
       if ((<VNode<ObjectConfig>>vnode).config!.parent) {
         const parentConfig = this.engine.getConfigFromModules<ObjectConfig>(
           OBJECT_MODULE,
-          (<VNode<ObjectConfig>>vnode).config!.parent
+          (<VNode<ObjectConfig>>vnode).config!.parent,
         );
 
         if (!parentConfig) {
           console.error(
             "widget renderer: can not found parent config with: ",
-            vnode
+            vnode,
           );
           return;
         }
 
         parentConfig.children.splice(
           parentConfig.children.indexOf(
-            (<VNode<ObjectConfig>>vnode).config!.vid
+            (<VNode<ObjectConfig>>vnode).config!.vid,
           ),
-          1
+          1,
         );
       } else if (!vnode.el) {
         const object = this.engine.getObjectBySymbol(
-          (<VNode<ObjectConfig>>vnode).config!.vid
+          (<VNode<ObjectConfig>>vnode).config!.vid,
         ) as Object3D;
 
         if (!object) {
           console.error(
             "widget renderer: can not found Three object with: ",
-            vnode
+            vnode,
           );
         }
 
         object.removeFromParent();
       }
       const object = this.engine.getObjectBySymbol(
-        vnode.config!.vid
+        vnode.config!.vid,
       )! as Object3D;
 
       unmountEvents(vnode, object);
@@ -119,17 +119,17 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
     if (isObjectType(element.type)) {
       if (!vnode.el) {
         this.engine.scene.add(
-          this.engine.getObjectFromModules(OBJECT_MODULE, element.vid)!
+          this.engine.getObjectFromModules(OBJECT_MODULE, element.vid)!,
         );
       } else {
         const parent = this.engine.getConfigFromModules<ObjectConfig>(
           OBJECT_MODULE,
-          vnode.el!
+          vnode.el!,
         );
 
         if (!parent) {
           console.error(
-            `widget renderer: can not found parent config with: ${vnode.el!}`
+            `widget renderer: can not found parent config with: ${vnode.el!}`,
           );
           return;
         }
@@ -148,6 +148,7 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
       this.unmountElement(oldVn);
       this.mountElement(newVn);
     } else {
+      // 新的vnode本身没有经过createElement,这里复制一份供下一次patch使用
       newVn.config = oldVn.config;
 
       const config = oldVn.config;
@@ -156,21 +157,25 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
         console.error("widget renderer: can not found  config with: ", oldVn);
       }
 
+      // oldProps和newProps是对应config更新所以要记得converter，不然会使config出现vnode对象
       let oldProps = {}! as ElementData;
-      const newProps = newVn.props! as ElementData;
 
+      const newProps = vnodePropConverter(newVn.props!) as ElementData;
+
+      // 事件更新另行进行
       let hasEvent = false;
       // 由于属性是一直存在的，所以新老props的属性都是对应的
+
       for (const key in oldVn.props) {
-        if (isOnProp(key)) {
+        if (isOnProp(key) && !hasEvent) {
           hasEvent = true;
           continue;
         }
 
-        oldProps[key] = oldVn.props[key];
+        oldProps[key] = vnodePropConverter(oldVn.props[key]);
       }
 
-      // 这里是遍历props1的key，所以上面就只用清洗oldProps的属性就行
+      // 这里是遍历oldProps的key，对应newPros的值，更新config
       const traverse = (props1: object, props2: object, target: object) => {
         for (const key in props1) {
           if (isVNode(props1[key])) {
@@ -194,6 +199,7 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
 
       traverse(oldProps, newProps, config!);
 
+      // 更新事件
       hasEvent && updateEvents(newVn);
     }
   }
@@ -201,19 +207,21 @@ export class Renderer<E extends EngineWidget = EngineWidget> {
   createElement(vnode: VNode) {
     const props = vnode.props;
     const merge: Record<string, any> = {};
-    const onProps: Record<string, Function> = {};
+    const onProps: Record<string, Function> = {}; // 事件props
+
     for (const key in props) {
-      if (["ref", "index"].includes(key)) {
+      // 内部功能key不用识别与合并
+      if (["$ref", "$raw", "$key"].includes(key)) {
         continue;
       }
 
-      if (isOnProp(key)) {
-        onProps[key] = props[key];
-      } else {
+      // 目前的事件绑定是直接传的vnode重新识别onprop进行，这里的onProps暂时无用
+      if (!isOnProp(key)) {
+        // onProps[key] = props[key];
+        // 这里会自动提取vnode的vid，遇到对象自动递归
         merge[key] = vnodePropConverter(props[key]);
       }
     }
-
     const config = generateConfig(vnode.type as string, merge, {
       strict: false,
       warn: false,

@@ -68,7 +68,7 @@
             material: h("SpriteMaterial", {
               map: h("CanvasTexture", {
                 url: resources.text,
-                ref: "texture",
+                $ref: "texture",
               }),
               sizeAttenuation: false,
               transparent: true,
@@ -127,10 +127,11 @@
               ctx.fillText(props.title, 0, 0);
               ctx.translate(-200, -100);
             });
-
+          console.log(props);
           watch(
             props.title,
             () => {
+              console.log(1);
               draw();
             },
             {

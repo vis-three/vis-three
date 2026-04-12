@@ -258,11 +258,11 @@
         render({ components, resources }) {
           const texture = h("CanvasTexture", {
             url: resources.text,
-            ref: "texture",
+            $ref: "texture",
           });
 
           const material = h("MeshBasicMaterial", {
-            ref: "box",
+            $ref: "box",
             color: "rgb(255, 0, 0)",
             map: texture,
           });
@@ -315,7 +315,7 @@
 
           h(components.sphere, {
             color: this.color,
-            ref: "comp",
+            $ref: "comp",
             onShow: this.showTest,
           });
 

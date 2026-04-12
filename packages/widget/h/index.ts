@@ -23,11 +23,12 @@ export interface H {
   add: (vnode: VNode) => Array<VNode | VNodeScpoe>;
 }
 
+// 通过$防止配置冲突，并提供内部功能的区分
 export const _h = <H>function (type: VNodeTypes, props: Data | null = null) {
   const vnode = createVNode(type, props, {
-    key: (props && props.key) || null,
-    ref: (props && props.ref) || null,
-    raw: (props && props.raw) || null,
+    key: (props && props.$key) || null,
+    ref: (props && props.$ref) || null,
+    raw: (props && props.$raw) || null,
   });
   _h.add(vnode);
   return vnode;

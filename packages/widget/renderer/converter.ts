@@ -1,7 +1,7 @@
 import { VNode, isVNode } from "../vnode";
 
 export const vnodePropConverter = (object: any) => {
-  if (typeof object === "object") {
+  if (typeof object === "object" && object !== null) {
     if (isVNode(object)) {
       return (<VNode>object).config!.vid;
     } else {

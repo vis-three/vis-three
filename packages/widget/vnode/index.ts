@@ -18,7 +18,8 @@ export interface VNode<NodeProps = Data> {
   ref: string | null;
   // 获取 tdcm 配置
   raw: any | null;
-  children: VNode[] | null;
+  // 目前版本的vnode不需要children直接自上而下书写
+  // children: VNode[] | null;
 }
 
 export type ElementVNode<NodeProps extends ElementData = ElementData> =
@@ -43,12 +44,12 @@ export const createVNode = function <NodeProps = Data>(
     key: options.key || null,
     ref: options.ref || null,
     raw: options.raw || null,
-    children: null,
+    // children: null,
   };
 };
 
 export const isVNode = function (object: any) {
-  if (typeof object === "object") {
+  if (typeof object === "object" && object !== null) {
     return Boolean(object["_isVNode"]);
   } else {
     return false;
