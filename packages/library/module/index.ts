@@ -30,6 +30,7 @@ import constraintor from "@vis-three/module-constraintor";
 import reflector from "@vis-three/module-reflector";
 import water from "@vis-three/module-water";
 import particle from "@vis-three/module-particle";
+import model from "@vis-three/module-model";
 
 export {
   animation,
@@ -64,6 +65,7 @@ export {
   reflector,
   water,
   particle,
+  model,
 };
 
 export const modules = [
@@ -99,6 +101,7 @@ export const modules = [
   reflector,
   water,
   particle,
+  model,
 ];
 
 export {

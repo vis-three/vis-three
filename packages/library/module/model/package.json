@@ -1,0 +1,29 @@
+{
+  "name": "@vis-three/module-model",
+  "version": "0.8.0",
+  "description": "vis-three model module",
+  "main": "dist/vis-three.module-model.umd.js",
+  "module": "dist/vis-three.module-model.es.js",
+  "types": "index.d.ts",
+  "author": "Shiotsuki_",
+  "license": "MPL-2.0",
+  "private": false,
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": " vite build",
+    "lint": "npx eslint *.js src/**/*.ts --fix"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "@vis-three/core": "workspace:^",
+    "@vis-three/tdcm": "workspace:^",
+    "@vis-three/module-object": "workspace:^",
+    "@vis-three/utils": "workspace:^"
+  },
+  "files": [
+    "dist",
+    "**/*.d.ts",
+    "package.json",
+    "LICENSE"
+  ]
+}

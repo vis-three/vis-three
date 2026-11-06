@@ -30,7 +30,8 @@ import constraintor from "@vis-three/module-constraintor";
 import reflector from "@vis-three/module-reflector";
 import water from "@vis-three/module-water";
 import particle from "@vis-three/module-particle";
-export { animation, camera, controls, css2D, css3D, geometry, group, light, line, material, mesh, modifier, object3d, pass, points, renderer, scene, sprite, texture, path, shape, curve, helper, bone, skeleton, skinnedMesh, animationClip, animationAction, constraintor, reflector, water, particle, };
+import model from "@vis-three/module-model";
+export { animation, camera, controls, css2D, css3D, geometry, group, light, line, material, mesh, modifier, object3d, pass, points, renderer, scene, sprite, texture, path, shape, curve, helper, bone, skeleton, skinnedMesh, animationClip, animationAction, constraintor, reflector, water, particle, model, };
 export const modules = [
     animation,
     camera,
@@ -64,7 +65,8 @@ export const modules = [
     reflector,
     water,
     particle,
+    model,
 ];
-export { EventGeneratorManager } from "@vis-three/module-object";
+export { EventGeneratorManager, } from "@vis-three/module-object";
 export { AniScriptGeneratorManager } from "@vis-three/module-animation";
 export { ShaderGeneratorManager } from "@vis-three/module-material";

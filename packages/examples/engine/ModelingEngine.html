@@ -28,7 +28,7 @@
         .setStats(true)
         .play();
 
-      engine.camera.position.set(50, 50, 50);
+      engine.camera.position.set(200, 200, 200);
 
       const scene = engine.scene;
 
@@ -52,6 +52,29 @@
       scene.add(points);
 
       window.engine = engine;
+
+      const dom = engine.dom.getBoundingClientRect();
+
+      engine.webGLRenderer.setViewport(
+        -dom.width / 2,
+        -dom.height / 2,
+        dom.width * 2,
+        dom.height * 2
+      );
+
+      engine.webGLRenderer.setSize(dom.width, dom.height);
+
+      let i = 0;
+      engine.renderManager.addEventListener("render", () => {
+        engine.webGLRenderer.setViewport(
+          -dom.width / 2 + i,
+          -dom.height / 2 + i,
+          dom.width * 2,
+          dom.height * 2
+        );
+
+        i += 2;
+      });
     </script>
   </body>
 </html>

@@ -2,6 +2,7 @@ import { defineObjectModel, ObjectModel } from "@vis-three/module-object";
 import { getLoadObject3DConfig, LoadObject3DConfig } from "../Object3DConfig";
 import { Object3D } from "three";
 
+// @deprecated use model
 export default defineObjectModel<LoadObject3DConfig, Object3D>(
   (objectModel) => ({
     type: "LoadObject3D",

@@ -30,6 +30,7 @@
     "@vis-three/module-line": "workspace:^",
     "@vis-three/module-material": "workspace:^",
     "@vis-three/module-mesh": "workspace:^",
+    "@vis-three/module-model": "workspace:^",
     "@vis-three/module-modifier": "workspace:^",
     "@vis-three/module-object": "workspace:^",
     "@vis-three/module-object3d": "workspace:^",
